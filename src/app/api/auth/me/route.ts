@@ -10,35 +10,43 @@ export async function GET() {
     return NextResponse.json({ user: null });
   }
 
-  // Fetch full details if needed
-  const user = await prisma.user.findUnique({
-    where: { id: sessionUser.id },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      role: true,
-      phone: true,
-      avatar: true,
-      bio: true,
-      licenseNo: true,
-      experienceYrs: true,
-      city: true,
-      memberships: {
-        include: {
-          organization: {
-            include: {
-              subscriptions: {
-                where: { status: 'ACTIVE' },
-                orderBy: { createdAt: 'desc' },
-                take: 1,
+  let user: any = null;
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        avatar: true,
+        bio: true,
+        licenseNo: true,
+        experienceYrs: true,
+        city: true,
+        memberships: {
+          include: {
+            organization: {
+              include: {
+                subscriptions: {
+                  where: { status: 'ACTIVE' },
+                  orderBy: { createdAt: 'desc' },
+                  take: 1,
+                },
               },
             },
           },
         },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('DB lookup note in auth/me:', err);
+  }
+
+  if (!user) {
+    user = sessionUser;
+  }
 
   return NextResponse.json({ user });
 }
