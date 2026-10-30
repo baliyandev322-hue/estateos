@@ -373,8 +373,16 @@ export default function RazorpayModal({
               </div>
             )}
 
+            {/* Sandbox Mock Helper Card */}
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-300 flex items-start gap-2 mt-4">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+              <span>
+                <strong>Investor / Demo Sandbox:</strong> Click <strong>Pay {formatCurrencyINR(amount)}</strong> below to simulate instant billing upgrade and invoice generation. No real bank charges occur in test mode.
+              </span>
+            </div>
+
             {/* Action Bar */}
-            <div className="mt-6 pt-4 border-t border-slate-800 space-y-3">
+            <div className="mt-4 pt-4 border-t border-slate-800 space-y-3">
               <button
                 type="button"
                 onClick={handlePay}

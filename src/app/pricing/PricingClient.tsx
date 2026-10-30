@@ -304,6 +304,19 @@ export default function PricingClient() {
               </span>
             </button>
           </div>
+
+          {/* Investor / Evaluator Sandbox Demo Mode Banner */}
+          <div className="mt-6 max-w-2xl mx-auto p-3.5 rounded-2xl bg-amber-50/90 border border-amber-300 text-amber-900 text-xs flex items-center justify-between gap-3 shadow-sm text-left">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
+              <span className="leading-relaxed">
+                <strong>Sandbox Payment Mode Active:</strong> Test cards &amp; mock UPI are pre-configured. Select any plan to experience instant automated CRM feature activation without spending real money.
+              </span>
+            </div>
+            <span className="shrink-0 px-2.5 py-1 rounded-lg bg-amber-200/80 border border-amber-300 font-mono text-[10px] font-black uppercase text-amber-950">
+              Demo Active
+            </span>
+          </div>
         </div>
 
         {/* Pricing Cards Grid */}
