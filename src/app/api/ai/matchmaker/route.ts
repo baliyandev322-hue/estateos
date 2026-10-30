@@ -206,7 +206,39 @@ export async function POST(request: Request) {
     const bedStr = criteria.bedrooms ? `${criteria.bedrooms}BHK ` : '';
     const locStr = criteria.city ? `in ${criteria.city}` : 'across our verified inventory';
 
-    aiResponseText = `I analyzed our active, RERA-verified registry for **${bedStr}${criteria.propertyType || 'residential'} properties ${locStr}** with a budget benchmark under **${budgetStr}**.\n\n`;
+    const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+
+    if (apiKey) {
+      try {
+        const topPropertiesSummary = matchedProperties.slice(0, 3).map(p => `${p.title} priced at ${formatCurrencyINR(p.price)} with Truth Score ${p.truthScore}/100`).join('; ');
+        const geminiPrompt = `You are EstateOS AI Property Matchmaker, a sophisticated Indian proptech advisor.
+User Query: "${message}"
+Criteria: ${bedStr}${locStr}, Budget: ${budgetStr}
+Top Verified Matches from Database: ${topPropertiesSummary}
+
+Write a concise 2-sentence expert advisory recommendation tailored to the user's query explaining why these micro-markets offer solid investment value and RERA protection. Do not list the properties (they will be listed separately).`;
+
+        const geminiRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: geminiPrompt }] }]
+          })
+        });
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const geminiSummary = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (geminiSummary) {
+            aiResponseText = `🤖 **Gemini AI Synthesis**: ${geminiSummary.trim()}\n\n` + aiResponseText;
+          }
+        }
+      } catch (gemErr) {
+        console.warn('Gemini matchmaker enrichment skipped:', gemErr);
+      }
+    }
+
+    aiResponseText += `I analyzed our active, RERA-verified registry for **${bedStr}${criteria.propertyType || 'residential'} properties ${locStr}** with a budget benchmark under **${budgetStr}**.\n\n`;
 
     if (localityData) {
       aiResponseText += `📍 **Micro-Market Intelligence for ${localityData.name}**: Average capital rate is **${formatCurrencyINR(localityData.avgPricePerSqFt)}/sq.ft** with an annual appreciation of **+${localityData.priceTrend1Yr}%** and a rental yield of **${localityData.rentalYieldPercent}%**. It features **${localityData.schoolsCount} verified schools** and **${localityData.hospitalsCount} super-specialty hospitals** in a 5km radius.\n\n`;
