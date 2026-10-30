@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   description: 'EstateOS combines verified residential & commercial property search with Property Truth Score™, Locality Micro-Intelligence, AI Matchmaker, and Multi-Tenant SaaS for Agents and Builders.',
   keywords: 'real estate, buy property, rent luxury apartment, mohali, gurugram, bangalore, rera verified, property truth score, locality intelligence, home loan emi calculator, real estate crm',
   authors: [{ name: 'EstateOS Team' }],
-  metadataBase: new URL('https://estateos.in'),
+  metadataBase: new URL('https://www.estateospro.in'),
   alternates: {
-    canonical: 'https://estateos.in',
+    canonical: 'https://www.estateospro.in',
   },
   verification: {
     google: 'google-site-verification-estateos-2026-sovereign-proptech',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'EstateOS — Sovereign Real Estate Intelligence',
     description: 'RERA-audited marketplace, AI-powered matchmaker, and enterprise agent CRM.',
-    url: 'https://estateos.in',
+    url: 'https://www.estateospro.in',
     siteName: 'EstateOS',
     images: [
       {
@@ -75,8 +75,8 @@ export default function RootLayout({
               '@context': 'https://schema.org',
               '@type': 'RealEstateAgent',
               name: 'EstateOS Technologies',
-              url: 'https://estateos.in',
-              logo: 'https://estateos.in/logo.png',
+              url: 'https://www.estateospro.in',
+              logo: 'https://www.estateospro.in/logo.png',
               description: 'India Sovereign RERA-Audited PropTech Marketplace with Property Truth Score™',
               address: {
                 '@type': 'PostalAddress',
