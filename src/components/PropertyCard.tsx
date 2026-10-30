@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Bed,
@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
+import { isPropertySaved, toggleSavedProperty } from '@/lib/wishlist';
 
 interface PropertyCardProps {
   property: {
@@ -54,6 +55,17 @@ interface PropertyCardProps {
 export default function PropertyCard({ property, onCompare, isCompared = false }: PropertyCardProps) {
   const [isSaved, setIsSaved] = useState(false);
 
+  useEffect(() => {
+    setIsSaved(isPropertySaved(property.id || property.slug));
+
+    const handleUpdate = () => {
+      setIsSaved(isPropertySaved(property.id || property.slug));
+    };
+
+    window.addEventListener('estateos_wishlist_updated', handleUpdate);
+    return () => window.removeEventListener('estateos_wishlist_updated', handleUpdate);
+  }, [property.id, property.slug]);
+
   // Parse images JSON safely
   let imageList: string[] = [];
   try {
@@ -68,7 +80,8 @@ export default function PropertyCard({ property, onCompare, isCompared = false }
   const toggleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsSaved(!isSaved);
+    const next = toggleSavedProperty(property);
+    setIsSaved(next);
   };
 
   return (

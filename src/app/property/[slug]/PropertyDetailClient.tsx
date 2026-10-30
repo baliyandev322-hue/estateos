@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Bed,
@@ -33,6 +33,7 @@ import PropertyMapRadar from '@/components/PropertyMapRadar';
 import HomeLoanApplyModal from '@/components/HomeLoanApplyModal';
 import TruthScoreReportDownloadModal from '@/components/TruthScoreReportDownloadModal';
 import { SITE_CONTACT } from '@/config/siteContact';
+import { isPropertySaved, toggleSavedProperty } from '@/lib/wishlist';
 
 interface PropertyDetailClientProps {
   property: any;
@@ -64,6 +65,16 @@ export default function PropertyDetailClient({
 
   const [activeImage, setActiveImage] = useState(images[0]);
   const [copied, setCopied] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    setIsSaved(isPropertySaved(property.id || property.slug));
+    const handleUpdate = () => {
+      setIsSaved(isPropertySaved(property.id || property.slug));
+    };
+    window.addEventListener('estateos_wishlist_updated', handleUpdate);
+    return () => window.removeEventListener('estateos_wishlist_updated', handleUpdate);
+  }, [property.id, property.slug]);
 
   // Enquiry form state
   const [enquiryName, setEnquiryName] = useState('');
@@ -167,7 +178,7 @@ export default function PropertyDetailClient({
   const audit = property.verificationAudits?.[0];
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
+    <div className="bg-slate-50 min-h-screen py-8 pb-24 sm:pb-8">
       <PropertyJsonLd property={property} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
@@ -228,6 +239,20 @@ export default function PropertyDetailClient({
             </div>
 
             <div className="flex items-center gap-2 mt-3">
+              <button
+                onClick={() => {
+                  const next = toggleSavedProperty(property);
+                  setIsSaved(next);
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg shadow-sm border transition-all ${
+                  isSaved
+                    ? 'bg-rose-50 text-rose-600 border-rose-300'
+                    : 'bg-white text-charcoal-700 border-charcoal-200 hover:border-forest-700'
+                }`}
+              >
+                <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-rose-600 text-rose-600' : ''}`} />
+                <span>{isSaved ? 'Shortlisted' : 'Shortlist'}</span>
+              </button>
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-charcoal-700 bg-white border border-charcoal-200 hover:border-forest-700 rounded-lg shadow-sm"
@@ -784,6 +809,40 @@ export default function PropertyDetailClient({
         onClose={() => setIsTruthReportModalOpen(false)}
         property={property}
       />
+
+      {/* MOBILE STICKY FLOATING ACTION BAR (sm:hidden) */}
+      <aside aria-label="Mobile Contact Bar" className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-forest-950/95 backdrop-blur-md border-t border-forest-800 p-3 shadow-2xl flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <div className="font-serif font-black text-white text-base leading-tight truncate">
+            {formatCurrencyINR(property.price)}
+            {property.listingType === 'RENT' && (
+              <span className="text-[10px] text-forest-300 font-normal"> /mo</span>
+            )}
+          </div>
+          <div className="text-[10px] text-gold-accent font-semibold truncate">
+            <span>Est. EMI: ~{formatCurrencyINR(Math.round(property.price * 0.8 * 0.008678))}/mo</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href={`https://wa.me/${(property.user?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+          >
+            <MessageCircle className="w-4 h-4 fill-white" />
+            <span>WhatsApp</span>
+          </a>
+          <a
+            href={`tel:${property.user?.phone || SITE_CONTACT.directPhone}`}
+            className="py-2 px-3 rounded-xl bg-gold-accent hover:bg-gold-light text-forest-950 font-black text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+          >
+            <Phone className="w-3.5 h-3.5 fill-forest-950" />
+            <span>Call</span>
+          </a>
+        </div>
+      </aside>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   Map,
 } from 'lucide-react';
+import { formatCurrencyINR } from '@/lib/utils';
 
 interface PropertySearchClientProps {
   initialProperties: any[];
@@ -246,27 +247,83 @@ export default function PropertySearchClient({
                 </div>
               </div>
 
-              {/* Price Range */}
+              {/* Price Range with Indian Crore / Lakh Formatting */}
               <div>
-                <label className="block text-xs font-bold text-charcoal-700 uppercase tracking-wider mb-1.5">
-                  Budget (INR)
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="number"
-                    placeholder="Min (₹)"
-                    value={minPrice}
-                    onChange={(e) => setMinPrice(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-forest-700"
-                  />
-                  <input
-                    type="number"
-                    placeholder="Max (₹)"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-forest-700"
-                  />
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase tracking-wider">
+                    Budget Range
+                  </label>
+                  {(minPrice || maxPrice) && (
+                    <button
+                      onClick={() => { setMinPrice(''); setMaxPrice(''); }}
+                      className="text-[10px] text-charcoal-400 hover:text-red-600 font-semibold"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
+
+                {/* Quick Presets */}
+                <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+                  {[
+                    { label: 'Under ₹50 Lakh', min: '', max: '5000000' },
+                    { label: '₹50 L – ₹1.5 Cr', min: '5000000', max: '15000000' },
+                    { label: '₹1.5 Cr – ₹5 Cr', min: '15000000', max: '50000000' },
+                    { label: '₹5 Cr – ₹15 Cr', min: '50000000', max: '150000000' },
+                  ].map((preset) => {
+                    const isSelected = minPrice === preset.min && maxPrice === preset.max;
+                    return (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setMinPrice(preset.min);
+                          setMaxPrice(preset.max);
+                        }}
+                        className={`px-2 py-1.5 rounded-lg text-[10px] font-bold border transition-all text-left truncate ${
+                          isSelected
+                            ? 'bg-forest-900 text-gold-accent border-forest-900'
+                            : 'bg-slate-50 text-charcoal-700 border-charcoal-200 hover:border-forest-700'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="block text-[10px] text-charcoal-400 font-semibold mb-0.5">Min Price</span>
+                    <input
+                      type="number"
+                      placeholder="Min (₹)"
+                      value={minPrice}
+                      onChange={(e) => setMinPrice(e.target.value)}
+                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-forest-700 font-mono"
+                    />
+                  </div>
+                  <div>
+                    <span className="block text-[10px] text-charcoal-400 font-semibold mb-0.5">Max Price</span>
+                    <input
+                      type="number"
+                      placeholder="Max (₹)"
+                      value={maxPrice}
+                      onChange={(e) => setMaxPrice(e.target.value)}
+                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-forest-700 font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Real-time formatted preview badge */}
+                {(minPrice || maxPrice) && (
+                  <div className="mt-2 p-2 rounded-lg bg-forest-50 border border-forest-200 text-[11px] text-forest-900 font-bold flex items-center justify-between">
+                    <span className="text-charcoal-500 font-normal">Active Filter:</span>
+                    <span className="text-forest-950 font-black">
+                      {minPrice ? formatCurrencyINR(Number(minPrice)) : '₹0'} – {maxPrice ? formatCurrencyINR(Number(maxPrice)) : 'Any'}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Truth Score / Verified Filter Toggle */}

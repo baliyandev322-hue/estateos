@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { SITE_CONTACT } from '@/config/siteContact';
+import { sendPropertyEnquiryConfirmation } from '@/lib/emailService';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
 
 export const dynamic = 'force-dynamic';
@@ -79,6 +80,16 @@ export async function POST(
     // Buyer direct WhatsApp with agent
     const buyerConnectText = `Hi, I just submitted an inquiry for *${propertyTitle}* on EstateOS. My name is ${name}. Please share the official RERA brochure and schedule a site visit.`;
     const whatsappBuyerConnectUrl = `https://wa.me/${cleanAgentPhone}?text=${encodeURIComponent(buyerConnectText)}`;
+
+    // Dispatch branded transactional email to buyer if email was provided
+    if (email) {
+      await sendPropertyEnquiryConfirmation({
+        toEmail: email,
+        buyerName: name,
+        propertyTitle,
+        priceFormatted: `₹${priceFormatted}`,
+      }).catch((e) => console.warn('Enquiry email dispatch notice:', e));
+    }
 
     return NextResponse.json({
       success: true,

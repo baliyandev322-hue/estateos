@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { contactRegistry } from '@/lib/contactRegistry';
 import { SITE_CONTACT } from '@/config/siteContact';
+import { sendContactInquiryConfirmation } from '@/lib/emailService';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,14 @@ export async function POST(request: Request) {
     } catch (dbErr) {
       console.warn('Database save skipped for contact inquiry, using memory registry:', dbErr);
     }
+
+    // Dispatch branded transactional email acknowledgment
+    await sendContactInquiryConfirmation({
+      toEmail: email,
+      name,
+      ticketId: entry.ticketId,
+      subject: subject || 'General Inquiry',
+    }).catch((e) => console.warn('Email dispatch non-blocking notice:', e));
 
     // Speed-to-lead concierge WhatsApp link
     const cleanPhone = phone.replace(/\D/g, '');
