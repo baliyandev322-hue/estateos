@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     canonical: 'https://www.estateospro.in',
   },
   verification: {
-    google: 'google-site-verification-estateos-2026-sovereign-proptech',
+    google: 'google1eb03a8e9cf486b5',
   },
   robots: {
     index: true,
@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="google-site-verification" content="google-site-verification-estateos-2026-sovereign-proptech" />
+        <meta name="google-site-verification" content="google1eb03a8e9cf486b5" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
