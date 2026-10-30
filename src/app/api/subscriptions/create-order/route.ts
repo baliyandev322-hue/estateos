@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export const dynamic = 'force-dynamic';
 
@@ -87,7 +88,7 @@ export async function POST(request: Request) {
       customer: {
         name: user?.name || 'Rahul Sharma (Licensed Agent)',
         email: user?.email || 'agent@estateos.com',
-        contact: user?.phone || '9876543210',
+        contact: user?.phone || SITE_CONTACT.directPhone,
       },
     });
   } catch (error: any) {

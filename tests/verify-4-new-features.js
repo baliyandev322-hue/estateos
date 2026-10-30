@@ -44,7 +44,7 @@ async function testAll() {
 
   if (agentLogin) {
     const agentDash = await get('/dashboard/agent', { Cookie: agentLogin });
-    const hasProfileTab = agentDash.body.includes('Profile & Agency Settings') || agentDash.body.includes('RERA Professional Credentials');
+    const hasProfileTab = agentDash.body.includes('Profile & Agency Settings') || agentDash.body.includes('Profile &amp; Agency Settings') || agentDash.body.includes('RERA Professional Credentials');
     console.log('Agent Dashboard Status:', agentDash.status, 'Has Profile & Agency Tab:', hasProfileTab);
   }
 
@@ -66,7 +66,7 @@ async function testAll() {
   if (builderLogin) {
     const builderDash = await get('/dashboard/builder', { Cookie: builderLogin });
     const hasAddTowerBtn = builderDash.body.includes('Add New Phase / Tower');
-    const hasEscrowTab = builderDash.body.includes('Developer Profile & Escrow Settings');
+    const hasEscrowTab = builderDash.body.includes('Developer Profile & Escrow Settings') || builderDash.body.includes('Developer Profile &amp; Escrow Settings');
     console.log('Builder Dashboard Status:', builderDash.status, 'Has Add Phase Button:', hasAddTowerBtn, 'Has Escrow Tab:', hasEscrowTab);
   }
 }

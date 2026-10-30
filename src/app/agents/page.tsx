@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { ShieldCheck, MapPin, Phone, CheckCircle2, Award, ExternalLink } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export const dynamic = 'force-dynamic';
 
@@ -171,7 +172,7 @@ export default async function AgentsDirectoryPage() {
 
                 <div className="pt-5 border-t border-charcoal-100 mt-6 flex items-center justify-between">
                   <a
-                    href={`https://wa.me/91${(agent.phone || '9876543210').replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(`Hi ${agent.name}, I found your profile on EstateOS. I would like to consult on luxury property investments.`)}`}
+                    href={`https://wa.me/91${(agent.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(`Hi ${agent.name}, I found your profile on EstateOS. I would like to consult on luxury property investments.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:text-emerald-800"

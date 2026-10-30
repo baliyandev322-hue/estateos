@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { SITE_CONTACT } from '@/config/siteContact';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
 
 export const dynamic = 'force-dynamic';
@@ -67,7 +68,7 @@ export async function POST(
     }
 
     // Goldmine Speed-to-lead automated WhatsApp Alert link
-    const targetAgentPhone = (property?.user?.phone || property?.organization?.phone || '9876543210').replace(/\D/g, '');
+    const targetAgentPhone = (property?.user?.phone || property?.organization?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '');
     const cleanAgentPhone = targetAgentPhone.length === 10 ? `91${targetAgentPhone}` : targetAgentPhone;
     const propertyTitle = property?.title || 'Luxury EstateOS Property';
     const priceFormatted = property?.price ? (property.price >= 10000000 ? (property.price / 10000000).toFixed(2) + ' Cr' : (property.price / 100000).toFixed(2) + ' Lakh') : 'On Request';

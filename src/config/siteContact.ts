@@ -30,25 +30,25 @@ export interface ContactConfig {
 export const SITE_CONTACT: ContactConfig = {
   companyName: process.env.NEXT_PUBLIC_COMPANY_NAME || 'EstateOS Technologies Pvt. Ltd.',
   brandName: 'EstateOS',
-  tollFree: process.env.NEXT_PUBLIC_SUPPORT_PHONE || '+91 1800 200 4567',
-  directPhone: process.env.NEXT_PUBLIC_DIRECT_PHONE || '+91 98765 43210',
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '919876543210',
+  tollFree: process.env.NEXT_PUBLIC_SUPPORT_PHONE || '+91 93685 93249',
+  directPhone: process.env.NEXT_PUBLIC_DIRECT_PHONE || '+91 93685 93249',
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '919368593249',
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@estateos.in',
   grievanceEmail: process.env.NEXT_PUBLIC_GRIEVANCE_EMAIL || 'grievance@estateos.in',
   complianceEmail: process.env.NEXT_PUBLIC_COMPLIANCE_EMAIL || 'compliance@estateos.in',
   address: {
-    line1: 'Level 14, Horizon Cyber Tower',
-    line2: 'Golf Course Extension Road, Sector 54',
-    city: 'Gurugram',
-    state: 'Haryana',
-    pincode: '122018',
+    line1: 'Gali No. 10, Near Verma Park',
+    line2: 'Gandhi Colony',
+    city: 'Muzaffarnagar',
+    state: 'Uttar Pradesh',
+    pincode: '251001',
     country: 'India',
     fullFormatted:
       process.env.NEXT_PUBLIC_OFFICE_ADDRESS ||
-      'Level 14, Horizon Cyber Tower, Golf Course Extension Road, Sector 54, Gurugram, Haryana - 122018, India',
+      'Gali No. 10, Near Verma Park, Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India',
   },
   operatingHours: 'Mon - Sat, 9:00 AM - 7:00 PM IST',
-  grievanceOfficer: 'Adv. K. Aggarwal (Statutory Nodal Officer)',
+  grievanceOfficer: 'EstateOS Nodal Grievance Cell',
 };
 
 export default SITE_CONTACT;

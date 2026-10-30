@@ -32,6 +32,7 @@ import { PropertyJsonLd } from '@/components/StructuredData';
 import PropertyMapRadar from '@/components/PropertyMapRadar';
 import HomeLoanApplyModal from '@/components/HomeLoanApplyModal';
 import TruthScoreReportDownloadModal from '@/components/TruthScoreReportDownloadModal';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 interface PropertyDetailClientProps {
   property: any;
@@ -517,7 +518,7 @@ export default function PropertyDetailClient({
               {/* Direct WhatsApp & Call Buttons */}
               <div className="grid grid-cols-2 gap-2 text-xs font-bold">
                 <a
-                  href={`https://wa.me/91${(property.user?.phone || '9876543210').replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
+                  href={`https://wa.me/${(property.user?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all"
@@ -526,7 +527,7 @@ export default function PropertyDetailClient({
                   <span>WhatsApp</span>
                 </a>
                 <a
-                  href={`tel:${property.user?.phone || '+919876543210'}`}
+                  href={`tel:${property.user?.phone || SITE_CONTACT.directPhone}`}
                   className="py-2.5 px-3 rounded-xl bg-forest-900 hover:bg-forest-800 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all border border-forest-700"
                 >
                   <Phone className="w-4 h-4 text-gold-accent" />
