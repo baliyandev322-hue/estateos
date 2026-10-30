@@ -1,3 +1,2 @@
 # Google AdSense ads.txt for EstateOS
-# When approved, update this line with your official publisher ID (e.g. pub-1234567890123456)
-google.com, pub-7890123456789012, DIRECT, f08c47fec0942fa0
+google.com, pub-8670788447807706, DIRECT, f08c47fec0942fa0
