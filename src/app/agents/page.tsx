@@ -6,17 +6,22 @@ import { ShieldCheck, MapPin, Phone, CheckCircle2, Award, ExternalLink } from 'l
 export const dynamic = 'force-dynamic';
 
 export default async function AgentsDirectoryPage() {
-  const agents = await prisma.user.findMany({
-    where: { role: 'AGENT' },
-    include: {
-      memberships: {
-        include: { organization: true },
+  let agents: any[] = [];
+  try {
+    agents = await prisma.user.findMany({
+      where: { role: 'AGENT' },
+      include: {
+        memberships: {
+          include: { organization: true },
+        },
+        properties: {
+          select: { id: true, title: true, price: true, slug: true },
+        },
       },
-      properties: {
-        select: { id: true, title: true, price: true, slug: true },
-      },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('Failed to load agents from DB:', err);
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-12">

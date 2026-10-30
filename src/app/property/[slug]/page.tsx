@@ -12,36 +12,44 @@ export default async function PropertyDetailPage({
 }) {
   const { slug } = params;
 
-  const property = await prisma.property.findFirst({
-    where: {
-      OR: [{ slug }, { id: slug }],
-    },
-    include: {
-      organization: true,
-      user: true,
-      verificationAudits: {
-        orderBy: { lastAuditDate: 'desc' },
-        take: 1,
+  let property: any = null;
+  let similarProperties: any[] = [];
+
+  try {
+    property = await prisma.property.findFirst({
+      where: {
+        OR: [{ slug }, { id: slug }],
       },
-    },
-  });
+      include: {
+        organization: true,
+        user: true,
+        verificationAudits: {
+          orderBy: { lastAuditDate: 'desc' },
+          take: 1,
+        },
+      },
+    });
+
+    if (property) {
+      similarProperties = await prisma.property.findMany({
+        where: {
+          id: { not: property.id },
+          city: property.city,
+        },
+        take: 3,
+        include: {
+          organization: true,
+          user: true,
+        },
+      });
+    }
+  } catch (err) {
+    console.warn('Failed to load property details from DB:', err);
+  }
 
   if (!property) {
     notFound();
   }
-
-  // Similar properties
-  const similarProperties = await prisma.property.findMany({
-    where: {
-      id: { not: property.id },
-      city: property.city,
-    },
-    take: 3,
-    include: {
-      organization: true,
-      user: true,
-    },
-  });
 
   return (
     <PropertyDetailClient

@@ -6,14 +6,19 @@ import { Building2, CheckCircle2, ShieldCheck, MapPin, Award, ExternalLink } fro
 export const dynamic = 'force-dynamic';
 
 export default async function BuildersDirectoryPage() {
-  const builders = await prisma.organization.findMany({
-    where: { type: 'BUILDER_DEV' },
-    include: {
-      properties: {
-        select: { id: true, title: true, price: true, slug: true },
+  let builders: any[] = [];
+  try {
+    builders = await prisma.organization.findMany({
+      where: { type: 'BUILDER_DEV' },
+      include: {
+        properties: {
+          select: { id: true, title: true, price: true, slug: true },
+        },
       },
-    },
-  });
+    });
+  } catch (err) {
+    console.warn('Failed to load builders from DB:', err);
+  }
 
   return (
     <div className="bg-slate-50 min-h-screen py-12">
