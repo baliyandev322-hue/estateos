@@ -1,14 +1,21 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import prisma, { getEffectiveDatabaseUrl } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
+  const effectiveUrl = getEffectiveDatabaseUrl();
   let host = 'UNKNOWN';
   try {
-    const parsed = new URL(dbUrl);
+    const parsed = new URL(effectiveUrl);
     host = parsed.host;
+  } catch (e) {}
+
+  let rawEnvHost = 'NOT_SET';
+  try {
+    if (process.env.DATABASE_URL) {
+      rawEnvHost = new URL(process.env.DATABASE_URL).host;
+    }
   } catch (e) {}
 
   try {
@@ -26,6 +33,7 @@ export async function GET() {
     return NextResponse.json({
       status: 'CONNECTED',
       host,
+      rawEnvHost,
       propertiesCount,
       usersCount,
       orgsCount,
@@ -35,6 +43,7 @@ export async function GET() {
     return NextResponse.json({
       status: 'ERROR',
       host,
+      rawEnvHost,
       message: error?.message || 'Database connection error',
       code: error?.code,
     }, { status: 500 });
