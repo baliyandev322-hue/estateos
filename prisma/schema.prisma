@@ -1,0 +1,355 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          String    @default("BUYER") // "BUYER", "AGENT", "BUILDER", "ADMIN"
+  phone         String?
+  avatar        String?
+  bio           String?
+  licenseNo     String?   // RERA Agent / Broker ID
+  experienceYrs Int?      @default(0)
+  city          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  memberships   OrganizationMember[]
+  properties    Property[]           @relation("UserProperties")
+  leadsAssigned Lead[]               @relation("AssignedLeads")
+  savedItems    SavedProperty[]
+  appointments  Appointment[]
+
+  @@index([email])
+  @@index([role])
+}
+
+model Organization {
+  id             String    @id @default(cuid())
+  name           String
+  slug           String    @unique
+  type           String    @default("AGENT_AGENCY") // "AGENT_AGENCY", "BUILDER_DEV"
+  logo           String?
+  bannerImage    String?
+  reraNumber     String?
+  email          String?
+  phone          String?
+  website        String?
+  address        String?
+  city           String?
+  state          String?
+  isVerified     Boolean   @default(false)
+  description    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  members        OrganizationMember[]
+  properties     Property[]
+  leads          Lead[]
+  subscriptions  Subscription[]
+  payments       Payment[]
+
+  @@index([slug])
+  @@index([type])
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  orgId          String
+  userId         String
+  role           String       @default("MEMBER") // "OWNER", "ADMIN", "AGENT", "MEMBER"
+  createdAt      DateTime     @default(now())
+
+  organization   Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orgId, userId])
+  @@index([orgId])
+  @@index([userId])
+}
+
+model Property {
+  id                  String   @id @default(cuid())
+  slug                String   @unique
+  title               String
+  description         String
+  propertyType        String   // "APARTMENT", "VILLA", "PENTHOUSE", "PLOT", "COMMERCIAL", "STUDIO"
+  listingType         String   // "SALE", "RENT"
+  price               Float
+  pricePerSqFt        Float?
+  maintenanceFees     Float?
+  bedrooms            Int?     @default(0)
+  bathrooms           Int?     @default(0)
+  balconies           Int?     @default(0)
+  carpetAreaSqFt      Float
+  superBuiltUpSqFt    Float?
+  furnishing          String   @default("SEMI_FURNISHED") // "UNFURNISHED", "SEMI_FURNISHED", "FULLY_FURNISHED"
+  parkingSpaces       Int?     @default(1)
+  floorNo             Int?     @default(1)
+  totalFloors         Int?     @default(4)
+  facing              String?  @default("EAST")
+  possessionStatus    String   @default("READY_TO_MOVE") // "READY_TO_MOVE", "UNDER_CONSTRUCTION", "NEW_LAUNCH"
+  possessionDate      DateTime?
+  ageOfProperty       Int?     @default(0)
+  
+  address             String
+  localityName        String
+  city                String
+  state               String
+  pinCode             String
+  latitude            Float?
+  longitude           Float?
+  
+  reraId              String?
+  truthScore          Int      @default(85) // 0 - 100
+  truthScoreDetails   String?  // JSON string breakdown
+  isVerified          Boolean  @default(false)
+  isFeatured          Boolean  @default(false)
+  isPromoted          Boolean  @default(false)
+  promotedUntil       DateTime?
+  status              String   @default("AVAILABLE") // "AVAILABLE", "UNDER_OFFER", "SOLD", "RENTED"
+  
+  amenities           String?  // JSON string array
+  images              String?  // JSON string array of URLs
+  floorPlans          String?  // JSON string array of URLs
+  videoUrl            String?
+  virtualTourUrl      String?
+
+  viewsCount          Int      @default(0)
+  enquiriesCount      Int      @default(0)
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  userId              String?
+  user                User?         @relation("UserProperties", fields: [userId], references: [id])
+  orgId               String?
+  organization        Organization? @relation(fields: [orgId], references: [id])
+
+  leads               Lead[]
+  appointments        Appointment[]
+  savedBy             SavedProperty[]
+  verificationAudits  TruthScoreAudit[]
+
+  @@index([city])
+  @@index([listingType])
+  @@index([propertyType])
+  @@index([price])
+  @@index([truthScore])
+  @@index([isVerified])
+  @@index([isFeatured])
+  @@index([orgId])
+  @@index([localityName])
+}
+
+model Locality {
+  id                  String   @id @default(cuid())
+  slug                String   @unique
+  name                String
+  city                String
+  state               String
+  pinCode             String
+  overview            String
+  avgPricePerSqFt     Float
+  rentalYieldPercent  Float
+  priceTrend1Yr       Float    // percentage change e.g. +8.5
+  priceTrend3Yr       Float    // percentage change e.g. +24.0
+  safetyRating        Float    @default(4.5) // out of 5
+  connectivityRating  Float    @default(4.6)
+  greenCoverRating    Float    @default(4.2)
+  schoolsCount        Int      @default(12)
+  hospitalsCount      Int      @default(6)
+  mallsCount          Int      @default(4)
+  metroDistanceKm     Float    @default(1.5)
+  airportDistanceKm   Float    @default(22.0)
+  latitude            Float
+  longitude           Float
+  imageUrl            String?
+  featured            Boolean  @default(false)
+  createdAt           DateTime @default(now())
+
+  @@index([city])
+  @@index([slug])
+}
+
+model Lead {
+  id              String       @id @default(cuid())
+  orgId           String?
+  propertyId      String?
+  name            String
+  email           String
+  phone           String
+  message         String?
+  status          String       @default("NEW") // "NEW", "CONTACTED", "QUALIFIED", "SITE_VISIT_SCHEDULED", "NEGOTIATING", "CONVERTED", "LOST"
+  source          String       @default("PORTAL") // "PORTAL", "WHATSAPP", "DIRECT", "CAMPAIGN"
+  budgetMin       Float?
+  budgetMax       Float?
+  notes           String?
+  assignedToId    String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  property        Property?    @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  organization    Organization? @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  assignedTo      User?        @relation("AssignedLeads", fields: [assignedToId], references: [id])
+
+  @@index([orgId])
+  @@index([status])
+  @@index([assignedToId])
+}
+
+model Appointment {
+  id            String    @id @default(cuid())
+  propertyId    String
+  userId        String?
+  visitorName   String
+  visitorPhone  String
+  visitorEmail  String?
+  scheduledDate DateTime
+  timeSlot      String
+  status        String    @default("PENDING") // "PENDING", "CONFIRMED", "COMPLETED", "CANCELLED"
+  notes         String?
+  createdAt     DateTime  @default(now())
+
+  property      Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user          User?     @relation(fields: [userId], references: [id])
+
+  @@index([propertyId])
+  @@index([userId])
+}
+
+model TruthScoreAudit {
+  id                        String    @id @default(cuid())
+  propertyId                String
+  identityVerified          Boolean   @default(false)
+  reraVerified              Boolean   @default(false)
+  ownershipVerified         Boolean   @default(false)
+  physicalVerification      Boolean   @default(false)
+  documentCompletenessScore Int       @default(80) // 0-100
+  priceBenchmarkingScore    Int       @default(85) // 0-100
+  lastAuditDate             DateTime  @default(now())
+  auditedBy                 String    @default("EstateOS Verification Desk")
+  auditNotes                String?
+  disclaimer                String?
+
+  property                  Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId])
+}
+
+model Subscription {
+  id                     String       @id @default(cuid())
+  orgId                  String
+  plan                   String       @default("FREE") // "FREE", "STARTER", "PROFESSIONAL", "BUSINESS", "ENTERPRISE"
+  billingCycle           String       @default("MONTHLY") // "MONTHLY", "YEARLY"
+  amount                 Float        @default(0)
+  status                 String       @default("ACTIVE") // "ACTIVE", "PAST_DUE", "CANCELLED"
+  currentPeriodStart     DateTime     @default(now())
+  currentPeriodEnd       DateTime
+  listingsLimit          Int          @default(5)
+  leadsLimit             Int          @default(25)
+  aiFeaturesEnabled      Boolean      @default(false)
+  teamSeatsLimit         Int          @default(1)
+  razorpaySubscriptionId String?
+  createdAt              DateTime     @default(now())
+  updatedAt              DateTime     @updatedAt
+
+  organization           Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+}
+
+model Payment {
+  id                String       @id @default(cuid())
+  orgId             String
+  amount            Float
+  currency          String       @default("INR")
+  status            String       @default("SUCCESS") // "SUCCESS", "FAILED", "PENDING"
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  invoiceNo         String       @unique
+  planName          String
+  receiptUrl        String?
+  createdAt         DateTime     @default(now())
+
+  organization      Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
+
+  @@index([orgId])
+  @@index([razorpayPaymentId])
+}
+
+model Article {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  excerpt         String
+  content         String
+  category        String    // "Buying Guides", "Home Loans", "Real Estate News", "City Guides", "Investment", "RERA & Legal"
+  tags            String?   // comma-separated
+  authorName      String    @default("EstateOS Editorial Team")
+  authorAvatar    String?
+  coverImage      String
+  isPublished     Boolean   @default(true)
+  readTimeMinutes Int       @default(5)
+  viewsCount      Int       @default(0)
+  publishedAt     DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([category])
+}
+
+model SavedProperty {
+  id         String   @id @default(cuid())
+  userId     String
+  propertyId String
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+}
+
+model PlatformSetting {
+  id            String   @id @default("default")
+  platformName  String   @default("EstateOS")
+  supportEmail  String   @default("support@estateos.com")
+  supportPhone  String   @default("+91 1800 200 4567")
+  adsenseActive Boolean  @default(true)
+  adsenseClientId String? @default("ca-pub-XXXXXXXXXXXX")
+  razorpayKeyId String?  @default("rzp_test_placeholder")
+  updatedAt     DateTime @updatedAt
+}
+
+model LoanLead {
+  id               String   @id @default(cuid())
+  applicantName    String
+  phone            String
+  email            String?
+  monthlyIncome    Float
+  loanAmount       Float
+  preferredBank    String   @default("HDFC Bank") // "HDFC Bank", "State Bank of India", "ICICI Bank", "Axis Bank"
+  employmentType   String   @default("SALARIED")  // "SALARIED", "SELF_EMPLOYED_BUSINESS", "PROFESSIONAL"
+  cibilScoreRange  String   @default("750+")      // "750+", "700-750", "650-700", "NEW_TO_CREDIT"
+  propertyTitle    String?
+  propertyPrice    Float?
+  city             String?
+  status           String   @default("SUBMITTED") // "SUBMITTED", "DOCS_COLLECTED", "BANK_SANCTIONED", "DISBURSED", "REJECTED"
+  commissionRate   Float    @default(0.006)       // 0.6% standard commission
+  commissionEarned Float?   @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([phone])
+  @@index([status])
+}
