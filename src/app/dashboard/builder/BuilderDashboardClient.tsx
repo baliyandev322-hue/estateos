@@ -232,6 +232,16 @@ export default function BuilderDashboardClient({
           >
             Site Walkthroughs ({appointments.length})
           </button>
+          <button
+            onClick={() => setActiveTab('settings')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              activeTab === 'settings'
+                ? 'bg-forest-900 text-white shadow-sm'
+                : 'bg-white text-charcoal-700 border border-charcoal-200'
+            }`}
+          >
+            Developer Profile &amp; Escrow Settings
+          </button>
         </div>
 
         {/* TAB 1: INVENTORY */}
