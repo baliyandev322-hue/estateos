@@ -1,19 +1,45 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Phone, Mail, MapPin, ShieldCheck, Send, CheckCircle2 } from 'lucide-react';
+import { Phone, Mail, MapPin, ShieldCheck, Send, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
 
 export default function ContactPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [subject, setSubject] = useState('General Inquiry');
+  const [subject, setSubject] = useState('General Marketplace Inquiry');
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [ticketId, setTicketId] = useState('');
+  const [whatsappUrl, setWhatsappUrl] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, subject, message }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to submit inquiry');
+      }
+
+      setTicketId(data.ticketId);
+      setWhatsappUrl(data.whatsappAlertUrl || '');
+      setSubmitted(true);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,17 +92,39 @@ export default function ContactPage() {
           {/* Contact Form */}
           <div className="lg:col-span-7 bg-white rounded-3xl border border-charcoal-200 p-8 shadow-sm">
             {submitted ? (
-              <div className="p-8 text-center space-y-3">
-                <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-6 h-6" />
+              <div className="p-8 text-center space-y-4">
+                <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                  <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="font-serif font-bold text-xl text-forest-950">Message Dispatched</h3>
-                <p className="text-xs text-charcoal-600 max-w-sm mx-auto">
-                  Thank you, {name}. Your ticket has been assigned to our concierge team. You will receive an email confirmation shortly.
+                <h3 className="font-serif font-bold text-2xl text-forest-950">Inquiry Dispatched &amp; Logged</h3>
+                <div className="inline-block bg-slate-100 border border-slate-200 px-4 py-2 rounded-xl text-xs font-mono font-bold text-forest-900">
+                  Tracking Ticket ID: <span className="text-gold-accent font-black">{ticketId}</span>
+                </div>
+                <p className="text-xs text-charcoal-600 max-w-sm mx-auto leading-relaxed">
+                  Thank you, <strong>{name}</strong>. Your request has been assigned to our concierge compliance team. We have registered your contact details ({phone}) for prompt follow-up.
                 </p>
+                {whatsappUrl && (
+                  <div className="pt-3">
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition-all"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Connect via WhatsApp Concierge</span>
+                    </a>
+                  </div>
+                )}
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-medium">
+                    {errorMsg}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
@@ -85,9 +133,10 @@ export default function ContactPage() {
                     <input
                       type="text"
                       required
+                      placeholder="e.g. Rahul Sharma"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5"
+                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
                     />
                   </div>
                   <div>
@@ -97,9 +146,10 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
+                      placeholder="e.g. 9876543210"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5"
+                      className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
                     />
                   </div>
                 </div>
@@ -111,9 +161,10 @@ export default function ContactPage() {
                   <input
                     type="email"
                     required
+                    placeholder="e.g. rahul@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5"
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
                   />
                 </div>
 
@@ -124,7 +175,7 @@ export default function ContactPage() {
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5"
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
                   >
                     <option>General Marketplace Inquiry</option>
                     <option>Agent / Broker SaaS Partnership</option>
@@ -141,18 +192,29 @@ export default function ContactPage() {
                   <textarea
                     rows={4}
                     required
+                    placeholder="Describe your inquiry, project details or grievance..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 resize-none"
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 resize-none outline-none focus:border-forest-700"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 bg-forest-900 hover:bg-forest-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                  disabled={loading}
+                  className="w-full py-3 bg-forest-900 hover:bg-forest-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <Send className="w-4 h-4 text-gold-accent" />
-                  <span>Submit Inquiry</span>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-gold-accent" />
+                      <span>Logging Inquiry...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 text-gold-accent" />
+                      <span>Submit Inquiry</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}

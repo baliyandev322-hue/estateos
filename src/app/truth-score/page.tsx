@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import TruthScoreDownloadTrigger from '@/components/TruthScoreDownloadTrigger';
+import ReraSearchWidget from '@/components/ReraSearchWidget';
 
 export const metadata = {
   title: 'Property Truth Score™ Protocol — EstateOS Verification Standards',
@@ -84,6 +85,11 @@ export default function TruthScorePage() {
           <p className="mt-4 text-sm sm:text-base text-charcoal-600 leading-relaxed font-normal">
             For decades, Indian property seekers have struggled with inaccurate photos, hidden litigation, phantom listings, and arbitrary pricing. EstateOS introduces an automated, regulatory-grade score that brings total transparency to every square foot.
           </p>
+        </div>
+
+        {/* Live Search Widget */}
+        <div className="max-w-4xl mx-auto">
+          <ReraSearchWidget />
         </div>
 
         {/* Live Score Demo Card */}
