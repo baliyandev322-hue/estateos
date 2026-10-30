@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, RefreshCw, Clock, CreditCard, Mail, HelpCircle } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export const metadata = {
   title: 'Cancellation & Refund Policy — EstateOS',
@@ -109,11 +110,11 @@ export default function CancellationRefundPage() {
               To file a cancellation or claim a refund under our 7-day guarantee, please reach out to our central settlement desk with your order receipt details:
             </p>
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-2 font-mono text-xs">
-              <p><strong>Merchant Legal Name:</strong> EstateOS Technologies Pvt. Ltd.</p>
-              <p><strong>Registered Address:</strong> Level 14, Horizon Cyber Tower, Golf Course Extension Road, Sector 54, Gurugram, Haryana - 122018, India</p>
-              <p><strong>Billing &amp; Refunds Email:</strong> billing@estateos.in</p>
-              <p><strong>Central Compliance Desk:</strong> grievance@estateos.in</p>
-              <p><strong>Customer Concierge Toll-Free:</strong> 1800 200 4567 (Mon - Sat, 9:00 AM - 7:00 PM IST)</p>
+              <p><strong>Merchant Legal Name:</strong> {SITE_CONTACT.companyName}</p>
+              <p><strong>Registered Address:</strong> {SITE_CONTACT.address.fullFormatted}</p>
+              <p><strong>Billing &amp; Refunds Email:</strong> {SITE_CONTACT.supportEmail}</p>
+              <p><strong>Central Compliance Desk:</strong> {SITE_CONTACT.grievanceEmail}</p>
+              <p><strong>Customer Concierge Toll-Free:</strong> {SITE_CONTACT.tollFree} ({SITE_CONTACT.operatingHours})</p>
             </div>
           </section>
         </div>

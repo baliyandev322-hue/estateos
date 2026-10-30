@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
+import { SITE_CONTACT } from '@/config/siteContact';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -79,13 +80,13 @@ export default function RootLayout({
               description: 'India Sovereign RERA-Audited PropTech Marketplace with Property Truth Score™',
               address: {
                 '@type': 'PostalAddress',
-                streetAddress: 'Level 14, Horizon Cyber Tower, Golf Course Extension Road, Sector 54',
-                addressLocality: 'Gurugram',
-                addressRegion: 'Haryana',
-                postalCode: '122018',
+                streetAddress: `${SITE_CONTACT.address.line1}, ${SITE_CONTACT.address.line2}`,
+                addressLocality: SITE_CONTACT.address.city,
+                addressRegion: SITE_CONTACT.address.state,
+                postalCode: SITE_CONTACT.address.pincode,
                 addressCountry: 'IN',
               },
-              telephone: '+91-1800-200-4567',
+              telephone: SITE_CONTACT.tollFree,
               priceRange: '₹₹₹₹',
             }),
           }}

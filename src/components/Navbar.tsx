@@ -18,6 +18,7 @@ import {
   Layers,
   Search,
 } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -75,7 +76,7 @@ export default function Navbar() {
           <span className="opacity-40">•</span>
           <Link href="/builders" className="hover:text-gold-light transition-colors">Builders Showcase</Link>
           <span className="opacity-40">•</span>
-          <Link href="/contact" className="hover:text-gold-light transition-colors">Toll-Free: 1800-200-4567</Link>
+          <Link href="/contact" className="hover:text-gold-light transition-colors">Help: {SITE_CONTACT.tollFree}</Link>
         </div>
       </div>
 

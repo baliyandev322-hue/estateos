@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Heart, Mail, Phone, MapPin, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export default function Footer() {
   return (
@@ -20,6 +21,35 @@ export default function Footer() {
             <p className="text-forest-200 text-sm leading-relaxed max-w-md">
               EstateOS is India&apos;s sovereign proptech marketplace and multi-tenant SaaS ecosystem. Combining algorithmic Property Truth Scores™, locality micro-intelligence, and enterprise CRM for premier consultants and developers.
             </p>
+            
+            {/* Real Corporate Office & Support Badge */}
+            <div className="space-y-2.5 pt-2 text-xs text-forest-300">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-gold-accent shrink-0 mt-0.5" />
+                <span className="leading-snug">{SITE_CONTACT.address.fullFormatted}</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1">
+                <a
+                  href={`tel:${SITE_CONTACT.tollFree.replace(/\s+/g, '')}`}
+                  className="flex items-center gap-1.5 text-gold-light hover:underline"
+                >
+                  <Phone className="w-3.5 h-3.5 text-gold-accent" />
+                  <span>{SITE_CONTACT.tollFree}</span>
+                </a>
+                <a
+                  href={`mailto:${SITE_CONTACT.supportEmail}`}
+                  className="flex items-center gap-1.5 text-forest-200 hover:text-white hover:underline"
+                >
+                  <Mail className="w-3.5 h-3.5 text-gold-accent" />
+                  <span>{SITE_CONTACT.supportEmail}</span>
+                </a>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] text-forest-400">
+                <Clock className="w-3.5 h-3.5 text-forest-400" />
+                <span>{SITE_CONTACT.operatingHours}</span>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 pt-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-forest-900/80 border border-gold-accent/30 text-xs font-semibold text-gold-accent">
                 <ShieldCheck className="w-4 h-4" />

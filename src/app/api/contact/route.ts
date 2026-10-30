@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { contactRegistry } from '@/lib/contactRegistry';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,7 +45,8 @@ export async function POST(request: Request) {
     // Speed-to-lead concierge WhatsApp link
     const cleanPhone = phone.replace(/\D/g, '');
     const alertMsg = `🛎️ *EstateOS Concierge Alert*\n\nTicket: *${entry.ticketId}*\nFrom: *${name}*\nEmail: ${email}\nPhone: ${phone}\nTopic: *${subject || 'General'}*\nMessage: "${message}"`;
-    const whatsappAlertUrl = `https://wa.me/919876543210?text=${encodeURIComponent(alertMsg)}`;
+    const conciergeWhatsApp = SITE_CONTACT.whatsappNumber.replace(/\D/g, '');
+    const whatsappAlertUrl = `https://wa.me/${conciergeWhatsApp}?text=${encodeURIComponent(alertMsg)}`;
 
     return NextResponse.json({
       success: true,

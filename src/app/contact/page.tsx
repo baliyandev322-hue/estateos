@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Phone, Mail, MapPin, ShieldCheck, Send, CheckCircle2, MessageSquare, Loader2 } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export default function ContactPage() {
   const [name, setName] = useState('');
@@ -62,24 +63,28 @@ export default function ContactPage() {
                 <span className="text-xs font-bold uppercase tracking-widest text-gold-accent">
                   Headquarters
                 </span>
-                <h3 className="font-serif text-xl font-bold mt-1">EstateOS Technologies Pvt. Ltd.</h3>
+                <h3 className="font-serif text-xl font-bold mt-1">{SITE_CONTACT.companyName}</h3>
                 <p className="text-xs text-forest-200 mt-2 leading-relaxed">
-                  Level 14, Horizon Cyber Tower, Golf Course Extension Road, Sector 54, Gurugram, Haryana - 122018, India
+                  {SITE_CONTACT.address.fullFormatted}
                 </p>
               </div>
 
               <div className="space-y-3 text-xs text-forest-200 border-t border-forest-800 pt-6">
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-gold-accent" />
-                  <span>Toll-Free: 1800 200 4567 (Mon-Sat, 9AM-7PM IST)</span>
+                  <Phone className="w-4 h-4 text-gold-accent shrink-0" />
+                  <a href={`tel:${SITE_CONTACT.tollFree.replace(/\s+/g, '')}`} className="hover:text-gold-light transition-colors">
+                    {SITE_CONTACT.tollFree} ({SITE_CONTACT.operatingHours})
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-gold-accent" />
-                  <span>grievance@estateos.in • compliance@estateos.in</span>
+                  <Mail className="w-4 h-4 text-gold-accent shrink-0" />
+                  <a href={`mailto:${SITE_CONTACT.supportEmail}`} className="hover:text-gold-light transition-colors">
+                    {SITE_CONTACT.supportEmail} • {SITE_CONTACT.complianceEmail}
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
-                  <ShieldCheck className="w-4 h-4 text-gold-accent" />
-                  <span>RERA Public Nodal Grievance Officer: Adv. K. Aggarwal</span>
+                  <ShieldCheck className="w-4 h-4 text-gold-accent shrink-0" />
+                  <span>{SITE_CONTACT.grievanceOfficer}</span>
                 </div>
               </div>
             </div>
