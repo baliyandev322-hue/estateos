@@ -91,6 +91,12 @@ export default function RootLayout({
             }),
           }}
         />
+        {/* Google AdSense Site Verification & Crawler Script */}
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-7890123456789012'}`}
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="flex flex-col min-h-screen bg-slate-50 text-charcoal-900 selection:bg-gold-200 selection:text-forest-950">
         <Navbar />
