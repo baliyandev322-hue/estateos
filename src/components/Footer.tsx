@@ -71,6 +71,7 @@ export default function Footer() {
                 <li><Link href="/contact" className="hover:text-gold-light transition-colors">Contact &amp; Grievance</Link></li>
                 <li><Link href="/privacy" className="hover:text-gold-light transition-colors">Privacy Policy</Link></li>
                 <li><Link href="/terms" className="hover:text-gold-light transition-colors">Terms of Service</Link></li>
+                <li><Link href="/cancellation-refund" className="hover:text-gold-light transition-colors">Cancellation &amp; Refund Policy</Link></li>
                 <li><Link href="/disclaimer" className="hover:text-gold-light transition-colors">Legal Disclaimer</Link></li>
               </ul>
             </div>
