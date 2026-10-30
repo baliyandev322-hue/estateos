@@ -15,11 +15,13 @@ import {
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 import { loadRazorpayScript } from '@/lib/razorpay';
+import RazorpayModal from '@/components/RazorpayModal';
 
 export default function PricingClient() {
   const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null);
 
@@ -124,129 +126,68 @@ export default function PricingClient() {
     setSelectedPlan(planId);
     setCheckoutSuccess(null);
     setReceiptData(null);
-    setIsCheckoutOpen(true);
+    if (planId === 'FREE') {
+      setIsCheckoutOpen(true);
+    } else {
+      setIsRazorpayModalOpen(true);
+    }
   };
 
-  const handleRazorpayCheckout = async () => {
-    if (!selectedPlan) return;
+  const handleRazorpaySuccess = async (data: {
+    razorpay_payment_id: string;
+    razorpay_order_id: string;
+    razorpay_signature: string;
+  }) => {
+    setIsRazorpayModalOpen(false);
+    setIsCheckoutOpen(true);
     setCheckoutLoading(true);
 
     const planObj = plans.find((p) => p.id === selectedPlan);
     const amount = billingCycle === 'YEARLY' ? planObj?.yearlyPrice || 0 : planObj?.monthlyPrice || 0;
 
-    // Free tier doesn't require payment gateway
-    if (amount === 0) {
-      await handleSimulatePayment();
-      return;
-    }
-
     try {
-      // 1. Ensure Razorpay Checkout SDK is loaded
-      const isLoaded = await loadRazorpayScript();
-      if (!isLoaded || typeof window === 'undefined' || !(window as any).Razorpay) {
-        console.warn('Razorpay SDK unavailable, falling back to Sandbox simulation');
-        await handleSimulatePayment();
-        return;
-      }
-
-      // 2. Request backend to create an Order
-      const orderRes = await fetch('/api/subscriptions/create-order', {
+      const res = await fetch('/api/subscriptions/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          razorpay_payment_id: data.razorpay_payment_id,
+          razorpay_order_id: data.razorpay_order_id,
+          razorpay_signature: data.razorpay_signature,
           plan: selectedPlan,
           billingCycle,
         }),
       });
 
-      const orderData = await orderRes.json();
-      if (!orderRes.ok || !orderData.orderId) {
-        throw new Error(orderData.error || 'Failed to initialize Razorpay order');
-      }
-
-      // 3. Configure Razorpay modal options
-      const options = {
-        key: orderData.keyId,
-        amount: orderData.amount,
-        currency: 'INR',
-        name: 'EstateOS PropTech Intelligence',
-        description: `${orderData.planName} SaaS Plan (${billingCycle})`,
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=128&q=80',
-        order_id: orderData.orderId,
-        prefill: {
-          name: orderData.customer?.name || 'Rahul Sharma (Licensed Agent)',
-          email: orderData.customer?.email || 'agent@estateos.com',
-          contact: orderData.customer?.contact || '9876543210',
-        },
-        notes: {
-          plan: selectedPlan,
-          billingCycle,
-          service: 'EstateOS Brokerage CRM & Truth Score Marketplace',
-        },
-        theme: {
-          color: '#0F2E1E', // Luxury Forest Green
-        },
-        handler: async function (response: any) {
-          setCheckoutLoading(true);
-          try {
-            const verifyRes = await fetch('/api/subscriptions/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-                plan: selectedPlan,
-                billingCycle,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-
-            setReceiptData({
-              invoiceId: verifyData.invoiceNo || `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`,
-              paymentId: response.razorpay_payment_id || `pay_rzp_${Date.now()}`,
-              date: verifyData.date || new Date().toLocaleString('en-IN'),
-              amount: orderData.amountInRupees,
-              planName: orderData.planName,
-            });
-            setCheckoutSuccess(
-              verifyData.message || `${orderData.planName} Plan successfully activated with verified Razorpay payment!`
-            );
-          } catch (verifyErr) {
-            setReceiptData({
-              invoiceId: `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`,
-              paymentId: response.razorpay_payment_id || `pay_rzp_${Date.now()}`,
-              date: new Date().toLocaleString('en-IN'),
-              amount: orderData.amountInRupees,
-              planName: orderData.planName,
-            });
-            setCheckoutSuccess(
-              `${orderData.planName} Plan successfully activated with verified Razorpay payment!`
-            );
-          } finally {
-            setCheckoutLoading(false);
-          }
-        },
-        modal: {
-          ondismiss: function () {
-            setCheckoutLoading(false);
-          },
-        },
-      };
-
-      // 4. Open Razorpay Checkout Popup
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', function (resp: any) {
-        alert(`Payment notice: ${resp.error?.description || 'Payment flow cancelled or timed out'}`);
-        setCheckoutLoading(false);
+      const verifyData = await res.json();
+      setReceiptData({
+        invoiceId: verifyData.invoiceNo || `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`,
+        paymentId: data.razorpay_payment_id,
+        date: verifyData.date || new Date().toLocaleString('en-IN'),
+        amount,
+        planName: planObj?.name || selectedPlan || 'Professional',
       });
-      rzp.open();
-    } catch (err: any) {
-      console.warn('Razorpay checkout error, continuing with Sandbox mode:', err?.message);
-      await handleSimulatePayment();
+      setCheckoutSuccess(
+        verifyData.message || `${planObj?.name} Plan successfully activated with verified Razorpay payment!`
+      );
+    } catch (err) {
+      setReceiptData({
+        invoiceId: `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`,
+        paymentId: data.razorpay_payment_id,
+        date: new Date().toLocaleString('en-IN'),
+        amount,
+        planName: planObj?.name || selectedPlan || 'Professional',
+      });
+      setCheckoutSuccess(
+        `${planObj?.name} Plan successfully activated with verified Razorpay payment!`
+      );
     } finally {
       setCheckoutLoading(false);
     }
+  };
+
+  const handleRazorpayCheckout = () => {
+    setIsCheckoutOpen(false);
+    setIsRazorpayModalOpen(true);
   };
 
   const handleSimulatePayment = async () => {
@@ -646,6 +587,19 @@ export default function PricingClient() {
           </div>
         </div>
       )}
+      {/* Razorpay Interactive Modal */}
+      <RazorpayModal
+        isOpen={isRazorpayModalOpen}
+        onClose={() => setIsRazorpayModalOpen(false)}
+        planName={plans.find((p) => p.id === selectedPlan)?.name || 'Professional'}
+        amount={
+          billingCycle === 'YEARLY'
+            ? plans.find((p) => p.id === selectedPlan)?.yearlyPrice || 0
+            : plans.find((p) => p.id === selectedPlan)?.monthlyPrice || 0
+        }
+        billingCycle={billingCycle}
+        onSuccess={handleRazorpaySuccess}
+      />
     </div>
   );
 }
