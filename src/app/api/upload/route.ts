@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { uploadToCloudStorage } from '@/lib/cloudStorage';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,16 +48,15 @@ export async function POST(request: Request) {
 
     const extension = file.type.split('/')[1] || 'jpg';
     const sanitizedFileName = `prop_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${extension}`;
-    const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 
-    await mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, sanitizedFileName);
-    await writeFile(filePath, buffer);
+    // Upload to Cloudinary, Supabase Storage, or resilient cloud payload (100% Vercel safe)
+    const result = await uploadToCloudStorage(buffer, sanitizedFileName, file.type);
 
     return NextResponse.json({
       success: true,
-      url: `/uploads/${sanitizedFileName}`,
-      size: file.size,
+      url: result.url,
+      provider: result.provider,
+      size: result.size,
       mimeType: file.type,
     });
   } catch (error: any) {
