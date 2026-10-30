@@ -4,6 +4,13 @@ import prisma from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
+  const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
+  let host = 'UNKNOWN';
+  try {
+    const parsed = new URL(dbUrl);
+    host = parsed.host;
+  } catch (e) {}
+
   try {
     const [propertiesCount, usersCount, orgsCount] = await Promise.all([
       prisma.property.count(),
@@ -18,7 +25,7 @@ export async function GET() {
 
     return NextResponse.json({
       status: 'CONNECTED',
-      database: 'Supabase PostgreSQL',
+      host,
       propertiesCount,
       usersCount,
       orgsCount,
@@ -27,6 +34,7 @@ export async function GET() {
   } catch (error: any) {
     return NextResponse.json({
       status: 'ERROR',
+      host,
       message: error?.message || 'Database connection error',
       code: error?.code,
     }, { status: 500 });

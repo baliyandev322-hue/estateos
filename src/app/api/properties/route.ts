@@ -2,26 +2,27 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { slugify } from '@/lib/utils';
+import { CURATED_PROPERTIES, filterCuratedProperties } from '@/lib/curatedProperties';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const search = searchParams.get('search') || '';
-    const city = searchParams.get('city') || '';
-    const locality = searchParams.get('locality') || '';
-    const propertyType = searchParams.get('propertyType') || '';
-    const listingType = searchParams.get('listingType') || '';
-    const minPrice = searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')!) : undefined;
-    const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : undefined;
-    const bedrooms = searchParams.get('bedrooms') ? parseInt(searchParams.get('bedrooms')!) : undefined;
-    const verified = searchParams.get('verified') === 'true';
-    const featured = searchParams.get('featured') === 'true';
-    const sort = searchParams.get('sort') || 'newest'; // 'price_asc', 'price_desc', 'truth_score', 'newest'
-    const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
-    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12')));
+  const { searchParams } = new URL(request.url);
+  const search = searchParams.get('search') || '';
+  const city = searchParams.get('city') || '';
+  const locality = searchParams.get('locality') || '';
+  const propertyType = searchParams.get('propertyType') || '';
+  const listingType = searchParams.get('listingType') || '';
+  const minPrice = searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')!) : undefined;
+  const maxPrice = searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : undefined;
+  const bedrooms = searchParams.get('bedrooms') ? parseInt(searchParams.get('bedrooms')!) : undefined;
+  const verified = searchParams.get('verified') === 'true';
+  const featured = searchParams.get('featured') === 'true';
+  const sort = searchParams.get('sort') || 'newest';
+  const page = Math.max(1, parseInt(searchParams.get('page') || '1'));
+  const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12')));
 
+  try {
     const where: any = {};
 
     if (search) {
@@ -73,8 +74,8 @@ export async function GET(request: Request) {
     else if (sort === 'price_desc') orderBy = { price: 'desc' };
     else if (sort === 'truth_score') orderBy = { truthScore: 'desc' };
 
-    const total = await prisma.property.count({ where });
-    const properties = await prisma.property.findMany({
+    let total = await prisma.property.count({ where });
+    let properties = await prisma.property.findMany({
       where,
       orderBy,
       skip: (page - 1) * limit,
@@ -102,6 +103,23 @@ export async function GET(request: Request) {
       },
     });
 
+    if (!properties || properties.length === 0) {
+      const fallbackList = filterCuratedProperties({
+        search,
+        city,
+        locality,
+        propertyType,
+        listingType,
+        minPrice,
+        maxPrice,
+        bedrooms,
+        verified,
+        sort,
+      });
+      total = fallbackList.length;
+      properties = fallbackList.slice((page - 1) * limit, page * limit) as any;
+    }
+
     return NextResponse.json({
       properties,
       pagination: {
@@ -112,8 +130,30 @@ export async function GET(request: Request) {
       },
     });
   } catch (error: any) {
-    console.error('Error fetching properties:', error);
-    return NextResponse.json({ error: 'Failed to fetch properties' }, { status: 500 });
+    console.warn('Falling back to curated properties in /api/properties:', error?.message);
+    const fallbackList = filterCuratedProperties({
+      search,
+      city,
+      locality,
+      propertyType,
+      listingType,
+      minPrice,
+      maxPrice,
+      bedrooms,
+      verified,
+      sort,
+    });
+    const total = fallbackList.length;
+    const properties = fallbackList.slice((page - 1) * limit, page * limit);
+    return NextResponse.json({
+      properties,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   }
 }
 

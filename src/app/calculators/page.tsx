@@ -145,14 +145,79 @@ export default function CalculatorsPage() {
           {activeTab === 'emi' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-7 space-y-6">
-                <h2 className="font-serif font-bold text-xl text-forest-950">
-                  Home Loan EMI Calculator
-                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <h2 className="font-serif font-bold text-xl text-forest-950">
+                    Home Loan EMI Calculator
+                  </h2>
+                  <span className="text-[11px] font-bold text-forest-700 bg-forest-100 px-2.5 py-1 rounded-full">
+                    Live Reactive Engine
+                  </span>
+                </div>
 
+                {/* Quick Presets */}
                 <div>
-                  <div className="flex justify-between text-xs font-bold text-charcoal-700 mb-2">
-                    <span>Loan Amount (₹)</span>
-                    <span className="text-forest-900">{formatCurrencyINR(emiLoanAmount)}</span>
+                  <span className="text-[11px] font-bold text-charcoal-500 uppercase tracking-wider block mb-2">
+                    Quick Benchmark Presets:
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { label: '₹30L @ 8.5% (20y)', amount: 3000000, rate: 8.5, tenure: 20 },
+                      { label: '₹50L @ 8.5% (20y)', amount: 5000000, rate: 8.5, tenure: 20 },
+                      { label: '₹75L @ 8.4% (25y)', amount: 7500000, rate: 8.4, tenure: 25 },
+                      { label: '₹1 Cr @ 8.35% (20y)', amount: 10000000, rate: 8.35, tenure: 20 },
+                      { label: '₹2 Cr @ 8.25% (25y)', amount: 20000000, rate: 8.25, tenure: 25 },
+                    ].map((preset) => {
+                      const isSelected =
+                        emiLoanAmount === preset.amount &&
+                        emiInterestRate === preset.rate &&
+                        emiTenureYrs === preset.tenure;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => {
+                            setEmiLoanAmount(preset.amount);
+                            setEmiInterestRate(preset.rate);
+                            setEmiTenureYrs(preset.tenure);
+                          }}
+                          className={`text-xs px-3 py-1.5 rounded-lg border font-semibold transition-all ${
+                            isSelected
+                              ? 'bg-forest-900 text-gold-accent border-forest-900 shadow-sm'
+                              : 'bg-white text-charcoal-700 border-charcoal-200 hover:border-forest-600 hover:text-forest-900'
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 1. Loan Amount */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-charcoal-200 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-bold text-charcoal-700">
+                    <span>Loan Amount</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEmiLoanAmount((prev) => Math.max(500000, prev - 500000))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                        title="Subtract ₹5 Lakh"
+                      >
+                        - ₹5L
+                      </button>
+                      <span className="font-serif text-base text-forest-900 font-black">
+                        {formatCurrencyINR(emiLoanAmount)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setEmiLoanAmount((prev) => Math.min(50000000, prev + 500000))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                        title="Add ₹5 Lakh"
+                      >
+                        + ₹5L
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -161,38 +226,76 @@ export default function CalculatorsPage() {
                     step="100000"
                     value={emiLoanAmount}
                     onChange={(e) => setEmiLoanAmount(Number(e.target.value))}
-                    className="w-full accent-forest-900"
+                    className="w-full accent-forest-900 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-charcoal-400 mt-1">
+                  <div className="flex justify-between text-[10px] text-charcoal-400">
                     <span>₹5 Lakh</span>
                     <span>₹5 Crore</span>
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex justify-between text-xs font-bold text-charcoal-700 mb-2">
+                {/* 2. Interest Rate */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-charcoal-200 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-bold text-charcoal-700">
                     <span>Interest Rate (% p.a.)</span>
-                    <span className="text-forest-900">{emiInterestRate}%</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEmiInterestRate((prev) => Math.max(6.5, Number((prev - 0.25).toFixed(2))))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                      >
+                        - 0.25%
+                      </button>
+                      <span className="font-serif text-base text-forest-900 font-black">
+                        {emiInterestRate}%
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setEmiInterestRate((prev) => Math.min(14.0, Number((prev + 0.25).toFixed(2))))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                      >
+                        + 0.25%
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="range"
                     min="6.5"
                     max="14.0"
-                    step="0.1"
+                    step="0.05"
                     value={emiInterestRate}
                     onChange={(e) => setEmiInterestRate(Number(e.target.value))}
-                    className="w-full accent-forest-900"
+                    className="w-full accent-forest-900 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-charcoal-400 mt-1">
-                    <span>6.5%</span>
+                  <div className="flex justify-between text-[10px] text-charcoal-400">
+                    <span>6.5% (Prime)</span>
                     <span>14.0%</span>
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex justify-between text-xs font-bold text-charcoal-700 mb-2">
-                    <span>Loan Tenure (Years)</span>
-                    <span className="text-forest-900">{emiTenureYrs} Years</span>
+                {/* 3. Tenure */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-charcoal-200 space-y-3">
+                  <div className="flex justify-between items-center text-xs font-bold text-charcoal-700">
+                    <span>Loan Tenure</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setEmiTenureYrs((prev) => Math.max(5, prev - 5))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                      >
+                        - 5 Yrs
+                      </button>
+                      <span className="font-serif text-base text-forest-900 font-black">
+                        {emiTenureYrs} Years
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setEmiTenureYrs((prev) => Math.min(30, prev + 5))}
+                        className="px-2 py-0.5 rounded bg-white border border-charcoal-300 text-charcoal-700 hover:bg-charcoal-100 text-xs font-bold"
+                      >
+                        + 5 Yrs
+                      </button>
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -201,9 +304,9 @@ export default function CalculatorsPage() {
                     step="1"
                     value={emiTenureYrs}
                     onChange={(e) => setEmiTenureYrs(Number(e.target.value))}
-                    className="w-full accent-forest-900"
+                    className="w-full accent-forest-900 cursor-pointer"
                   />
-                  <div className="flex justify-between text-[10px] text-charcoal-400 mt-1">
+                  <div className="flex justify-between text-[10px] text-charcoal-400">
                     <span>5 Yrs</span>
                     <span>30 Yrs</span>
                   </div>
@@ -214,15 +317,44 @@ export default function CalculatorsPage() {
                 </div>
               </div>
 
-              <div className="lg:col-span-5 bg-forest-950 text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between">
+              <div className="lg:col-span-5 bg-forest-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-xl">
                 <div>
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-gold-accent">
-                    Estimated Monthly EMI
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold uppercase tracking-widest text-gold-accent">
+                      Estimated Monthly EMI
+                    </span>
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-forest-800 text-emerald-300 font-mono">
+                      Reactive
+                    </span>
+                  </div>
                   <p className="font-serif text-3xl sm:text-4xl font-black text-white mt-2">
                     {formatCurrencyINR(emiMonthly)}
                     <span className="text-xs font-sans text-forest-300 font-normal"> /month</span>
                   </p>
+
+                  {/* Visual Proportion Bar */}
+                  <div className="mt-6">
+                    <div className="flex justify-between text-[11px] mb-1.5">
+                      <span className="text-emerald-300 font-semibold">
+                        Principal ({Math.round((emiLoanAmount / totalPayment) * 100)}%)
+                      </span>
+                      <span className="text-gold-accent font-semibold">
+                        Interest ({Math.round((totalInterest / totalPayment) * 100)}%)
+                      </span>
+                    </div>
+                    <div className="h-3 w-full bg-forest-800 rounded-full overflow-hidden flex">
+                      <div
+                        className="bg-emerald-500 h-full transition-all duration-300"
+                        style={{ width: `${Math.round((emiLoanAmount / totalPayment) * 100)}%` }}
+                        title="Principal"
+                      />
+                      <div
+                        className="bg-gold-accent h-full transition-all duration-300"
+                        style={{ width: `${Math.round((totalInterest / totalPayment) * 100)}%` }}
+                        title="Interest"
+                      />
+                    </div>
+                  </div>
 
                   <div className="mt-8 space-y-3 text-xs border-t border-forest-800 pt-6">
                     <div className="flex justify-between">
@@ -248,7 +380,7 @@ export default function CalculatorsPage() {
                     <span>⚡ Check Instant Bank Pre-Sanction (Lowest 8.35%)</span>
                   </button>
                   <div className="text-[10px] text-forest-400">
-                    *Calculated via reducing balance amortization. Direct tie-ups with HDFC, SBI, ICICI, Axis Bank.
+                    *Calculated via standard reducing balance amortization. Verified with HDFC, SBI, ICICI, Axis Bank.
                   </div>
                 </div>
               </div>
