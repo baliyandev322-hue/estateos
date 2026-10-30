@@ -92,3 +92,26 @@ export function isDemoDefaultUser(email: string, password: string): boolean {
   if (norm === 'buyer@estateos.com' && password === 'buyer123') return true;
   return false;
 }
+
+export const userRegistry = {
+  findByEmail(email: string): RegistryUser | undefined {
+    return IN_MEMORY_USERS.get(email.toLowerCase().trim());
+  },
+  findById(id: string): RegistryUser | undefined {
+    return Array.from(IN_MEMORY_USERS.values()).find((u) => u.id === id);
+  },
+  save(user: RegistryUser) {
+    IN_MEMORY_USERS.set(user.email.toLowerCase().trim(), user);
+  },
+  update(id: string, updates: Partial<RegistryUser> & { bio?: string; city?: string; reraNumber?: string }): RegistryUser | undefined {
+    const list = Array.from(IN_MEMORY_USERS.entries());
+    for (const [email, user] of list) {
+      if (user.id === id) {
+        const updatedUser: RegistryUser = { ...user, ...updates };
+        IN_MEMORY_USERS.set(email, updatedUser);
+        return updatedUser;
+      }
+    }
+    return undefined;
+  },
+};

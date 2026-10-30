@@ -305,28 +305,28 @@ export default function PropertySearchClient({
 
               <div className="flex items-center gap-3">
                 {/* View Mode Toggle */}
-                <div className="flex items-center bg-slate-100 p-1 rounded-lg text-xs font-bold">
+                <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold border border-charcoal-200">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
                       viewMode === 'grid'
-                        ? 'bg-white text-forest-900 shadow-sm'
-                        : 'text-charcoal-500 hover:text-forest-900'
+                        ? 'bg-forest-900 text-white shadow-sm'
+                        : 'text-charcoal-600 hover:text-forest-900'
                     }`}
                   >
-                    <LayoutGrid className="w-3.5 h-3.5" />
-                    <span>Grid</span>
+                    <LayoutGrid className="w-3.5 h-3.5 text-gold-accent" />
+                    <span>Grid View</span>
                   </button>
                   <button
                     onClick={() => setViewMode('map')}
-                    className={`flex items-center gap-1 px-2.5 py-1 rounded-md transition-all ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
                       viewMode === 'map'
-                        ? 'bg-white text-forest-900 shadow-sm'
-                        : 'text-charcoal-500 hover:text-forest-900'
+                        ? 'bg-forest-900 text-white shadow-sm'
+                        : 'text-charcoal-600 hover:text-forest-900'
                     }`}
                   >
                     <Map className="w-3.5 h-3.5 text-gold-accent" />
-                    <span>Map Radar</span>
+                    <span>Interactive Map</span>
                   </button>
                 </div>
 

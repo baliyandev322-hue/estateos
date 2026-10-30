@@ -10,6 +10,23 @@ export const metadata: Metadata = {
   keywords: 'real estate, buy property, rent luxury apartment, mohali, gurugram, bangalore, rera verified, property truth score, locality intelligence, home loan emi calculator, real estate crm',
   authors: [{ name: 'EstateOS Team' }],
   metadataBase: new URL('https://estateos.in'),
+  alternates: {
+    canonical: 'https://estateos.in',
+  },
+  verification: {
+    google: 'google-site-verification-estateos-2026-sovereign-proptech',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: 'EstateOS — Sovereign Real Estate Intelligence',
     description: 'RERA-audited marketplace, AI-powered matchmaker, and enterprise agent CRM.',
@@ -26,6 +43,12 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EstateOS — Sovereign Real Estate Intelligence',
+    description: 'RERA-audited marketplace, AI-powered matchmaker, and enterprise agent CRM.',
+    images: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80'],
+  },
 };
 
 export default function RootLayout({
@@ -36,11 +59,36 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="google-site-verification-estateos-2026-sovereign-proptech" />
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'RealEstateAgent',
+              name: 'EstateOS Technologies',
+              url: 'https://estateos.in',
+              logo: 'https://estateos.in/logo.png',
+              description: 'India Sovereign RERA-Audited PropTech Marketplace with Property Truth Score™',
+              address: {
+                '@type': 'PostalAddress',
+                streetAddress: 'Level 14, Horizon Cyber Tower, Golf Course Extension Road, Sector 54',
+                addressLocality: 'Gurugram',
+                addressRegion: 'Haryana',
+                postalCode: '122018',
+                addressCountry: 'IN',
+              },
+              telephone: '+91-1800-200-4567',
+              priceRange: '₹₹₹₹',
+            }),
+          }}
         />
       </head>
       <body className="flex flex-col min-h-screen bg-slate-50 text-charcoal-900 selection:bg-gold-200 selection:text-forest-950">

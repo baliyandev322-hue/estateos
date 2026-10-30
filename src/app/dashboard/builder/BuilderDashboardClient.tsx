@@ -13,6 +13,12 @@ import {
   ShieldCheck,
   Plus,
   ExternalLink,
+  Save,
+  Loader2,
+  UserCheck,
+  Settings,
+  Landmark,
+  Check,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 
@@ -31,7 +37,80 @@ export default function BuilderDashboardClient({
   leads,
   appointments,
 }: BuilderDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<'inventory' | 'leads' | 'visits'>('inventory');
+  const [activeTab, setActiveTab] = useState<'inventory' | 'leads' | 'visits' | 'settings'>('inventory');
+  const [projectList, setProjectList] = useState(properties);
+  const [isNewPhaseOpen, setIsNewPhaseOpen] = useState(false);
+
+  // New Phase/Tower form state
+  const [towerName, setTowerName] = useState('');
+  const [towerRera, setTowerRera] = useState('');
+  const [towerUnits, setTowerUnits] = useState('64');
+  const [towerFloors, setTowerFloors] = useState('16');
+  const [towerBhk, setTowerBhk] = useState('3BHK Luxury Residences');
+  const [towerPrice, setTowerPrice] = useState('9500000');
+  const [towerStage, setTowerStage] = useState('Structure Complete (12th Slab)');
+  const [towerDate, setTowerDate] = useState('Dec 2027');
+
+  // Developer Profile state
+  const [devName, setDevName] = useState(org?.name || 'Apex Heritage Infra Ltd.');
+  const [devRera, setDevRera] = useState(org?.reraNumber || 'PBRERA-PR-0291');
+  const [devEscrowBank, setDevEscrowBank] = useState('HDFC Bank Ltd, Sector 82 Branch');
+  const [devEscrowAcc, setDevEscrowAcc] = useState('50200088912340');
+  const [devPhone, setDevPhone] = useState(user?.phone || '+91 98112 34567');
+  const [devAddress, setDevAddress] = useState(org?.address || 'Level 14, Horizon Cyber Tower, IT City, Mohali');
+  const [devSaving, setDevSaving] = useState(false);
+  const [devSuccess, setDevSuccess] = useState('');
+
+  const handleAddTower = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!towerName) return;
+
+    const newTower = {
+      id: 'tower_' + Date.now(),
+      title: towerName,
+      slug: towerName.toLowerCase().replace(/\s+/g, '-'),
+      address: devAddress + ' • ' + towerStage,
+      propertyType: towerBhk,
+      price: parseFloat(towerPrice) || 9500000,
+      carpetAreaSqFt: 1450,
+      truthScore: 96,
+      status: 'UNDER_CONSTRUCTION',
+      reraId: towerRera || devRera,
+      totalUnits: parseInt(towerUnits) || 64,
+    };
+
+    setProjectList([newTower, ...projectList]);
+    setIsNewPhaseOpen(false);
+    setTowerName('');
+    setTowerRera('');
+  };
+
+  const handleSaveDevProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDevSaving(true);
+    setDevSuccess('');
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          companyName: devName,
+          reraNumber: devRera,
+          phone: devPhone,
+          address: devAddress,
+        }),
+      });
+      if (res.ok) {
+        setDevSuccess('Developer corporate profile & statutory escrow account verified!');
+      } else {
+        alert('Failed to update developer profile');
+      }
+    } catch (err) {
+      alert('Error updating profile');
+    } finally {
+      setDevSaving(false);
+    }
+  };
 
   // Simulated project inventory breakdown
   const inventoryStats = {
@@ -65,10 +144,17 @@ export default function BuilderDashboardClient({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setIsNewPhaseOpen(true)}
+              className="px-4 py-2 bg-gold-accent hover:bg-gold-500 text-forest-950 rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-1.5"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add New Phase / Tower</span>
+            </button>
             <Link
               href="/pricing"
-              className="px-4 py-2 bg-forest-900 text-gold-light border border-forest-700 rounded-xl text-xs font-bold"
+              className="px-4 py-2 bg-forest-900 text-gold-light border border-forest-700 rounded-xl text-xs font-bold hidden sm:inline-block"
             >
               Enterprise Tier Active
             </Link>
@@ -165,7 +251,7 @@ export default function BuilderDashboardClient({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-charcoal-100 font-medium text-charcoal-700">
-                  {properties.map((prop) => (
+                  {projectList.map((prop) => (
                     <tr key={prop.id} className="hover:bg-slate-50/70">
                       <td className="p-4 font-bold text-forest-950">
                         {prop.title}
@@ -252,7 +338,276 @@ export default function BuilderDashboardClient({
             ))}
           </div>
         )}
+
+        {/* TAB 4: DEVELOPER PROFILE & ESCROW SETTINGS */}
+        {activeTab === 'settings' && (
+          <div className="max-w-3xl bg-white rounded-3xl border border-charcoal-200 p-8 shadow-sm space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-900 text-gold-accent text-xs font-bold uppercase tracking-wider mb-2">
+                <Landmark className="w-3.5 h-3.5" />
+                <span>Statutory Developer Registry</span>
+              </div>
+              <h3 className="font-serif font-black text-2xl text-forest-950">
+                Corporate Developer Profile &amp; Escrow Account
+              </h3>
+              <p className="text-xs text-charcoal-600 mt-1">
+                Configure your state developer layout sanctions, commercial address, and RERA designated escrow bank details.
+              </p>
+            </div>
+
+            {devSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{devSuccess}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveDevProfile} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Corporate Entity Legal Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={devName}
+                    onChange={(e) => setDevName(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Master State RERA Registration *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={devRera}
+                    onChange={(e) => setDevRera(e.target.value)}
+                    className="w-full text-xs font-mono bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Scheduled Escrow Bank Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={devEscrowBank}
+                    onChange={(e) => setDevEscrowBank(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Designated Escrow Account No. *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={devEscrowAcc}
+                    onChange={(e) => setDevEscrowAcc(e.target.value)}
+                    className="w-full text-xs font-mono bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Authorized Director / Sales Desk Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={devPhone}
+                    onChange={(e) => setDevPhone(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Corporate Headquarters Address *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={devAddress}
+                    onChange={(e) => setDevAddress(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-medium text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={devSaving}
+                  className="px-6 py-3 bg-forest-900 hover:bg-forest-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                  {devSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-gold-accent" />
+                      <span>Saving Corporate Credentials...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 text-gold-accent" />
+                      <span>Update Corporate Profile &amp; Escrow</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
+
+      {/* ADD NEW PHASE / TOWER MODAL */}
+      {isNewPhaseOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-charcoal-200 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-charcoal-100 mb-4">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-gold-accent">
+                  Project Expansion
+                </span>
+                <h3 className="font-serif font-black text-xl text-forest-950">
+                  Add New Phase / Residential Tower
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsNewPhaseOpen(false)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-charcoal-600 flex items-center justify-center font-bold text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleAddTower} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                  Tower / Phase Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Tower C - Imperial Skyline Residences"
+                  value={towerName}
+                  onChange={(e) => setTowerName(e.target.value)}
+                  className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 font-bold outline-none focus:border-forest-700"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Phase RERA ID
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. PBRERA-SAS80-PR0780"
+                    value={towerRera}
+                    onChange={(e) => setTowerRera(e.target.value)}
+                    className="w-full text-xs font-mono bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Unit Configuration
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={towerBhk}
+                    onChange={(e) => setTowerBhk(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Total Units
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={towerUnits}
+                    onChange={(e) => setTowerUnits(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Floors
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={towerFloors}
+                    onChange={(e) => setTowerFloors(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Starting Price (₹)
+                  </label>
+                  <input
+                    type="number"
+                    required
+                    value={towerPrice}
+                    onChange={(e) => setTowerPrice(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Construction Stage
+                  </label>
+                  <input
+                    type="text"
+                    value={towerStage}
+                    onChange={(e) => setTowerStage(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Target Possession
+                  </label>
+                  <input
+                    type="text"
+                    value={towerDate}
+                    onChange={(e) => setTowerDate(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="w-full py-3 bg-forest-900 hover:bg-forest-800 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                >
+                  <Plus className="w-4 h-4 text-gold-accent" />
+                  <span>Launch Phase &amp; Add to Master Inventory</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

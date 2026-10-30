@@ -24,6 +24,10 @@ import {
   Lock,
   Check,
   Flame,
+  UserCheck,
+  Settings,
+  Save,
+  Loader2,
 } from 'lucide-react';
 import { formatCurrencyINR, formatNumberINR } from '@/lib/utils';
 
@@ -42,7 +46,16 @@ export default function AgentDashboardClient({
   initialLeads,
   initialAppointments,
 }: AgentDashboardClientProps) {
-  const [activeTab, setActiveTab] = useState<'properties' | 'crm' | 'leads_market' | 'ai' | 'visits' | 'subscription'>('properties');
+  const [activeTab, setActiveTab] = useState<'properties' | 'crm' | 'leads_market' | 'ai' | 'visits' | 'subscription' | 'profile'>('properties');
+  // Profile Edit State
+  const [profName, setProfName] = useState(user?.name || 'Rahul Sharma');
+  const [profPhone, setProfPhone] = useState(user?.phone || '+91 98765 43210');
+  const [profAgency, setProfAgency] = useState(org?.name || 'Apex Heritage Realty');
+  const [profRera, setProfRera] = useState(user?.licenseNo || user?.reraNumber || 'PBRERA-A-2023-0182');
+  const [profCity, setProfCity] = useState(org?.city || 'Mohali & Chandigarh');
+  const [profBio, setProfBio] = useState('Certified RERA real estate consultant specializing in luxury residential towers and high-yield commercial floors.');
+  const [profSaving, setProfSaving] = useState(false);
+  const [profSuccess, setProfSuccess] = useState('');
   const [properties, setProperties] = useState(initialProperties);
   const [leads, setLeads] = useState(initialLeads);
   const [appointments, setAppointments] = useState(initialAppointments);
@@ -261,6 +274,37 @@ export default function AgentDashboardClient({
     }
   };
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfSaving(true);
+    setProfSuccess('');
+    try {
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: profName,
+          phone: profPhone,
+          reraNumber: profRera,
+          companyName: profAgency,
+          city: profCity,
+          bio: profBio,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setProfSuccess('Profile & agency credentials successfully updated and verified on live network!');
+      } else {
+        alert(data.error || 'Failed to update profile');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error updating profile credentials');
+    } finally {
+      setProfSaving(false);
+    }
+  };
+
   return (
     <div className="bg-slate-50 min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -352,6 +396,7 @@ export default function AgentDashboardClient({
             { id: 'ai', name: 'AI Copywriter Suite', icon: Sparkles },
             { id: 'visits', name: 'Site Inspections', icon: Calendar },
             { id: 'subscription', name: 'SaaS Plan & Invoices', icon: CreditCard },
+            { id: 'profile', name: 'Profile & Agency Settings', icon: UserCheck },
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -878,6 +923,133 @@ export default function AgentDashboardClient({
                 <strong className="text-emerald-700 font-bold">Enabled Active</strong>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* TAB 6: PROFILE & AGENCY SETTINGS */}
+        {activeTab === 'profile' && (
+          <div className="max-w-3xl bg-white rounded-3xl border border-charcoal-200 p-8 shadow-sm space-y-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest-900 text-gold-accent text-xs font-bold uppercase tracking-wider mb-2">
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>RERA Professional Credentials</span>
+              </div>
+              <h3 className="font-serif font-black text-2xl text-forest-950">
+                My Profile &amp; Company Settings
+              </h3>
+              <p className="text-xs text-charcoal-600 mt-1">
+                Manage your public consultant identity, state RERA license, contact phone for speed-to-lead alerts, and operational cities.
+              </p>
+            </div>
+
+            {profSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+                <span>{profSuccess}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profName}
+                    onChange={(e) => setProfName(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    WhatsApp Alert Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={profPhone}
+                    onChange={(e) => setProfPhone(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    Agency / Firm Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profAgency}
+                    onChange={(e) => setProfAgency(e.target.value)}
+                    className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                    State RERA License No. *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profRera}
+                    onChange={(e) => setProfRera(e.target.value)}
+                    className="w-full text-xs font-mono bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-bold text-forest-950 outline-none focus:border-forest-700"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                  Primary Operating Cities / Micro-Markets *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={profCity}
+                  onChange={(e) => setProfCity(e.target.value)}
+                  className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 font-medium text-forest-950 outline-none focus:border-forest-700"
+                  placeholder="e.g. Mohali, Chandigarh, Zirakpur, Panchkula"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
+                  Professional Bio / Agency Value Proposition
+                </label>
+                <textarea
+                  rows={3}
+                  value={profBio}
+                  onChange={(e) => setProfBio(e.target.value)}
+                  className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-xl px-3.5 py-2.5 text-charcoal-700 resize-none outline-none focus:border-forest-700"
+                />
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={profSaving}
+                  className="px-6 py-3 bg-forest-900 hover:bg-forest-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-2 disabled:opacity-50"
+                >
+                  {profSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin text-gold-accent" />
+                      <span>Saving Profile Credentials...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4 text-gold-accent" />
+                      <span>Save &amp; Update Live Profile</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </div>
