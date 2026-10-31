@@ -98,6 +98,24 @@ export default function RootLayout({
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8670788447807706"
           crossOrigin="anonymous"
         />
+        {/* Google Analytics 4 (GA4) Live Visitor Tracking Script */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-22LXLTRMVV"
+        />
+        <script
+          id="google-analytics-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-22LXLTRMVV', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
       </head>
       <body className="flex flex-col min-h-screen bg-slate-50 text-charcoal-900 selection:bg-gold-200 selection:text-forest-950">
         <Navbar />
