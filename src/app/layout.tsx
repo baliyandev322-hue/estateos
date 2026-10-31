@@ -4,6 +4,7 @@ import { SITE_CONTACT } from '@/config/siteContact';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import CookieConsentBanner from '@/components/CookieConsentBanner';
 
 export const metadata: Metadata = {
   title: 'EstateOS — India’s Sovereign PropTech Marketplace & AI Platform',
@@ -102,6 +103,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieConsentBanner />
         <Script
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="lazyOnload"
