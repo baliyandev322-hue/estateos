@@ -79,11 +79,10 @@ export default function MarketplaceMap({ properties }: MarketplaceMapProps) {
       });
       mapInstanceRef.current = map;
 
-      // CartoDB Positron / Clean OpenStreetMap tiles
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 20,
+      // Clean OpenStreetMap tiles (100% Free, Zero API Key Required, No Watermark)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
       }).addTo(map);
 
       const markers: any[] = [];
