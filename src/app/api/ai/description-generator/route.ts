@@ -4,7 +4,10 @@ import { getCurrentUser } from '@/lib/auth';
 export const dynamic = 'force-dynamic';
 
 async function generateWithGemini(apiKey: string, promptText: string): Promise<string> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+  if (!apiKey || !apiKey.startsWith('AIzaSy')) {
+    throw new Error('Valid Gemini API key required');
+  }
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -21,6 +24,7 @@ async function generateWithGemini(apiKey: string, promptText: string): Promise<s
         maxOutputTokens: 1024,
       },
     }),
+    signal: AbortSignal.timeout(2000),
   });
 
   if (!response.ok) {
