@@ -86,7 +86,7 @@ export default function RootLayout({
               '@type': 'RealEstateAgent',
               name: 'EstateOS Technologies',
               url: 'https://www.estateospro.in',
-              logo: 'https://www.estateospro.in/logo.svg',
+              logo: 'https://www.estateospro.in/icon.svg',
               description: 'India Sovereign RERA-Audited PropTech Marketplace with Property Truth Score™',
               address: {
                 '@type': 'PostalAddress',
