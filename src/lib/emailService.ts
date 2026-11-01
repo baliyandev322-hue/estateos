@@ -18,12 +18,12 @@ export interface EmailPayload {
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'baliyandev322@gmail.com';
 
 export async function sendEmail(payload: EmailPayload): Promise<{ success: boolean; messageId?: string; mode: string }> {
-  const fromAddress = payload.from || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'notifications@estateospro.in';
-
   // 1. Check for Resend API Key
   const resendApiKey = process.env.RESEND_API_KEY;
   if (resendApiKey) {
     try {
+      // Default to onboarding@resend.dev for instant out-of-the-box delivery without DNS delay
+      const fromAddress = payload.from || process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
       const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
