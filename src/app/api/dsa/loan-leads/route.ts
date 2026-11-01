@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
+import { sendAdminLeadAlert } from '@/lib/emailService';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,6 +57,23 @@ export async function POST(request: Request) {
     } catch (dbErr) {
       console.warn('Loan lead saved via resilient fallback queue:', dbErr);
     }
+
+    // Dispatch priority admin notification to platform owner
+    sendAdminLeadAlert({
+      leadType: 'HOME_LOAN_APPLICATION',
+      name: applicantName,
+      phone,
+      email: email || undefined,
+      details: {
+        'Loan Amount': `₹${parsedAmount.toLocaleString('en-IN')}`,
+        'Monthly Income': `₹${parseFloat(monthlyIncome).toLocaleString('en-IN')}`,
+        'Preferred Bank': preferredBank,
+        'Employment': employmentType,
+        'CIBIL Score': cibilScoreRange,
+        'Est. DSA Commission': `₹${Math.round(estimatedCommission).toLocaleString('en-IN')}`,
+      },
+      message: propertyTitle ? `Interested in property: ${propertyTitle}` : undefined,
+    }).catch((e) => console.warn('Admin loan alert notice:', e));
 
     return NextResponse.json({
       success: true,

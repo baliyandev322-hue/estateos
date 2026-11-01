@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { SITE_CONTACT } from '@/config/siteContact';
-import { sendPropertyEnquiryConfirmation } from '@/lib/emailService';
+import { sendPropertyEnquiryConfirmation, sendAdminLeadAlert } from '@/lib/emailService';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
 
 export const dynamic = 'force-dynamic';
@@ -90,6 +90,20 @@ export async function POST(
         priceFormatted: `₹${priceFormatted}`,
       }).catch((e) => console.warn('Enquiry email dispatch notice:', e));
     }
+
+    // Dispatch real-time Priority Lead Alert directly to Platform Admin / Owner
+    sendAdminLeadAlert({
+      leadType: 'PROPERTY_ENQUIRY',
+      name,
+      phone,
+      email: email || undefined,
+      details: {
+        Property: propertyTitle,
+        Budget: `₹${priceFormatted}`,
+        Source: source || 'Marketplace Property Page',
+      },
+      message,
+    }).catch((e) => console.warn('Admin lead alert dispatch notice:', e));
 
     return NextResponse.json({
       success: true,
