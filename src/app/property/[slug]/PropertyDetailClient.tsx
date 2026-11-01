@@ -21,6 +21,9 @@ import {
   FileText,
   AlertTriangle,
   ChevronRight,
+  ChevronLeft,
+  X,
+  ZoomIn,
   ExternalLink,
   Download,
   FileCheck,
@@ -66,6 +69,32 @@ export default function PropertyDetailClient({
   const [activeImage, setActiveImage] = useState(images[0]);
   const [copied, setCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setIsLightboxOpen(true);
+  };
+
+  const nextLightboxImage = () => {
+    setLightboxIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevLightboxImage = () => {
+    setLightboxIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isLightboxOpen) return;
+      if (e.key === 'Escape') setIsLightboxOpen(false);
+      if (e.key === 'ArrowRight') nextLightboxImage();
+      if (e.key === 'ArrowLeft') prevLightboxImage();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isLightboxOpen, images.length]);
 
   useEffect(() => {
     setIsSaved(isPropertySaved(property.id || property.slug));
@@ -274,13 +303,27 @@ export default function PropertyDetailClient({
         {/* Gallery Section */}
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-4">
           {/* Main Large Image */}
-          <div className="lg:col-span-9 aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-charcoal-100 shadow-md border border-charcoal-200 relative">
+          <div 
+            onClick={() => openLightbox(images.indexOf(activeImage) >= 0 ? images.indexOf(activeImage) : 0)}
+            className="lg:col-span-9 aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-charcoal-100 shadow-md border border-charcoal-200 relative cursor-pointer group"
+          >
             <img
               src={activeImage}
               alt={property.title}
-              className="w-full h-full object-cover transition-all duration-300"
+              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
             />
-            <div className="absolute bottom-4 left-4 flex items-center gap-2">
+            {/* Top Right Zoom Fullscreen Pill */}
+            <div className="absolute top-4 right-4 z-10">
+              <button 
+                type="button"
+                className="px-3 py-1.5 rounded-lg bg-forest-950/80 hover:bg-forest-900 text-white text-xs font-bold flex items-center gap-1.5 border border-white/20 shadow-lg backdrop-blur-md transition-all group-hover:border-gold-accent"
+              >
+                <ZoomIn className="w-3.5 h-3.5 text-gold-accent" />
+                <span>Fullscreen Gallery ({images.length} HD Photos)</span>
+              </button>
+            </div>
+
+            <div className="absolute bottom-4 left-4 flex items-center gap-2 z-10">
               <div className="px-3 py-1.5 rounded-lg bg-forest-950/85 backdrop-blur-md text-white text-xs font-bold flex items-center gap-1.5 border border-gold-accent/40">
                 <ShieldCheck className="w-4 h-4 text-gold-accent" />
                 <span>Truth Score: <strong className="text-gold-light">{property.truthScore}</strong>/100</span>
@@ -809,6 +852,75 @@ export default function PropertyDetailClient({
         onClose={() => setIsTruthReportModalOpen(false)}
         property={property}
       />
+
+      {/* FULLSCREEN HD IMAGE LIGHTBOX MODAL */}
+      {isLightboxOpen && (
+        <div 
+          role="dialog" 
+          aria-modal="true" 
+          aria-label="High Definition Property Gallery"
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 sm:p-6 select-none animate-fadeIn"
+        >
+          {/* Top Bar: Title & Controls */}
+          <div className="flex items-center justify-between text-white pb-3 border-b border-white/10">
+            <div>
+              <p className="font-serif font-bold text-sm sm:text-base text-gold-light truncate max-w-md sm:max-w-xl">
+                {property.title}
+              </p>
+              <p className="text-[11px] text-charcoal-400">
+                Photo {lightboxIndex + 1} of {images.length} • Use Arrow Keys or Swipe
+              </p>
+            </div>
+            <button
+              onClick={() => setIsLightboxOpen(false)}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors"
+              aria-label="Close Fullscreen Gallery"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Main Photo View with Nav Controls */}
+          <div className="relative flex-1 flex items-center justify-center my-4 overflow-hidden">
+            <button
+              onClick={prevLightboxImage}
+              aria-label="Previous Photo"
+              className="absolute left-2 sm:left-4 z-20 p-3 rounded-2xl bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all hover:scale-110"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+
+            <img
+              src={images[lightboxIndex]}
+              alt={`${property.title} - HD View ${lightboxIndex + 1}`}
+              className="max-h-[75vh] max-w-full object-contain rounded-xl shadow-2xl transition-all duration-300"
+            />
+
+            <button
+              onClick={nextLightboxImage}
+              aria-label="Next Photo"
+              className="absolute right-2 sm:right-4 z-20 p-3 rounded-2xl bg-black/60 hover:bg-black/90 text-white border border-white/20 transition-all hover:scale-110"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+          </div>
+
+          {/* Bottom Thumbnails Navigation */}
+          <div className="flex items-center justify-center gap-2 overflow-x-auto py-2">
+            {images.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setLightboxIndex(idx)}
+                className={`relative rounded-lg overflow-hidden w-16 h-12 shrink-0 border-2 transition-all ${
+                  lightboxIndex === idx ? 'border-gold-accent scale-105 shadow-md' : 'border-transparent opacity-60 hover:opacity-100'
+                }`}
+              >
+                <img src={img} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* MOBILE STICKY FLOATING ACTION BAR (sm:hidden) */}
       <aside aria-label="Mobile Contact Bar" className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-forest-950/95 backdrop-blur-md border-t border-forest-800 p-3 shadow-2xl flex items-center justify-between gap-3">

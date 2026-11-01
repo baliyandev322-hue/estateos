@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Mail, Phone, MapPin, Clock } from 'lucide-react';
+import { ShieldCheck, Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
 import { SITE_CONTACT } from '@/config/siteContact';
 
 export default function Footer() {
@@ -59,11 +59,20 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-2">
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-forest-900/80 border border-gold-accent/30 text-xs font-semibold text-gold-accent">
                 <ShieldCheck className="w-4 h-4" />
-                <span>RERA Compliance Verified Platform</span>
+                <span>RERA Compliance Verified</span>
               </div>
+              <a
+                href={`https://wa.me/${SITE_CONTACT.whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent('Hi EstateOS, I have an enquiry regarding real estate listings.')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600/90 hover:bg-emerald-600 text-xs font-bold text-white transition-colors border border-emerald-500/40"
+              >
+                <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                <span>WhatsApp Consultant</span>
+              </a>
             </div>
           </div>
 
@@ -103,9 +112,9 @@ export default function Footer() {
                 Guides &amp; Compliance
               </h3>
               <ul className="space-y-2.5 text-xs text-forest-200">
-                <li><Link href="/guides" className="hover:text-gold-light transition-colors">RERA Verification Guide</Link></li>
-                <li><Link href="/guides" className="hover:text-gold-light transition-colors">Home Loan 80C Tax Savings</Link></li>
-                <li><Link href="/guides" className="hover:text-gold-light transition-colors">Tri-city Investment Trends</Link></li>
+                <li><Link href="/guide/how-to-check-rera-registered-properties-online-india-2026" className="hover:text-gold-light transition-colors">RERA Verification Guide</Link></li>
+                <li><Link href="/guide/home-loan-tax-deductions-section-80c-24b-80eea-guide" className="hover:text-gold-light transition-colors">Home Loan 80C Tax Savings</Link></li>
+                <li><Link href="/guide/mohali-vs-new-chandigarh-real-estate-roi-analysis" className="hover:text-gold-light transition-colors">Tri-city Investment Trends</Link></li>
                 <li><Link href="/about" className="hover:text-gold-light transition-colors">About EstateOS</Link></li>
                 <li><Link href="/contact" className="hover:text-gold-light transition-colors">Contact &amp; Grievance</Link></li>
                 <li><Link href="/privacy" className="hover:text-gold-light transition-colors">Privacy Policy</Link></li>

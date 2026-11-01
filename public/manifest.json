@@ -1,0 +1,16 @@
+{
+  "name": "EstateOS — India's Sovereign PropTech Marketplace",
+  "short_name": "EstateOS",
+  "description": "RERA-audited marketplace, AI-powered matchmaker, and verified real estate CRM.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06140d",
+  "theme_color": "#0d281a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

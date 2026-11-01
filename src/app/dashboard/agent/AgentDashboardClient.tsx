@@ -1150,6 +1150,7 @@ export default function AgentDashboardClient({
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2"
                   >
+                    <option value="Muzaffarnagar">Muzaffarnagar (UP)</option>
                     <option value="Mohali">Mohali</option>
                     <option value="Gurugram">Gurugram</option>
                     <option value="Bangalore">Bangalore</option>

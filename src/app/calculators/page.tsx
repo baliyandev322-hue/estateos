@@ -51,10 +51,11 @@ export default function CalculatorsPage() {
 
   // --- 3. STAMP DUTY CALCULATOR STATE ---
   const [propertyCost, setPropertyCost] = useState(7500000); // ₹75 Lakhs
-  const [selectedState, setSelectedState] = useState<'punjab' | 'haryana' | 'karnataka' | 'maharashtra' | 'delhi'>('punjab');
+  const [selectedState, setSelectedState] = useState<'uttar_pradesh' | 'punjab' | 'haryana' | 'karnataka' | 'maharashtra' | 'delhi'>('uttar_pradesh');
   const [gender, setGender] = useState<'male' | 'female' | 'joint'>('male');
 
   const STAMP_RATES: Record<string, { male: number; female: number; joint: number; regFeePercent: number }> = {
+    uttar_pradesh: { male: 7.0, female: 6.0, joint: 6.5, regFeePercent: 1.0 },
     punjab: { male: 7.0, female: 6.0, joint: 6.5, regFeePercent: 1.0 },
     haryana: { male: 7.0, female: 5.0, joint: 6.0, regFeePercent: 1.0 },
     karnataka: { male: 5.0, female: 5.0, joint: 5.0, regFeePercent: 1.0 },
@@ -512,6 +513,7 @@ export default function CalculatorsPage() {
                       onChange={(e) => setSelectedState(e.target.value as any)}
                       className="w-full text-xs font-semibold bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2"
                     >
+                      <option value="uttar_pradesh">Uttar Pradesh (Muzaffarnagar / Noida)</option>
                       <option value="punjab">Punjab (Mohali)</option>
                       <option value="haryana">Haryana (Gurugram)</option>
                       <option value="karnataka">Karnataka (Bangalore)</option>
