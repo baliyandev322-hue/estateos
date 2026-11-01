@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import { ShieldCheck, MapPin, Phone, CheckCircle2, Award, ExternalLink } from 'lucide-react';
 import { SITE_CONTACT } from '@/config/siteContact';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 const CURATED_AGENTS = [
   {

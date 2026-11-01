@@ -3,7 +3,13 @@ import prisma from '@/lib/prisma';
 import PropertyDetailClient from './PropertyDetailClient';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 120;
+
+export async function generateStaticParams() {
+  return CURATED_PROPERTIES.map((p) => ({
+    slug: p.slug,
+  }));
+}
 
 const CURATED_PROPERTY_REGISTRY: Record<string, any> = CURATED_PROPERTIES.reduce((acc, p) => {
   acc[p.slug] = p;

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import { Building2, CheckCircle2, ShieldCheck, MapPin, Award, ExternalLink } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 const CURATED_BUILDERS = [
   {

@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function HomePage() {
   let featuredProperties: any[] = [];

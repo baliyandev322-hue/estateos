@@ -2,7 +2,7 @@ import React from 'react';
 import prisma from '@/lib/prisma';
 import LocalitiesClient from './LocalitiesClient';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 300;
 
 const FALLBACK_LOCALITIES = [
   {

@@ -3,7 +3,7 @@ import PropertySearchClient from './PropertySearchClient';
 import prisma from '@/lib/prisma';
 import { CURATED_PROPERTIES, filterCuratedProperties } from '@/lib/curatedProperties';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function PropertiesPage({
   searchParams,

@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import { BookOpen, Clock, ChevronRight, User } from 'lucide-react';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 120;
 
 const FALLBACK_ARTICLES = [
   {
