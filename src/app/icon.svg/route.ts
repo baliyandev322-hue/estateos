@@ -1,0 +1,30 @@
+import { NextResponse } from 'next/server';
+
+const SVG_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#081710" />
+      <stop offset="50%" stop-color="#0d2319" />
+      <stop offset="100%" stop-color="#05100b" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f9e396" />
+      <stop offset="50%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#aa8210" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" stroke="#d4af37" stroke-width="10" stroke-opacity="0.4" />
+  <rect x="30" y="30" width="452" height="452" rx="85" fill="none" stroke="#d4af37" stroke-width="2" stroke-opacity="0.2" />
+  <text x="50%" y="67%" font-family="serif, 'Playfair Display', Georgia" font-size="330" font-weight="900" fill="url(#goldGrad)" text-anchor="middle">E</text>
+  <text x="50%" y="87%" font-family="sans-serif, 'Inter'" font-size="44" font-weight="800" fill="#f9e396" letter-spacing="14" text-anchor="middle">ESTATEOS</text>
+</svg>`;
+
+export async function GET() {
+  return new NextResponse(SVG_ICON, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/svg+xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800',
+    },
+  });
+}
