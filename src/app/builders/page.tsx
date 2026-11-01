@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
-import { Building2, CheckCircle2, ShieldCheck, MapPin, Award, ExternalLink } from 'lucide-react';
+import { Building2, CheckCircle2, ShieldCheck, MapPin, Award, ExternalLink, Phone } from 'lucide-react';
+import { SITE_CONTACT } from '@/config/siteContact';
 
 export const revalidate = 300;
 
@@ -143,10 +144,16 @@ export default async function BuildersDirectoryPage() {
                 )}
               </div>
 
-              <div className="pt-5 border-t border-charcoal-100 mt-6 flex items-center justify-between">
-                <span className="text-[11px] font-bold text-forest-900">
-                  Truth Score: <strong className="text-emerald-700">{builder.truthScore || 94}/100</strong>
-                </span>
+              <div className="pt-4 border-t border-charcoal-100 mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <a
+                  href={`https://wa.me/91${SITE_CONTACT.whatsappNumber.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(`Hi, I am interested in new township developments by ${builder.name} on EstateOS.`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs font-bold transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>WhatsApp Builder Desk</span>
+                </a>
                 <Link
                   href={`/properties?search=${encodeURIComponent(builder.name)}`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-forest-900 hover:underline"
