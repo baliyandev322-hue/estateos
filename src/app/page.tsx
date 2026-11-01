@@ -147,6 +147,7 @@ export default async function HomePage() {
                   className="w-full text-xs font-semibold bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2.5 text-charcoal-800 focus:outline-none focus:border-forest-700"
                 >
                   <option value="All">All Cities</option>
+                  <option value="Muzaffarnagar">Muzaffarnagar (UP)</option>
                   <option value="Mohali">Mohali / Chandigarh</option>
                   <option value="Gurugram">Gurugram (NCR)</option>
                   <option value="Bangalore">Bangalore</option>

@@ -8,11 +8,35 @@ export const revalidate = 300;
 
 const CURATED_AGENTS = [
   {
+    id: 'agent-dev',
+    name: 'Dev Baliyan',
+    email: 'support@estateos.in',
+    phone: '+91 93685 93249',
+    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+    reraNumber: 'UPRERA-A-2024-9382',
+    experienceYears: 10,
+    city: 'Muzaffarnagar & NCR',
+    dealsClosed: 180,
+    memberships: [
+      {
+        organization: {
+          name: 'EstateOS Technologies',
+          slug: 'estateos-technologies',
+          city: 'Muzaffarnagar',
+        },
+      },
+    ],
+    properties: [
+      { id: 'p-mzn-1', title: 'Royal Heritage 3BHK Gandhi Colony', price: 8200000, slug: 'royal-heritage-3bhk-luxury-floor-gandhi-colony-muzaffarnagar' },
+      { id: 'p-mzn-2', title: 'Paramount 4BHK Villa New Mandi', price: 16500000, slug: 'paramount-4bhk-designer-villa-new-mandi-muzaffarnagar' },
+    ],
+  },
+  {
     id: 'agent-1',
     name: 'Rajesh Verma',
-    email: 'rajesh@apexheritage.in',
-    phone: '+91 98765 43210',
-    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+    email: 'rajesh@estateos.in',
+    phone: '+91 93685 93249',
+    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=400&q=80',
     reraNumber: 'PBRERA-A-2023-0182',
     experienceYears: 12,
     city: 'Mohali & Chandigarh',
@@ -27,15 +51,15 @@ const CURATED_AGENTS = [
       },
     ],
     properties: [
-      { id: 'p1', title: 'Grand Azure Residences', price: 9200000, slug: 'grand-azure-residences' },
+      { id: 'p1', title: 'Grand Azure Residences', price: 9200000, slug: 'grand-azure-3bhk-luxury-residence-it-city-mohali' },
       { id: 'p2', title: 'Green Lotus Smart Homes', price: 5800000, slug: 'green-lotus-avenue-2bhk-it-city-mohali' },
     ],
   },
   {
     id: 'agent-2',
     name: 'Priya Sharma',
-    email: 'priya@tricityrealty.com',
-    phone: '+91 98112 33445',
+    email: 'priya@estateos.in',
+    phone: '+91 93685 93249',
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
     reraNumber: 'HRERA-A-GGM-2022-89',
     experienceYears: 9,
@@ -57,8 +81,8 @@ const CURATED_AGENTS = [
   {
     id: 'agent-3',
     name: 'Vikramjit Singh',
-    email: 'vikram@panchkulaluxury.com',
-    phone: '+91 99880 77665',
+    email: 'vikram@estateos.in',
+    phone: '+91 93685 93249',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
     reraNumber: 'HRERA-PKL-A-2024-41',
     experienceYears: 15,
