@@ -1,9 +1,45 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import PropertySearchClient from './PropertySearchClient';
 import prisma from '@/lib/prisma';
 import { CURATED_PROPERTIES, filterCuratedProperties } from '@/lib/curatedProperties';
 
 export const revalidate = 60;
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams?: { [key: string]: string | undefined };
+}): Promise<Metadata> {
+  const city = searchParams?.city || '';
+  const listingType = searchParams?.listingType || 'Properties';
+  const propertyType = searchParams?.propertyType || '';
+
+  const titlePrefix = city 
+    ? `${propertyType ? propertyType + ' ' : ''}Properties in ${city} for ${listingType === 'RENT' ? 'Rent' : 'Sale'}` 
+    : 'Verified Real Estate & RERA-Audited Properties in India';
+
+  const title = `${titlePrefix} | EstateOS Marketplace`;
+  const description = `Explore RERA-audited apartments, villas, and commercial spaces ${city ? 'in ' + city : 'across India'}. Filter by Property Truth Score™, price, carpet area and verified builder credentials.`;
+  const canonicalUrl = 'https://www.estateospro.in/properties';
+
+  return {
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+  };
+}
 
 export default async function PropertiesPage({
   searchParams,

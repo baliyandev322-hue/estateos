@@ -1,10 +1,26 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import { BookOpen, Clock, ChevronRight, User } from 'lucide-react';
 
 export const revalidate = 120;
+
+export const metadata: Metadata = {
+  title: 'Real Estate Guides, RERA Legal Awareness & Property Tax Insights | EstateOS',
+  description: 'Authoritative Indian real estate guides: How to verify RERA online, understand carpet area vs super built-up area, maximize home loan tax exemptions (80C & 24b), and analyze micro-market ROI.',
+  keywords: 'rera verification guide, home loan tax deduction 80c 24b, carpet area formula, real estate legal advice india, property investment guide',
+  alternates: {
+    canonical: 'https://www.estateospro.in/guides',
+  },
+  openGraph: {
+    title: 'Real Estate Guides & RERA Legal Awareness | EstateOS',
+    description: 'Expert editorial articles on RERA legal awareness, home loan tax deductions, and capital growth corridors.',
+    url: 'https://www.estateospro.in/guides',
+    type: 'website',
+  },
+};
 
 const FALLBACK_ARTICLES = [
   {

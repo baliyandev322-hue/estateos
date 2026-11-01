@@ -1,8 +1,24 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import prisma from '@/lib/prisma';
 import LocalitiesClient from './LocalitiesClient';
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: 'Top Real Estate Localities & Micro-Market Rates (Mohali, Gurugram, Bangalore) | EstateOS',
+  description: 'Explore verified price trends, annual capital appreciation rates, average rental yields, and infrastructure ratings across premier micro-markets in India.',
+  keywords: 'property rates mohali, real estate investment gurugram, bangalore rental yields, it city mohali price per sq ft, best localities to buy property',
+  alternates: {
+    canonical: 'https://www.estateospro.in/localities',
+  },
+  openGraph: {
+    title: 'Top Real Estate Localities & Micro-Market Rates | EstateOS',
+    description: 'Data-driven locality reviews, price per sq.ft., rental yields, and connectivity ratings for prime Indian cities.',
+    url: 'https://www.estateospro.in/localities',
+    type: 'website',
+  },
+};
 
 const FALLBACK_LOCALITIES = [
   {

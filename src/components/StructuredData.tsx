@@ -1,5 +1,7 @@
 import React from 'react';
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.estateospro.in';
+
 interface PropertyJsonLdProps {
   property: {
     title: string;
@@ -10,8 +12,11 @@ interface PropertyJsonLdProps {
     city: string;
     state: string;
     pinCode: string;
-    images?: string | null;
+    images?: string | null | string[];
     slug: string;
+    reraRegistrationNumber?: string | null;
+    bedrooms?: number | null;
+    bathrooms?: number | null;
   };
 }
 
@@ -28,13 +33,14 @@ export function PropertyJsonLd({ property }: PropertyJsonLdProps) {
     '@type': 'RealEstateListing',
     name: property.title,
     description: property.description,
-    url: `https://estateos.in/property/${property.slug}`,
-    image: imageList,
+    url: `${SITE_URL}/property/${property.slug}`,
+    image: imageList.length > 0 ? imageList : [`${SITE_URL}/og-default.jpg`],
     offers: {
       '@type': 'Offer',
       price: property.price,
       priceCurrency: 'INR',
       availability: 'https://schema.org/InStock',
+      validFrom: '2026-01-01',
     },
     address: {
       '@type': 'PostalAddress',
@@ -49,6 +55,8 @@ export function PropertyJsonLd({ property }: PropertyJsonLdProps) {
       value: property.carpetAreaSqFt,
       unitCode: 'FTK',
     },
+    numberOfRooms: property.bedrooms || undefined,
+    numberOfBathroomsTotal: property.bathrooms || undefined,
   };
 
   return (
@@ -65,21 +73,65 @@ export function ArticleJsonLd({ article }: { article: any }) {
     '@type': 'Article',
     headline: article.title,
     description: article.excerpt,
-    image: [article.coverImage],
-    datePublished: article.publishedAt,
-    dateModified: article.updatedAt,
+    image: [article.coverImage || `${SITE_URL}/og-default.jpg`],
+    datePublished: article.publishedAt || new Date().toISOString(),
+    dateModified: article.updatedAt || new Date().toISOString(),
+    mainEntityOfPage: `${SITE_URL}/guide/${article.slug}`,
     author: {
       '@type': 'Person',
-      name: article.authorName,
+      name: article.authorName || 'EstateOS Editorial Team',
     },
     publisher: {
       '@type': 'Organization',
       name: 'EstateOS',
+      url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://estateos.in/logo.png',
+        url: `${SITE_URL}/logo.png`,
       },
     },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+
+export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string }[] }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}`,
+    })),
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+    />
+  );
+}
+
+export function FaqJsonLd({ faqs }: { faqs: { question: string; answer: string }[] }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
   };
 
   return (

@@ -1,12 +1,49 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import AdSenseBanner from '@/components/AdSenseBanner';
-import { ArticleJsonLd } from '@/components/StructuredData';
+import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/StructuredData';
 import { Clock, Calendar, User, ChevronRight, Share2, ArrowLeft, ShieldCheck, Award } from 'lucide-react';
 
 export const revalidate = 300;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+  const { slug } = params;
+  let article: any = null;
+  try {
+    article = await prisma.article.findUnique({ where: { slug } });
+  } catch (e) {}
+
+  const title = article ? `${article.title} | EstateOS Intelligence` : 'Real Estate Editorial Guide | EstateOS';
+  const description = article?.excerpt || 'Authoritative insights on RERA statutory guidelines, property taxation, and real estate micro-market metrics.';
+  const canonicalUrl = `https://www.estateospro.in/guide/${slug}`;
+  const imgUrl = article?.coverImage || 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80';
+
+  return {
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    openGraph: {
+      title,
+      description,
+      url: canonicalUrl,
+      type: 'article',
+      images: [{ url: imgUrl, width: 1200, height: 630, alt: title }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [imgUrl],
+    },
+  };
+}
 
 export default async function ArticleDetailPage({
   params,
@@ -73,6 +110,13 @@ By combining RERA verification with the **EstateOS Property Truth Score**, buyer
   return (
     <div className="bg-slate-50 min-h-screen py-10">
       <ArticleJsonLd article={article} />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Home', url: '/' },
+          { name: 'Guides & Legal', url: '/guides' },
+          { name: article.title, url: `/guide/${slug}` },
+        ]}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center gap-2 text-xs font-semibold text-charcoal-500 mb-6">
