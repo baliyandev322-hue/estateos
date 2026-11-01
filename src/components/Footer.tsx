@@ -1,9 +1,18 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ShieldCheck, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { SITE_CONTACT } from '@/config/siteContact';
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // Keep full-screen interactive app views (AI Matchmaker & Dashboards) clean with zero document scrolling
+  if (pathname === '/ai-matchmaker' || pathname?.startsWith('/dashboard')) {
+    return null;
+  }
   return (
     <footer className="bg-forest-950 text-forest-100 border-t border-forest-800">
       {/* Upper Footer: Newsletter & RERA Trust Seal */}

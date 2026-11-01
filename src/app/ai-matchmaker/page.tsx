@@ -128,10 +128,10 @@ export default function AiMatchmakerPage() {
   ];
 
   return (
-    <div className="bg-slate-50 min-h-screen py-8">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-[82vh]">
+    <div className="bg-slate-50 flex flex-col h-[calc(100vh-5rem)] h-[calc(100dvh-5rem)] overflow-hidden">
+      <div className="max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col h-full py-3 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-charcoal-200">
+        <div className="flex items-center justify-between pb-3 border-b border-charcoal-200 shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-forest-900 text-gold-accent flex items-center justify-center border border-gold-accent/40 shadow-sm">
               <Sparkles className="w-5 h-5 animate-pulse" />
@@ -159,7 +159,7 @@ export default function AiMatchmakerPage() {
         </div>
 
         {/* Chat Stream Window */}
-        <div ref={chatContainerRef} className="flex-1 overflow-y-auto py-6 space-y-6 pr-2">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto py-4 space-y-4 pr-2 min-h-0">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -254,7 +254,7 @@ export default function AiMatchmakerPage() {
         </div>
 
         {/* Sample Quick Prompt Chips */}
-        <div className="py-2 overflow-x-auto flex items-center gap-2 text-xs no-scrollbar">
+        <div className="py-2 overflow-x-auto flex items-center gap-2 text-xs no-scrollbar shrink-0">
           <span className="text-[11px] font-bold text-charcoal-400 uppercase tracking-wider shrink-0">
             Quick Prompts:
           </span>
@@ -270,7 +270,7 @@ export default function AiMatchmakerPage() {
         </div>
 
         {/* Input Bar */}
-        <div className="pt-2">
+        <div className="pt-1 pb-1 shrink-0">
           <form
             onSubmit={(e) => {
               e.preventDefault();
