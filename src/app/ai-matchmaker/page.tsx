@@ -39,10 +39,15 @@ export default function AiMatchmakerPage() {
 
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   };
 
   useEffect(() => {
@@ -154,7 +159,7 @@ export default function AiMatchmakerPage() {
         </div>
 
         {/* Chat Stream Window */}
-        <div className="flex-1 overflow-y-auto py-6 space-y-6 pr-2">
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto py-6 space-y-6 pr-2">
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -246,8 +251,6 @@ export default function AiMatchmakerPage() {
               </div>
             </div>
           )}
-
-          <div ref={messagesEndRef} />
         </div>
 
         {/* Sample Quick Prompt Chips */}
