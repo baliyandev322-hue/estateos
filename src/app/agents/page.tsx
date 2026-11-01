@@ -123,6 +123,14 @@ export default async function AgentsDirectoryPage() {
 
   if (!agents || agents.length === 0) {
     agents = CURATED_AGENTS;
+  } else {
+    // Ensure Dev Baliyan and premier regional consultants are featured alongside DB users
+    const existingNames = new Set(agents.map((a: any) => a.name));
+    for (const ca of CURATED_AGENTS) {
+      if (!existingNames.has(ca.name)) {
+        agents.unshift(ca);
+      }
+    }
   }
 
   return (
