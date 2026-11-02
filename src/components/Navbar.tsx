@@ -150,13 +150,6 @@ export default function Navbar() {
               <span>Post Property Free</span>
             </Link>
 
-            <Link
-              href="/dashboard/agent"
-              className="px-3 py-2 text-xs font-bold text-forest-800 bg-forest-100/70 hover:bg-forest-100 rounded-lg transition-colors border border-forest-200"
-            >
-              For Agents &amp; Builders
-            </Link>
-
             {user ? (
               <div className="relative">
                 <button
