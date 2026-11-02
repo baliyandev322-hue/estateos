@@ -97,7 +97,6 @@ export default function Footer() {
                 PropTech &amp; AI
               </h3>
               <ul className="space-y-2.5 text-xs text-forest-200">
-                <li><Link href="/home-loans" className="hover:text-gold-light transition-colors font-semibold text-gold-accent">Bank Home Loans (8.40%)</Link></li>
                 <li><Link href="/truth-score" className="hover:text-gold-light transition-colors">Property Truth Score™</Link></li>
                 <li><Link href="/ai-matchmaker" className="hover:text-gold-light transition-colors">AI Matchmaker</Link></li>
                 <li><Link href="/localities" className="hover:text-gold-light transition-colors">Locality Intelligence</Link></li>
