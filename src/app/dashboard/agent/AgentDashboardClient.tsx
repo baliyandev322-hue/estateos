@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import ImageUploadDropzone from '@/components/ImageUploadDropzone';
 import {
   Building2,
   Users,
@@ -174,6 +175,7 @@ export default function AgentDashboardClient({
   const [reraId, setReraId] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80');
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [propLoading, setPropLoading] = useState(false);
 
   // AI Description Generator State
@@ -210,7 +212,7 @@ export default function AgentDashboardClient({
           pinCode,
           reraId,
           description: description || `Newly listed luxury ${bedrooms}BHK ${propType} in ${locality}, ${city}. Verified under EstateOS standards.`,
-          images: [imageUrl],
+          images: uploadedImages.length > 0 ? uploadedImages : [imageUrl],
           amenities: ['Power Backup', '24/7 Security', 'Covered Parking', 'Clubhouse'],
         }),
       });
@@ -1187,16 +1189,14 @@ export default function AgentDashboardClient({
 
               <div>
                 <label className="block text-xs font-bold text-charcoal-700 uppercase mb-1">
-                  Cover Photo URL
+                  Property Photos (Camera or Gallery)
                 </label>
-                <input
-                  type="text"
-                  value={imageUrl}
-                  onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full text-xs bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2"
+                <ImageUploadDropzone
+                  images={uploadedImages}
+                  onChange={setUploadedImages}
+                  maxFiles={6}
                 />
               </div>
-
               <button
                 type="submit"
                 disabled={propLoading}

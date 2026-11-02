@@ -17,6 +17,7 @@ import {
   ChevronDown,
   Layers,
   Search,
+  Plus,
 } from 'lucide-react';
 import { SITE_CONTACT } from '@/config/siteContact';
 
@@ -142,8 +143,16 @@ export default function Navbar() {
           {/* User Auth & Action Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <Link
+              href="/post-property"
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-black uppercase tracking-wider text-forest-950 bg-gold-accent hover:bg-gold-light rounded-lg transition-all shadow-md transform hover:-translate-y-0.5"
+            >
+              <Plus className="w-3.5 h-3.5 text-forest-950" />
+              <span>Post Property Free</span>
+            </Link>
+
+            <Link
               href="/dashboard/agent"
-              className="px-3.5 py-2 text-xs font-bold text-forest-800 bg-forest-100/70 hover:bg-forest-100 rounded-lg transition-colors border border-forest-200"
+              className="px-3 py-2 text-xs font-bold text-forest-800 bg-forest-100/70 hover:bg-forest-100 rounded-lg transition-colors border border-forest-200"
             >
               For Agents &amp; Builders
             </Link>
@@ -261,6 +270,14 @@ export default function Navbar() {
           ))}
 
           <div className="pt-4 border-t border-charcoal-100 space-y-2">
+            <Link
+              href="/post-property"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-1.5 w-full py-2.5 text-center text-xs font-black uppercase tracking-wider text-forest-950 bg-gold-accent hover:bg-gold-light rounded-lg shadow-md"
+            >
+              <Plus className="w-4 h-4 text-forest-950" />
+              <span>Post Property Free</span>
+            </Link>
             {user ? (
               <>
                 <Link

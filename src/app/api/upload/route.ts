@@ -10,9 +10,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export async function POST(request: Request) {
   try {
     const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized: Please sign in to upload files' }, { status: 401 });
-    }
+    // Allow authenticated users as well as public broker/owner listing submissions
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
