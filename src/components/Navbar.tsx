@@ -48,6 +48,7 @@ export default function Navbar() {
     { name: 'Buy', href: '/properties?listingType=SALE' },
     { name: 'Rent', href: '/properties?listingType=RENT' },
     { name: 'Commercial', href: '/properties?propertyType=COMMERCIAL' },
+    { name: 'Home Loans', href: '/home-loans', badge: '8.40%' },
     { name: 'Truth Score™', href: '/truth-score', badge: 'Verified' },
     { name: 'Localities', href: '/localities' },
     { name: 'AI Matchmaker', href: '/ai-matchmaker', icon: Sparkles, highlight: true },
