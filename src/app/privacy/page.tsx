@@ -35,10 +35,34 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          <section className="space-y-2">
+          <section className="space-y-3">
             <h2 className="font-bold text-base text-forest-950">3. Cookies &amp; Google AdSense Disclosure</h2>
             <p>
-              We utilize essential security cookies to preserve your authenticated workspace session. Third-party advertising partners, including Google AdSense, may place and read cookies on your browser to serve non-deceptive, contextual real estate advertisements based on prior visits. Users may disable targeted cookies via browser controls or Google Ads Settings.
+              We utilize essential security cookies to preserve your authenticated workspace session. Third-party vendors, including Google, use cookies to serve ads based on a user&apos;s prior visits to EstateOS or other websites on the internet.
+            </p>
+            <p>
+              Google&apos;s use of advertising cookies (including the DoubleClick cookie) enables it and its certified partners to serve relevant, contextual advertisements to users based on their visits to our site and/or other sites across the World Wide Web.
+            </p>
+            <p>
+              Users may choose to opt out of personalized advertising at any time by visiting{' '}
+              <a
+                href="https://www.google.com/settings/ads"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-forest-800 font-bold underline hover:text-gold-700"
+              >
+                Google Ads Settings (https://www.google.com/settings/ads)
+              </a>
+              . Alternatively, users can opt out of a third-party vendor&apos;s use of cookies for personalized advertising by visiting{' '}
+              <a
+                href="https://www.aboutads.info/choices/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-forest-800 font-bold underline hover:text-gold-700"
+              >
+                www.aboutads.info
+              </a>
+              .
             </p>
           </section>
 
