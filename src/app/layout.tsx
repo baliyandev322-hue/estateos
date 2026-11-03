@@ -103,11 +103,10 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* Google AdSense Script - Loaded via Next.js Script strategy="afterInteractive" to prevent render blocking */}
-        <Script
-          id="google-adsense"
+        {/* Google AdSense Official Script strictly placed inside <head> for 100% crawler verification */}
+        <script
+          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8670788447807706"
-          strategy="afterInteractive"
           crossOrigin="anonymous"
         />
         {/* Google Analytics 4 (GA4) */}
