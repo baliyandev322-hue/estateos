@@ -101,19 +101,22 @@ export default function RootLayout({
             }),
           }}
         />
-        {/* Google AdSense Official Verification & Ad Delivery Script */}
-        <script
-          async
+        {/* Google AdSense Script - Loaded via Next.js Script strategy="afterInteractive" to prevent render blocking */}
+        <Script
+          id="google-adsense"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8670788447807706"
+          strategy="afterInteractive"
           crossOrigin="anonymous"
         />
-        {/* Google Analytics 4 (GA4) Live Visitor Tracking Script */}
-        <script
-          async
+        {/* Google Analytics 4 (GA4) */}
+        <Script
+          id="google-analytics-gtag"
           src="https://www.googletagmanager.com/gtag/js?id=G-22LXLTRMVV"
+          strategy="afterInteractive"
         />
-        <script
+        <Script
           id="google-analytics-init"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];

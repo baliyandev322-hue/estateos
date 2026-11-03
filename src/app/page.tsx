@@ -576,7 +576,13 @@ export default async function HomePage() {
             {articles.map((art) => (
               <div key={art.id} className="card-luxury rounded-2xl overflow-hidden flex flex-col bg-white border border-charcoal-200/80">
                 <div className="aspect-[16/9] overflow-hidden bg-charcoal-100">
-                  <img src={art.coverImage} alt={art.title} className="w-full h-full object-cover" />
+                  <img
+                    src={art.coverImage}
+                    alt={art.title}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>

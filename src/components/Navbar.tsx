@@ -35,7 +35,7 @@ export default function Navbar() {
         if (data.user) setUser(data.user);
       })
       .catch(() => {});
-  }, [pathname]);
+  }, []);
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
