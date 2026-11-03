@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import Script from 'next/script';
 import { SITE_CONTACT } from '@/config/siteContact';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
+import NavigationProgressBar from '@/components/NavigationProgressBar';
 
 export const metadata: Metadata = {
   title: 'EstateOS — India’s Sovereign PropTech Marketplace & AI Platform',
@@ -130,6 +132,9 @@ export default function RootLayout({
         />
       </head>
       <body className="flex flex-col min-h-screen bg-slate-50 text-charcoal-900 selection:bg-gold-200 selection:text-forest-950">
+        <Suspense fallback={null}>
+          <NavigationProgressBar />
+        </Suspense>
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
