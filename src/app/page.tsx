@@ -21,6 +21,15 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'EstateOS — Verified Real Estate, RERA Plots & PropTech AI',
+  description: 'Discover RERA-audited properties, calculate home loans & stamp duty, or match ideal homes with AI on India\'s verified proptech marketplace.',
+  alternates: {
+    canonical: 'https://www.estateospro.in',
+  },
+};
 
 export const revalidate = 60;
 
