@@ -6,15 +6,15 @@ import LocalitiesClient from './LocalitiesClient';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Top Real Estate Localities & Micro-Market Rates (Mohali, Gurugram, Bangalore) | EstateOS',
-  description: 'Explore verified price trends, annual capital appreciation rates, average rental yields, and infrastructure ratings across premier micro-markets in India.',
-  keywords: 'property rates mohali, real estate investment gurugram, bangalore rental yields, it city mohali price per sq ft, best localities to buy property',
+  title: 'Property Rates in Muzaffarnagar & NCR Localities (2026) | EstateOS',
+  description: 'Verified property rates in Gandhi Colony, New Mandi, and prime UP & NCR localities. Compare price per sq.ft., rental yield, and RERA approval status.',
+  keywords: 'properties in gandhi colony muzaffarnagar, plots in new mandi muzaffarnagar, jansath road property rates, best residential areas in muzaffarnagar, property rates mohali gurugram',
   alternates: {
     canonical: 'https://www.estateospro.in/localities',
   },
   openGraph: {
-    title: 'Top Real Estate Localities & Micro-Market Rates | EstateOS',
-    description: 'Data-driven locality reviews, price per sq.ft., rental yields, and connectivity ratings for prime Indian cities.',
+    title: 'Property Rates in Muzaffarnagar & NCR Localities (2026) | EstateOS',
+    description: 'Verified property rates in Gandhi Colony, New Mandi, and prime UP & NCR localities. Compare price per sq.ft., rental yield, and RERA approval status.',
     url: 'https://www.estateospro.in/localities',
     type: 'website',
   },

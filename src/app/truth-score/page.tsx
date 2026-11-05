@@ -18,8 +18,12 @@ import TruthScoreDownloadTrigger from '@/components/TruthScoreDownloadTrigger';
 import ReraSearchWidget from '@/components/ReraSearchWidget';
 
 export const metadata = {
-  title: 'Property Truth Score™ Protocol — EstateOS Verification Standards',
-  description: 'Learn how the EstateOS Property Truth Score eliminates real estate fraud, phantom listings, and title ambiguities across Indian micro-markets.',
+  title: 'Property Truth Score™ India — Check RERA & Title Online | EstateOS',
+  description: 'Check 0–100 Property Truth Score™ online. Free RERA project audit, circle rate check, 13-year encumbrance review, and physical verification across India.',
+  keywords: 'property truth score india, rera approved projects in muzaffarnagar, how to check property legal in up, real estate title verification online',
+  alternates: {
+    canonical: 'https://www.estateospro.in/truth-score',
+  },
 };
 
 export default function TruthScorePage() {

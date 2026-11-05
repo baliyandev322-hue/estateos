@@ -17,10 +17,12 @@ export async function generateMetadata({
 
   const titlePrefix = city 
     ? `${propertyType ? propertyType + ' ' : ''}Properties in ${city} for ${listingType === 'RENT' ? 'Rent' : 'Sale'}` 
-    : 'Verified Real Estate & RERA-Audited Properties in India';
+    : 'Verified Properties & RERA Plots for Sale in India';
 
-  const title = `${titlePrefix} | EstateOS Marketplace`;
-  const description = `Explore RERA-audited apartments, villas, and commercial spaces ${city ? 'in ' + city : 'across India'}. Filter by Property Truth Score™, price, carpet area and verified builder credentials.`;
+  const title = `${titlePrefix} | EstateOS`;
+  const description = city
+    ? `Explore RERA-audited properties, plots, and flats in ${city}. Verified Truth Score™, direct broker contact, transparent circle rates, and instant loan pre-approval.`
+    : `Search verified flats, commercial shops & freehold plots in Muzaffarnagar & NCR. 100% RERA-audited with Property Truth Score™ and zero telemarketing spam.`;
   const canonicalUrl = 'https://www.estateospro.in/properties';
 
   return {

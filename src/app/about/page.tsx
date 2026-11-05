@@ -3,8 +3,12 @@ import { ShieldCheck, Target, Award, Users, Compass, CheckCircle2 } from 'lucide
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'About EstateOS — Sovereign Indian PropTech & AI Intelligence',
-  description: 'Learn about the EstateOS mission to eradicate fraudulent listings through algorithmic Property Truth Scores and micro-market locality transparency.',
+  title: 'About EstateOS — India’s Sovereign PropTech & Property Truth Portal',
+  description: 'EstateOS is India’s sovereign proptech marketplace eradicating phantom listings through algorithmic Property Truth Scores™ and RERA statutory audits.',
+  keywords: 'rera compliant property marketplace, estateos technologies muzaffarnagar, property truth score founder, indian proptech startup',
+  alternates: {
+    canonical: 'https://www.estateospro.in/about',
+  },
 };
 
 export default function AboutPage() {
