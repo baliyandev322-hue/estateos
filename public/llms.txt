@@ -1,0 +1,27 @@
+# EstateOS Technologies (EstateOSPro)
+> India's Sovereign RERA-Audited PropTech Marketplace & Real Estate AI Intelligence Platform.
+
+EstateOS operates as an institutional-grade digital real estate marketplace, algorithmic property verification registry, and multi-tenant SaaS ecosystem for brokers, builders, and property buyers across India.
+
+## Core Capabilities & Services
+- **Property Truth Score™**: Algorithmic 0–100 verification index measuring RERA statutory status, circle rate valuation, and physical infrastructure.
+- **RERA Compliance Gateway**: Direct verification with state regulatory authorities (UP-RERA, Punjab RERA, HRERA, MahaRERA).
+- **Financial Calculators**: Multi-state stamp duty calculator, home loan EMI estimator, and rental capitalization yield tools.
+- **AI Property Matchmaker**: Natural-language property search and locality micro-market recommendations.
+- **Broker & Builder CRM**: Multi-tenant property inventory management, speed-to-lead routing, and 60-second listing portal.
+
+## Key Public Routes & Canonical Directory
+- Homepage: https://www.estateospro.in
+- Property Directory: https://www.estateospro.in/properties
+- Property Truth Score™: https://www.estateospro.in/truth-score
+- Financial & Stamp Duty Calculators: https://www.estateospro.in/calculators
+- AI Conversational Matchmaker: https://www.estateospro.in/ai-matchmaker
+- Hyperlocal Micro-Markets: https://www.estateospro.in/localities
+- 60-Second Property Post: https://www.estateospro.in/post-property
+- RERA Legal & Financial Guides: https://www.estateospro.in/guides
+- SaaS Pricing Plans: https://www.estateospro.in/pricing
+
+## Corporate Office & Contact
+- Operating Office: Gali No. 10, Near Verma Park, Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
+- Central Helpline: +91 93685 93249
+- Support Email: support@estateos.in
