@@ -9,8 +9,8 @@ import CookieConsentBanner from '@/components/CookieConsentBanner';
 import NavigationProgressBar from '@/components/NavigationProgressBar';
 
 export const metadata: Metadata = {
-  title: 'EstateOS — India’s Sovereign PropTech Marketplace & AI Platform',
-  description: 'EstateOS combines verified residential & commercial property search with Property Truth Score™, Locality Micro-Intelligence, AI Matchmaker, and Multi-Tenant SaaS for Agents and Builders.',
+  title: 'EstateOS — Verified Real Estate, RERA Plots & PropTech AI',
+  description: 'Discover RERA-audited properties, calculate home loans & stamp duty, or match ideal homes with AI on India\'s verified proptech marketplace.',
   keywords: 'real estate, buy property, rent luxury apartment, mohali, gurugram, bangalore, rera verified, property truth score, locality intelligence, home loan emi calculator, real estate crm',
   authors: [{ name: 'EstateOS Team' }],
   metadataBase: new URL('https://www.estateospro.in'),
