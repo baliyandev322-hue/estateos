@@ -22,6 +22,6 @@ EstateOS operates as an institutional-grade digital real estate marketplace, alg
 - SaaS Pricing Plans: https://www.estateospro.in/pricing
 
 ## Corporate Office & Contact
-- Operating Office: Gali No. 10, Near Verma Park, Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
+- Operating Office: Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
 - Central Helpline: +91 93685 93249
 - Support Email: support@estateos.in

@@ -37,15 +37,15 @@ export const SITE_CONTACT: ContactConfig = {
   grievanceEmail: process.env.NEXT_PUBLIC_GRIEVANCE_EMAIL || 'grievance@estateos.in',
   complianceEmail: process.env.NEXT_PUBLIC_COMPLIANCE_EMAIL || 'compliance@estateos.in',
   address: {
-    line1: 'Gali No. 10, Near Verma Park',
-    line2: 'Gandhi Colony',
+    line1: 'Gandhi Colony',
+    line2: 'Muzaffarnagar',
     city: 'Muzaffarnagar',
     state: 'Uttar Pradesh',
     pincode: '251001',
     country: 'India',
     fullFormatted:
       process.env.NEXT_PUBLIC_OFFICE_ADDRESS ||
-      'Gali No. 10, Near Verma Park, Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India',
+      'Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India',
   },
   operatingHours: 'Mon - Sat, 9:00 AM - 7:00 PM IST',
   grievanceOfficer: 'EstateOS Nodal Grievance Cell',

@@ -44,7 +44,7 @@
 
 ## 📍 Headquarters & Corporate Contact
 
-- **Registered Office**: Gali No. 10, Near Verma Park, Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
+- **Registered Office**: Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
 - **WhatsApp Desk**: [+91 93685 93249](https://wa.me/919368593249)
 - **Official Inquiries**: [support@estateospro.in](https://www.estateospro.in/about)
 - **Primary Domain**: [https://www.estateospro.in](https://www.estateospro.in)
