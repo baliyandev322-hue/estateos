@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { sendAdminLeadAlert } from '@/lib/emailService';
+import { sendWhatsAppAdminAlert } from '@/lib/whatsappAlertService';
 
 export const dynamic = 'force-dynamic';
 
@@ -74,6 +75,17 @@ export async function POST(request: Request) {
       },
       message: propertyTitle ? `Interested in property: ${propertyTitle}` : undefined,
     }).catch((e) => console.warn('Admin loan alert notice:', e));
+
+    // Instant Real-Time WhatsApp Alert to Founder
+    sendWhatsAppAdminAlert({
+      leadType: 'HOME_LOAN',
+      applicantName,
+      phone,
+      amount: parsedAmount,
+      bank: preferredBank,
+      propertyTitle,
+      commission: estimatedCommission,
+    }).catch((e) => console.warn('Founder WhatsApp alert notice:', e));
 
     return NextResponse.json({
       success: true,
