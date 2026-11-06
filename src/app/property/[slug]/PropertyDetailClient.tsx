@@ -586,7 +586,7 @@ export default function PropertyDetailClient({
               {/* Direct WhatsApp & Call Buttons */}
               <div className="grid grid-cols-2 gap-2 text-xs font-bold">
                 <a
-                  href={`https://wa.me/${(property.user?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
+                  href={`https://wa.me/${(property.user?.phone || property.organization?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all"
@@ -595,7 +595,7 @@ export default function PropertyDetailClient({
                   <span>WhatsApp</span>
                 </a>
                 <a
-                  href={`tel:${property.user?.phone || SITE_CONTACT.directPhone}`}
+                  href={`tel:${property.user?.phone || property.organization?.phone || SITE_CONTACT.directPhone}`}
                   className="py-2.5 px-3 rounded-xl bg-forest-900 hover:bg-forest-800 text-white flex items-center justify-center gap-1.5 shadow-sm transition-all border border-forest-700"
                 >
                   <Phone className="w-4 h-4 text-gold-accent" />
@@ -938,7 +938,7 @@ export default function PropertyDetailClient({
 
         <div className="flex items-center gap-2 shrink-0">
           <a
-            href={`https://wa.me/${(property.user?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
+            href={`https://wa.me/${(property.user?.phone || property.organization?.phone || SITE_CONTACT.whatsappNumber).replace(/\D/g, '')}?text=${encodeURIComponent(`Hi, I am interested in ${property.title} on EstateOS.`)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
@@ -947,7 +947,7 @@ export default function PropertyDetailClient({
             <span>WhatsApp</span>
           </a>
           <a
-            href={`tel:${property.user?.phone || SITE_CONTACT.directPhone}`}
+            href={`tel:${property.user?.phone || property.organization?.phone || SITE_CONTACT.directPhone}`}
             className="py-2 px-3 rounded-xl bg-gold-accent hover:bg-gold-light text-forest-950 font-black text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
           >
             <Phone className="w-3.5 h-3.5 fill-forest-950" />
