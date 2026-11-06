@@ -11,6 +11,7 @@ import {
   ArrowRight,
   X,
   CreditCard,
+  MessageSquare,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 
@@ -124,12 +125,32 @@ export default function HomeLoanApplyModal({
               </div>
             </div>
 
-            <button
-              onClick={onClose}
-              className="w-full py-3 bg-forest-900 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md"
-            >
-              Done &amp; Return to Property
-            </button>
+            <div className="space-y-2 pt-2">
+              <a
+                href={`https://wa.me/919368593249?text=${encodeURIComponent(
+                  `Hello EstateOS! I just submitted a Home Loan Application on EstateOS.\n\n` +
+                  `👤 Applicant: ${applicantName}\n` +
+                  `📞 Phone: ${phone}\n` +
+                  `💰 Loan Amount: ${formatCurrencyINR(loanAmount)}\n` +
+                  `🏦 Preferred Bank: ${preferredBank}\n` +
+                  (propertyTitle ? `🏡 Property: ${propertyTitle}\n` : '') +
+                  `\nPlease assign a dedicated banking concierge to process my pre-approval.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
+              >
+                <MessageSquare className="w-4 h-4" />
+                Connect on WhatsApp for Instant Status
+              </a>
+
+              <button
+                onClick={onClose}
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-charcoal-700 font-bold text-xs uppercase tracking-wider rounded-xl transition-colors"
+              >
+                Done &amp; Return to Property
+              </button>
+            </div>
           </div>
         ) : (
           <div>
