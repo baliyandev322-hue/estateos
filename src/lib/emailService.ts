@@ -8,6 +8,7 @@
 
 import nodemailer from 'nodemailer';
 import { sendWhatsAppAdminAlert } from './whatsappAlertService';
+import { sendTelegramAdminAlert } from './telegramAlertService';
 
 export interface EmailPayload {
   to: string;
@@ -180,6 +181,18 @@ export async function sendAdminLeadAlert({
     commission: details?.['Est. DSA Commission'],
     message,
   }).catch((e) => console.warn('Founder WhatsApp alert notification notice:', e));
+
+  // Instant Telegram Push Alert to Founder Phone
+  sendTelegramAdminAlert({
+    leadType: leadType === 'HOME_LOAN_APPLICATION' ? 'HOME_LOAN' : leadType === 'PROPERTY_ENQUIRY' ? 'PROPERTY_INQUIRY' : 'CONTACT_FORM',
+    applicantName: name,
+    phone,
+    amount: details?.['Loan Amount'] || details?.['Budget'] || details?.['Price'],
+    bank: details?.['Preferred Bank'],
+    propertyTitle: details?.['Property'] || details?.['Target Property'],
+    commission: details?.['Est. DSA Commission'],
+    message,
+  }).catch((e) => console.warn('Founder Telegram alert notification notice:', e));
 
   return sendEmail({
     to: ADMIN_EMAIL,

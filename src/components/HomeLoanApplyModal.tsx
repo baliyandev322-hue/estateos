@@ -71,6 +71,21 @@ export default function HomeLoanApplyModal({
       const data = await res.json();
       if (res.ok) {
         setSuccessData(data);
+        // Auto-open WhatsApp with Founder (+91 93685 93249) pre-filled with all loan details
+        try {
+          const waMsg = encodeURIComponent(
+            `Hello EstateOS! I just submitted a Home Loan Application on EstateOS.\n\n` +
+            `👤 Applicant: ${applicantName}\n` +
+            `📞 Phone: ${phone}\n` +
+            `💰 Loan Amount: ${formatCurrencyINR(loanAmount)}\n` +
+            `🏦 Preferred Bank: ${preferredBank}\n` +
+            (propertyTitle ? `🏡 Property: ${propertyTitle}\n` : '') +
+            `\nPlease connect with me to proceed with documents pickup.`
+          );
+          window.open(`https://wa.me/919368593249?text=${waMsg}`, '_blank');
+        } catch (e) {
+          console.warn('WhatsApp auto-redirect notice:', e);
+        }
       } else {
         alert(data.error || 'Failed to submit loan request');
       }
