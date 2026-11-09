@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import { sendAdminLeadAlert } from '@/lib/emailService';
 import { sendWhatsAppAdminAlert } from '@/lib/whatsappAlertService';
+import { sendTelegramAdminAlert } from '@/lib/telegramAlertService';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,6 +87,17 @@ export async function POST(request: Request) {
       propertyTitle,
       commission: estimatedCommission,
     }).catch((e) => console.warn('Founder WhatsApp alert notice:', e));
+
+    // Direct Real-Time Telegram Alert to Founder Phone
+    await sendTelegramAdminAlert({
+      leadType: 'HOME_LOAN',
+      applicantName,
+      phone,
+      amount: parsedAmount,
+      bank: preferredBank,
+      propertyTitle,
+      commission: estimatedCommission,
+    }).catch((e) => console.warn('Founder direct Telegram alert notice:', e));
 
     return NextResponse.json({
       success: true,
