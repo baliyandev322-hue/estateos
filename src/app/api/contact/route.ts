@@ -3,6 +3,7 @@ import prisma from '@/lib/prisma';
 import { contactRegistry } from '@/lib/contactRegistry';
 import { SITE_CONTACT } from '@/config/siteContact';
 import { sendContactInquiryConfirmation, sendAdminLeadAlert } from '@/lib/emailService';
+import { sendTelegramAdminAlert } from '@/lib/telegramAlertService';
 
 export const dynamic = 'force-dynamic';
 
@@ -63,6 +64,14 @@ export async function POST(request: Request) {
       },
       message,
     }).catch((e) => console.warn('Admin alert dispatch notice:', e));
+
+    // Direct Telegram Alert to Founder Phone
+    await sendTelegramAdminAlert({
+      leadType: 'CONTACT_FORM',
+      applicantName: name,
+      phone,
+      message: `${subject ? `[${subject}] ` : ''}${message}`,
+    }).catch((e) => console.warn('Founder contact Telegram alert notice:', e));
 
     // Speed-to-lead concierge WhatsApp link
     const cleanPhone = phone.replace(/\D/g, '');

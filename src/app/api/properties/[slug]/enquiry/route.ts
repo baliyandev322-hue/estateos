@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { SITE_CONTACT } from '@/config/siteContact';
 import { sendPropertyEnquiryConfirmation, sendAdminLeadAlert } from '@/lib/emailService';
+import { sendTelegramAdminAlert } from '@/lib/telegramAlertService';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
 
 export const dynamic = 'force-dynamic';
@@ -104,6 +105,16 @@ export async function POST(
       },
       message,
     }).catch((e) => console.warn('Admin lead alert dispatch notice:', e));
+
+    // Instant Direct Telegram Alert to Founder Phone
+    await sendTelegramAdminAlert({
+      leadType: 'PROPERTY_INQUIRY',
+      applicantName: name,
+      phone,
+      amount: priceFormatted,
+      propertyTitle,
+      message,
+    }).catch((e) => console.warn('Founder property enquiry Telegram alert notice:', e));
 
     return NextResponse.json({
       success: true,
