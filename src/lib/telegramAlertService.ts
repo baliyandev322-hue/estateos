@@ -4,8 +4,9 @@
  * with sound/chime via Telegram Bot API (100% Free, Unlimited & Instant).
  */
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN || '9245783228:AAHft7a7bdoWmsdwe46AaDeAOWAKxO5Hu0E';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '1967853149';
 
 export interface TelegramLeadAlert {
   leadType: 'HOME_LOAN' | 'PROPERTY_INQUIRY' | 'CONTACT_FORM';
