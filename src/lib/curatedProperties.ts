@@ -181,8 +181,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Lush Green Parks & Drainage',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/modipuram-nh58-meerut.jpg',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -228,7 +227,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-TOWNSHIP-VERIFIED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Delhi-Meerut Expressway 5 Min Drive',
@@ -238,8 +237,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Immediate Mutation & Bank Financing',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/ansal-vedvyaspuri-meerut.jpg',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -285,7 +283,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-ESTABLISHED-ZONE',
     truthScore: 95,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Near IIMT University & Leading Schools',
@@ -295,8 +293,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Home Loan Ready Property Registry',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/ganga-nagar-meerut.jpg',
     ]),
     furnishing: 'SEMI_FURNISHED',
     organization: {
@@ -352,8 +349,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Clean Title & Bank Loan Eligibility',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/a2z-nh58-muzaffarnagar.jpg',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -399,7 +395,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MZN-143-RESIDENTIAL',
     truthScore: 93,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Prime Roorkee Road Connectivity',
@@ -409,8 +405,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Registry & Dakhil Kharij Ready',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/dwarka-city-muzaffarnagar.jpg',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -465,8 +460,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Instant Mutation & Registry Support',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/vasundhara-jansath-muzaffarnagar.jpg',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {

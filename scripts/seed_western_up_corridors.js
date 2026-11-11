@@ -46,8 +46,7 @@ const corridors = [
       'Lush Green Parks & Drainage',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/modipuram-nh58-meerut.jpg',
     ]),
     viewsCount: 280,
     enquiriesCount: 11,
@@ -83,7 +82,7 @@ const corridors = [
     reraId: 'MDA-TOWNSHIP-VERIFIED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -95,8 +94,7 @@ const corridors = [
       'Immediate Mutation & Bank Financing',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/ansal-vedvyaspuri-meerut.jpg',
     ]),
     viewsCount: 195,
     enquiriesCount: 8,
@@ -132,7 +130,7 @@ const corridors = [
     reraId: 'MDA-ESTABLISHED-ZONE',
     truthScore: 95,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'SEMI_FURNISHED',
@@ -144,8 +142,7 @@ const corridors = [
       'Home Loan Ready Property Registry',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/ganga-nagar-meerut.jpg',
     ]),
     viewsCount: 210,
     enquiriesCount: 9,
@@ -193,8 +190,7 @@ const corridors = [
       'Clean Title & Bank Loan Eligibility',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/a2z-nh58-muzaffarnagar.jpg',
     ]),
     viewsCount: 240,
     enquiriesCount: 14,
@@ -230,7 +226,7 @@ const corridors = [
     reraId: 'MZN-143-RESIDENTIAL',
     truthScore: 93,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -242,8 +238,7 @@ const corridors = [
       'Registry & Dakhil Kharij Ready',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/dwarka-city-muzaffarnagar.jpg',
     ]),
     viewsCount: 165,
     enquiriesCount: 7,
@@ -290,8 +285,7 @@ const corridors = [
       'Instant Mutation & Registry Support',
     ]),
     images: JSON.stringify([
-      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      '/images/corridors/vasundhara-jansath-muzaffarnagar.jpg',
     ]),
     viewsCount: 150,
     enquiriesCount: 6,
@@ -300,6 +294,34 @@ const corridors = [
 
 async function main() {
   console.log('=== SEEDING WESTERN UP CORRIDOR SHOWCASE LISTINGS ===');
+
+  // Un-feature legacy stock-photo/metro demo properties so Homepage Featured showcases ONLY authentic Western UP listings & corridor posters
+  const featuredIdsToKeep = [
+    'uday-city-shamli-top-01',
+    'wup-meerut-modipuram-01',
+    'wup-meerut-ansal-02',
+    'wup-meerut-ganganagar-03',
+    'wup-mzn-a2z-04',
+    'wup-mzn-dwarka-05',
+  ];
+
+  const unfeatured = await prisma.property.updateMany({
+    where: {
+      AND: [
+        { id: { notIn: featuredIdsToKeep } },
+        { slug: { not: 'uday-city-abhay-green-city-residential-plots-shamli' } },
+      ],
+    },
+    data: { isFeatured: false },
+  });
+  console.log(`✓ Un-featured ${unfeatured.count} legacy stock/metro listings from Homepage showcase`);
+
+  await prisma.property.updateMany({
+    where: {
+      slug: 'uday-city-abhay-green-city-residential-plots-shamli',
+    },
+    data: { isFeatured: true, isPromoted: true },
+  });
 
   const org = await prisma.organization.upsert({
     where: { slug: 'estateos-regional-desk' },

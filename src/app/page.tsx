@@ -49,7 +49,10 @@ export default async function HomePage() {
       prisma.property.findMany({
         where: { isFeatured: true },
         take: 6,
-        orderBy: { truthScore: 'desc' },
+        orderBy: [
+          { isPromoted: 'desc' },
+          { truthScore: 'desc' },
+        ],
         include: {
           organization: true,
           user: true,
@@ -138,7 +141,7 @@ export default async function HomePage() {
           </h1>
 
           <p className="mt-4 text-base sm:text-lg text-forest-200 max-w-2xl mx-auto font-light leading-relaxed">
-            Eliminate deceptive listings. Search RERA-cross-examined luxury residences, commercial IT floors, and gated townships across Mohali, Gurugram, Bangalore &amp; Mumbai.
+            Eliminate deceptive listings. Search RERA &amp; 143-audited residential plots, gated townships, and luxury villas across Shamli, Meerut, Muzaffarnagar &amp; Delhi NCR.
           </p>
 
           {/* Hero Search Box Container */}
@@ -359,7 +362,7 @@ export default async function HomePage() {
               Featured Verified Residences
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-500 mt-1">
-              Top-scoring properties across Mohali IT City, Gurugram Golf Course corridor, Bangalore &amp; Mumbai.
+              Top-scoring verified townships &amp; growth corridors across Shamli, Meerut, Muzaffarnagar &amp; Western UP.
             </p>
           </div>
           <Link
