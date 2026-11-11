@@ -169,7 +169,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-143-CORRIDOR-AUDIT',
     truthScore: 95,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
@@ -227,7 +227,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-TOWNSHIP-VERIFIED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Delhi-Meerut Expressway 5 Min Drive',
@@ -283,7 +283,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-ESTABLISHED-ZONE',
     truthScore: 95,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Near IIMT University & Leading Schools',
@@ -339,7 +339,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MZNDA-143-APPROVED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Direct Access to NH-58 Delhi-Haridwar Highway',
@@ -395,7 +395,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MZN-143-RESIDENTIAL',
     truthScore: 93,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Prime Roorkee Road Connectivity',

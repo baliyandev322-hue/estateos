@@ -33,7 +33,7 @@ const corridors = [
     reraId: 'MDA-143-CORRIDOR-AUDIT',
     truthScore: 95,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -82,7 +82,7 @@ const corridors = [
     reraId: 'MDA-TOWNSHIP-VERIFIED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -130,7 +130,7 @@ const corridors = [
     reraId: 'MDA-ESTABLISHED-ZONE',
     truthScore: 95,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'SEMI_FURNISHED',
@@ -178,7 +178,7 @@ const corridors = [
     reraId: 'MZNDA-143-APPROVED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -226,7 +226,7 @@ const corridors = [
     reraId: 'MZN-143-RESIDENTIAL',
     truthScore: 93,
     isVerified: true,
-    isFeatured: true,
+    isFeatured: false,
     isPromoted: false,
     status: 'AVAILABLE',
     furnishing: 'UNFURNISHED',
@@ -295,14 +295,9 @@ const corridors = [
 async function main() {
   console.log('=== SEEDING WESTERN UP CORRIDOR SHOWCASE LISTINGS ===');
 
-  // Un-feature legacy stock-photo/metro demo properties so Homepage Featured showcases ONLY authentic Western UP listings & corridor posters
+  // Un-feature all non-Uday-City/non-user listings so Homepage Featured showcases ONLY genuine verified properties
   const featuredIdsToKeep = [
     'uday-city-shamli-top-01',
-    'wup-meerut-modipuram-01',
-    'wup-meerut-ansal-02',
-    'wup-meerut-ganganagar-03',
-    'wup-mzn-a2z-04',
-    'wup-mzn-dwarka-05',
   ];
 
   const unfeatured = await prisma.property.updateMany({
@@ -314,7 +309,7 @@ async function main() {
     },
     data: { isFeatured: false },
   });
-  console.log(`✓ Un-featured ${unfeatured.count} legacy stock/metro listings from Homepage showcase`);
+  console.log(`✓ Un-featured ${unfeatured.count} filler/corridor listings from Homepage showcase`);
 
   await prisma.property.updateMany({
     where: {
