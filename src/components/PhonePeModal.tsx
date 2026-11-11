@@ -41,7 +41,7 @@ export default function PhonePeModal({
   targetSlug,
 }: PhonePeModalProps) {
   const router = useRouter();
-  const [mobileNumber, setMobileNumber] = useState('9368593249');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [utrNumber, setUtrNumber] = useState('');
   const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -93,7 +93,7 @@ export default function PhonePeModal({
           planName,
           itemType,
           utrNumber,
-          customerPhone: mobileNumber,
+          customerPhone: mobileNumber || 'Customer',
           billingCycle,
           targetSlug,
         }),
