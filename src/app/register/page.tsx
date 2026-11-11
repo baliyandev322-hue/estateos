@@ -9,6 +9,7 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get('role') || 'BUYER';
+  const redirectUrl = searchParams.get('redirect');
 
   const [role, setRole] = useState<'BUYER' | 'AGENT' | 'BUILDER'>(
     ['BUYER', 'AGENT', 'BUILDER'].includes(initialRole) ? (initialRole as any) : 'BUYER'

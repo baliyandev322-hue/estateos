@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   Check,
@@ -19,6 +20,44 @@ import RazorpayModal from '@/components/RazorpayModal';
 import PhonePeModal from '@/components/PhonePeModal';
 
 export default function PricingClient() {
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<{ id: string; name: string; email: string; role?: string } | null>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [demoLoading, setDemoLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.user) setCurrentUser(d.user);
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleQuickDemoLogin = async () => {
+    setDemoLoading(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'agent@estateos.com', password: 'agent123' }),
+      });
+      const data = await res.json();
+      if (res.ok && data?.user) {
+        setCurrentUser(data.user);
+        setIsAuthModalOpen(false);
+        if (selectedPlan === 'FREE') {
+          setIsCheckoutOpen(true);
+        } else {
+          setIsPhonePeModalOpen(true);
+        }
+      }
+    } catch (err) {
+      console.error('Demo login error:', err);
+    } finally {
+      setDemoLoading(false);
+    }
+  };
   const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -124,10 +163,17 @@ export default function PricingClient() {
     planName: string;
   } | null>(null);
 
-  const handleOpenCheckout = (planId: string) => {
+    const handleOpenCheckout = (planId: string) => {
     setSelectedPlan(planId);
     setCheckoutSuccess(null);
     setReceiptData(null);
+
+    // Require login or account creation before purchasing
+    if (!currentUser) {
+      setIsAuthModalOpen(true);
+      return;
+    }
+
     if (planId === 'FREE') {
       setIsCheckoutOpen(true);
     } else {
@@ -602,7 +648,62 @@ export default function PricingClient() {
           </div>
         </div>
       )}
-            {/* PhonePe Official Gateway Modal */}
+                  {/* Sign In Required Auth Modal */}
+      {isAuthModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 text-white shadow-2xl relative">
+            <button
+              onClick={() => setIsAuthModalOpen(false)}
+              className="absolute top-4 right-4 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition cursor-pointer"
+            >
+              <span className="text-sm font-bold">✕</span>
+            </button>
+
+            <div className="text-center mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-forest-900 border border-gold-accent/40 flex items-center justify-center mx-auto mb-3 shadow-md">
+                <span className="font-serif font-black text-xl text-gold-accent">E</span>
+              </div>
+              <h3 className="font-serif text-xl font-bold text-white">
+                Account Required to Continue
+              </h3>
+              <p className="text-xs text-slate-400 mt-1.5 max-w-xs mx-auto">
+                Please sign in or create an account to activate your subscription. Your listings, leads, and tax invoices will be securely linked to your profile.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => router.push('/login?redirect=' + encodeURIComponent('/pricing'))}
+                className="w-full py-3 px-4 rounded-xl bg-forest-900 hover:bg-forest-800 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 border border-forest-700 hover:border-gold-accent transition cursor-pointer"
+              >
+                <span>Sign In to Existing Account</span>
+                <ArrowRight className="w-4 h-4 text-gold-accent" />
+              </button>
+
+              <button
+                onClick={() => router.push('/register?redirect=' + encodeURIComponent('/pricing'))}
+                className="w-full py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs flex items-center justify-center gap-2 border border-slate-700 transition cursor-pointer"
+              >
+                <Users className="w-4 h-4 text-purple-400" />
+                <span>Create Free Broker / Buyer Account</span>
+              </button>
+
+              <div className="pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={handleQuickDemoLogin}
+                  disabled={demoLoading}
+                  className="w-full py-2.5 px-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <span>{demoLoading ? 'Logging In...' : '⚡ Quick 1-Click Agent Demo Login'}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* PhonePe Official Gateway Modal */}
       <PhonePeModal
         isOpen={isPhonePeModalOpen}
         onClose={() => setIsPhonePeModalOpen(false)}
@@ -615,6 +716,8 @@ export default function PricingClient() {
             : plans.find((p) => p.id === selectedPlan)?.monthlyPrice || 0
         }
         billingCycle={billingCycle}
+        customerName={currentUser?.name || 'Verified Member'}
+        customerEmail={currentUser?.email || 'agent@estateos.com'}
       />
       {/* Razorpay Interactive Modal */}
       <RazorpayModal

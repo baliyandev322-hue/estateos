@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ShieldCheck,
   Lock,
@@ -15,8 +15,11 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams?.get('redirect');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,11 +40,15 @@ export default function LoginPage() {
 
       const data = await res.json();
       if (res.ok) {
-        const role = data.user?.role;
-        if (role === 'ADMIN') router.push('/dashboard/admin');
-        else if (role === 'BUILDER') router.push('/dashboard/builder');
-        else if (role === 'AGENT') router.push('/dashboard/agent');
-        else router.push('/dashboard/buyer');
+        if (redirectUrl) {
+          router.push(redirectUrl);
+        } else {
+          const role = data.user?.role;
+          if (role === 'ADMIN') router.push('/dashboard/admin');
+          else if (role === 'BUILDER') router.push('/dashboard/builder');
+          else if (role === 'AGENT') router.push('/dashboard/agent');
+          else router.push('/dashboard/buyer');
+        }
         router.refresh();
       } else {
         setError(data.error || 'Invalid credentials');
@@ -128,17 +135,36 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading || !!activeDemo}
-              className="w-full py-3 text-xs font-black uppercase tracking-wider text-white bg-forest-900 hover:bg-forest-800 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border border-forest-700 hover:border-gold-accent disabled:opacity-50"
+              className="w-full py-3 text-xs font-black uppercase tracking-wider text-white bg-forest-900 hover:bg-forest-800 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border border-forest-700 hover:border-gold-accent disabled:opacity-50 cursor-pointer"
             >
               <span>{loading ? 'Authenticating...' : 'Sign In with Credentials'}</span>
               <ArrowRight className="w-4 h-4 text-gold-accent" />
             </button>
           </form>
+
+          {/* Quick Demo Login Option */}
+          <div className="mt-6 pt-5 border-t border-slate-100">
+            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 text-center">
+              Quick 1-Click Demo Evaluation
+            </div>
+            <button
+              type="button"
+              onClick={() => executeLogin('agent@estateos.com', 'agent123', 'Agent Demo')}
+              disabled={loading || !!activeDemo}
+              className="w-full py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
+            >
+              <UserCheck className="w-4 h-4 text-purple-600" />
+              <span>Sign In as Verified Agent Demo</span>
+            </button>
+          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-charcoal-500">
           Don&apos;t have an account yet?{' '}
-          <Link href="/register" className="font-bold text-forest-900 hover:underline">
+          <Link
+            href={redirectUrl ? `/register?redirect=${encodeURIComponent(redirectUrl)}` : '/register'}
+            className="font-bold text-forest-900 hover:underline"
+          >
             Register as Buyer, Agent or Builder
           </Link>
         </p>
@@ -147,3 +173,10 @@ export default function LoginPage() {
   );
 }
 
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center text-xs text-slate-500">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}

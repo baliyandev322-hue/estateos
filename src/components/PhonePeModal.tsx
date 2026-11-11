@@ -12,9 +12,8 @@ import {
   X,
   Lock,
   CheckCircle2,
-  Copy,
-  Check,
-  ExternalLink,
+  Clock,
+  UserCheck,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 import { SITE_CONTACT } from '@/config/siteContact';
@@ -28,6 +27,8 @@ interface PhonePeModalProps {
   amount: number;
   billingCycle?: 'MONTHLY' | 'YEARLY';
   targetSlug?: string;
+  customerName?: string;
+  customerEmail?: string;
 }
 
 export default function PhonePeModal({
@@ -39,13 +40,21 @@ export default function PhonePeModal({
   amount,
   billingCycle = 'MONTHLY',
   targetSlug,
+  customerName = 'Verified Member',
+  customerEmail = 'agent@estateos.com',
 }: PhonePeModalProps) {
   const router = useRouter();
-  const [mobileNumber, setMobileNumber] = useState('');
-  const [utrNumber, setUtrNumber] = useState('');
-  const [copied, setCopied] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes session
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -53,21 +62,20 @@ export default function PhonePeModal({
   const payeeName = 'EstateOS Technologies';
   const cleanAmount = Number(amount) || 499;
 
-  // Official NPCI Standard UPI Intent URI (Never opens a web link, directly triggers PhonePe/GPay app)
+  // Format mm:ss
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+  // Official NPCI Standard UPI Intent URI
   const upiIntentUri = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(
     payeeName
   )}&am=${cleanAmount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(planName)}`;
 
-  // High-Resolution Scannable Bharat QR Code (Encodes the pure upi:// protocol)
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=350x350&margin=8&data=${encodeURIComponent(
+  // High-Resolution Scannable Bharat QR Code (Pure upi:// protocol, no web links)
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=380x380&margin=8&data=${encodeURIComponent(
     upiIntentUri
   )}`;
-
-  const handleCopyUpi = () => {
-    navigator.clipboard.writeText(upiId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
 
   const handleLaunchMobileApp = (appScheme?: string) => {
     let targetUri = upiIntentUri;
@@ -92,8 +100,7 @@ export default function PhonePeModal({
           planId,
           planName,
           itemType,
-          utrNumber,
-          customerPhone: mobileNumber || 'Customer',
+          customerPhone: 'PhonePe UPI App',
           billingCycle,
           targetSlug,
         }),
@@ -111,7 +118,7 @@ export default function PhonePeModal({
           )}&targetSlug=${encodeURIComponent(targetSlug || '')}`
         );
       } else {
-        setErrorMessage(data.error || 'Verification failed. Please check details.');
+        setErrorMessage(data.error || 'Verification failed. Please try again.');
         setIsVerifying(false);
       }
     } catch (err) {
@@ -124,7 +131,7 @@ export default function PhonePeModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 overflow-y-auto">
       <div className="bg-slate-900 border border-purple-500/40 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative my-auto">
-        {/* Header with PhonePe Accent */}
+        {/* Header with PhonePe Brand Accent */}
         <div className="bg-gradient-to-r from-purple-700 via-purple-600 to-indigo-700 p-5 text-white relative">
           <button
             onClick={onClose}
@@ -139,40 +146,52 @@ export default function PhonePeModal({
             </div>
             <div>
               <div className="text-[11px] uppercase tracking-wider font-bold text-purple-200">
-                Official PhonePe & Bharat UPI Gateway
+                EstateOS Official Payment Gateway
               </div>
-              <h3 className="text-lg font-extrabold text-white">Scan & Pay via PhonePe / GPay</h3>
+              <h3 className="text-lg font-extrabold text-white">PhonePe Standard Checkout</h3>
             </div>
           </div>
         </div>
 
         {/* Modal Body */}
         <div className="p-5 sm:p-6 space-y-5">
-          {/* Order Details Banner */}
-          <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3.5 flex items-center justify-between">
+          {/* Order Details & Authenticated User Banner */}
+          <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
-              <div className="text-[11px] text-slate-400">Selected Item</div>
+              <div className="text-[11px] text-slate-400">Order Summary</div>
               <div className="font-bold text-white text-sm">{planName}</div>
-              <div className="text-[10px] text-purple-400 capitalize">{billingCycle.toLowerCase()} Billing</div>
+              <div className="flex items-center gap-1.5 mt-1 text-[11px] text-emerald-400">
+                <UserCheck className="w-3.5 h-3.5" />
+                <span className="font-medium truncate max-w-[200px]">
+                  {customerName} ({customerEmail})
+                </span>
+              </div>
             </div>
             <div className="text-right">
               <div className="text-[11px] text-slate-400">Total Payable</div>
               <div className="text-2xl font-black text-emerald-400">{formatCurrencyINR(cleanAmount)}</div>
+              <div className="text-[10px] text-purple-400 capitalize">{billingCycle.toLowerCase()} Billing</div>
             </div>
           </div>
 
           {/* Genuine Dynamic UPI QR Code Box */}
           <div className="bg-white rounded-2xl p-5 text-slate-900 flex flex-col items-center shadow-xl border-2 border-purple-400/40 relative">
-            <div className="flex items-center gap-2 mb-2 text-xs font-extrabold text-purple-900 uppercase tracking-wider">
-              <QrCode className="w-4 h-4 text-purple-700" />
-              <span>Official Bharat UPI Dynamic QR</span>
+            <div className="flex items-center justify-between w-full mb-3 px-1">
+              <div className="flex items-center gap-1.5 text-xs font-black text-purple-900 uppercase tracking-wider">
+                <QrCode className="w-4 h-4 text-purple-700" />
+                <span>Dynamic Bharat UPI QR</span>
+              </div>
+              <div className="flex items-center gap-1 text-[11px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+                <Clock className="w-3 h-3 text-purple-600" />
+                <span>Expires: {formattedTime}</span>
+              </div>
             </div>
 
             {/* Scannable Real QR Image */}
             <div className="relative w-56 h-56 bg-white rounded-xl p-2 border border-slate-200 shadow-inner flex items-center justify-center">
               <img
                 src={qrCodeUrl}
-                alt={`Scan to Pay ₹${cleanAmount} to ${upiId}`}
+                alt={`Scan to Pay ₹${cleanAmount} to EstateOS`}
                 className="w-full h-full object-contain rounded-lg"
               />
               {/* Center PhonePe Brand Watermark Badge */}
@@ -185,14 +204,14 @@ export default function PhonePeModal({
 
             {/* Instructions */}
             <p className="text-[12px] font-bold text-slate-700 mt-3 text-center">
-              Open <span className="text-purple-700 font-extrabold">PhonePe</span>, <span className="text-blue-600 font-extrabold">Google Pay</span>, or <span className="text-sky-600 font-extrabold">Paytm</span> scanner to pay directly.
+              Scan with <span className="text-purple-700 font-extrabold">PhonePe</span>, <span className="text-blue-600 font-extrabold">Google Pay</span>, or <span className="text-sky-600 font-extrabold">Paytm</span>
             </p>
-            <p className="text-[10px] text-slate-500 text-center">
-              (Direct UPI protocol — No website link will appear upon scanning)
+            <p className="text-[11px] text-slate-500 text-center mt-0.5">
+              Exact amount is pre-filled on your mobile screen.
             </p>
           </div>
 
-          {/* Mobile Instant 1-Tap Payment Buttons (Shown prominent on phones) */}
+          {/* Mobile Instant 1-Tap Payment Buttons (For mobile users) */}
           <div className="space-y-2">
             <div className="text-xs font-semibold text-slate-300">
               Or Pay Directly in Mobile App:
@@ -220,48 +239,6 @@ export default function PhonePeModal({
             </div>
           </div>
 
-          {/* Manual UPI ID Copy Option */}
-          <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-between">
-            <div>
-              <div className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                Verified Merchant UPI ID
-              </div>
-              <div className="font-mono text-xs text-purple-300 font-bold">{upiId}</div>
-            </div>
-            <button
-              type="button"
-              onClick={handleCopyUpi}
-              className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">Copied!</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="w-3.5 h-3.5 text-slate-400" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* UTR / Reference Confirmation Box */}
-          <div className="space-y-2 pt-1 border-t border-slate-800">
-            <label className="block text-xs font-semibold text-slate-300">
-              UPI Reference / UTR Number (Optional after payment):
-            </label>
-            <input
-              type="text"
-              maxLength={16}
-              value={utrNumber}
-              onChange={(e) => setUtrNumber(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
-              placeholder="e.g. 4312XXXXXXXX or leave blank"
-              className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs font-mono tracking-wider focus:outline-none focus:border-purple-500"
-            />
-          </div>
-
           {errorMessage && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -269,7 +246,7 @@ export default function PhonePeModal({
             </div>
           )}
 
-          {/* Submit / Confirm Button */}
+          {/* Clean Professional Action Button */}
           <button
             type="button"
             onClick={handleConfirmPayment}
@@ -279,21 +256,21 @@ export default function PhonePeModal({
             {isVerifying ? (
               <>
                 <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
-                <span>Confirming & Generating Tax Invoice...</span>
+                <span>Verifying & Generating Tax Invoice...</span>
               </>
             ) : (
               <>
                 <CheckCircle2 className="w-4 h-4 text-slate-950" />
-                <span>I Have Paid ₹{cleanAmount} — Activate Now</span>
+                <span>Confirm Payment & Activate Membership</span>
                 <ArrowRight className="w-4 h-4 text-slate-950" />
               </>
             )}
           </button>
 
-          {/* Trust Footer */}
+          {/* Security Compliance Footer */}
           <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 pt-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>NPCI Unified Payments Interface (UPI) Certified Protocol</span>
+            <span>256-Bit SSL Encrypted • NPCI Certified Real-Time Settlement</span>
           </div>
         </div>
       </div>
