@@ -2018,7 +2018,12 @@ export function filterCuratedProperties(params: {
   verified?: boolean;
   sort?: string;
 }) {
-  let list = [...CURATED_PROPERTIES];
+  let list = CURATED_PROPERTIES.filter(
+    (p) =>
+      p.status === 'AVAILABLE' &&
+      !p.images.includes('unsplash.com') &&
+      !p.id.startsWith('wup-')
+  );
 
   if (params.search) {
     const q = params.search.toLowerCase();

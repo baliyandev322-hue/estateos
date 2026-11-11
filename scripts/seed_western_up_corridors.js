@@ -35,7 +35,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'UNFURNISHED',
     amenities: JSON.stringify([
       'Close to Delhi-Meerut RapidX Metro',
@@ -84,7 +84,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'UNFURNISHED',
     amenities: JSON.stringify([
       'Delhi-Meerut Expressway 5 Min Drive',
@@ -132,7 +132,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'SEMI_FURNISHED',
     amenities: JSON.stringify([
       'Near IIMT University & Leading Schools',
@@ -180,7 +180,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'UNFURNISHED',
     amenities: JSON.stringify([
       'Direct Access to NH-58 Delhi-Haridwar Highway',
@@ -228,7 +228,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'UNFURNISHED',
     amenities: JSON.stringify([
       'Prime Roorkee Road Connectivity',
@@ -276,7 +276,7 @@ const corridors = [
     isVerified: true,
     isFeatured: false,
     isPromoted: false,
-    status: 'AVAILABLE',
+    status: 'DEMO_ARCHIVED',
     furnishing: 'UNFURNISHED',
     amenities: JSON.stringify([
       'Near Jansath Road Ring Road Connectivity',
@@ -342,7 +342,23 @@ async function main() {
     console.log(`✓ Synced: ${prop.title}`);
   }
 
-  console.log('🎉 All 6 Western UP Regional Corridor pages synced cleanly into Supabase!');
+  const archivedDemos = await prisma.property.updateMany({
+    where: {
+      AND: [
+        { slug: { not: 'uday-city-abhay-green-city-residential-plots-shamli' } },
+        {
+          OR: [
+            { id: { startsWith: 'wup-' } },
+            { images: { contains: 'unsplash.com' } },
+          ],
+        },
+      ],
+    },
+    data: { isFeatured: false, isPromoted: false, status: 'DEMO_ARCHIVED' },
+  });
+  console.log(`✓ Archived ${archivedDemos.count} demo/Unsplash/corridor listings from public search grids`);
+
+  console.log('🎉 Real-only property showcase synced cleanly into Supabase!');
 }
 
 main()

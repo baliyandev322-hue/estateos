@@ -12,8 +12,20 @@ async function main() {
     console.log(`   Images: ${f.images?.slice(0, 120)}...`);
   });
 
-  const totalProps = await prisma.property.count();
-  console.log('Total Properties in DB:', totalProps);
+  const allProps = await prisma.property.findMany({
+    select: { id: true, slug: true, city: true, status: true, isFeatured: true, images: true },
+  });
+  console.log('Total Properties in DB:', allProps.length);
+  allProps.forEach((p, idx) => {
+    const imgSrc = p.images?.includes('unsplash.com')
+      ? 'UNSPLASH'
+      : p.images?.includes('/images/corridors/')
+      ? 'CORRIDOR_POSTER'
+      : p.images?.includes('/images/properties/')
+      ? 'LOCAL_REAL_PHOTO'
+      : (p.images || '').slice(0, 40);
+    console.log(`  [${idx + 1}] ${p.city} | status=${p.status} | featured=${p.isFeatured} | ${imgSrc} | ${p.slug}`);
+  });
 }
 
 main().finally(() => prisma.$disconnect());

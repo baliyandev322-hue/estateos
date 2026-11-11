@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PropertyCard from '@/components/PropertyCard';
 import CompareModal from '@/components/CompareModal';
@@ -415,31 +416,78 @@ export default function PropertySearchClient({
             {viewMode === 'map' ? (
               <MarketplaceMap properties={initialProperties} />
             ) : initialProperties.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {initialProperties.map((prop) => (
-                  <PropertyCard
-                    key={prop.id}
-                    property={prop}
-                    onCompare={handleToggleCompare}
-                    isCompared={comparedList.some((p) => p.id === prop.id)}
-                  />
-                ))}
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {initialProperties.map((prop) => (
+                    <PropertyCard
+                      key={prop.id}
+                      property={prop}
+                      onCompare={handleToggleCompare}
+                      isCompared={comparedList.some((p) => p.id === prop.id)}
+                    />
+                  ))}
+                </div>
+
+                {initialProperties.length < 3 && (
+                  <div className="rounded-2xl bg-gradient-to-r from-forest-950 via-forest-900 to-forest-950 text-white p-6 border border-gold-accent/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-md">
+                    <div>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-gold-accent text-forest-950 text-[10px] font-black uppercase tracking-wider">
+                        <Sparkles className="w-3 h-3" />
+                        100% Real Inventory Policy
+                      </span>
+                      <h3 className="font-serif text-lg sm:text-xl font-black mt-2">
+                        Want your Meerut, Muzaffarnagar or Shamli colony listed here?
+                      </h3>
+                      <p className="text-xs sm:text-sm text-forest-200 mt-1 max-w-xl">
+                        We removed fake stock listings to protect buyer trust. Upload real camera photos in 60 seconds FREE — or pitch buyers actively searching in Western UP.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                      <Link
+                        href="/post-property"
+                        className="px-4 py-2.5 rounded-xl bg-gold-accent hover:bg-gold-light text-forest-950 font-black text-xs uppercase tracking-wider transition-colors"
+                      >
+                        + Post Property Free
+                      </Link>
+                      <Link
+                        href="/#buyer-demands"
+                        className="px-4 py-2.5 rounded-xl bg-forest-800 hover:bg-forest-700 text-white font-bold text-xs transition-colors border border-forest-700"
+                      >
+                        View Buyer Demands →
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-charcoal-200 p-12 text-center">
+              <div className="bg-white rounded-2xl border border-charcoal-200 p-10 sm:p-12 text-center shadow-sm">
                 <div className="w-12 h-12 rounded-full bg-forest-50 text-forest-700 flex items-center justify-center mx-auto mb-3">
                   <Search className="w-6 h-6" />
                 </div>
-                <h3 className="font-bold text-base text-forest-950">No matching properties found</h3>
-                <p className="text-xs text-charcoal-500 mt-1 max-w-sm mx-auto">
-                  Try broadening your budget, switching cities, or removing the verified filter to see more options.
+                <h3 className="font-bold text-base sm:text-lg text-forest-950">No verified listings match this filter yet</h3>
+                <p className="text-xs sm:text-sm text-charcoal-500 mt-1.5 max-w-md mx-auto">
+                  We only show genuine, verified projects with real photos (no fake filler listings). Try clearing filters, post your requirement for free, or list your own property.
                 </p>
-                <button
-                  onClick={handleReset}
-                  className="mt-4 px-4 py-2 bg-forest-900 text-white rounded-lg text-xs font-bold"
-                >
-                  Clear All Filters
-                </button>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                  <button
+                    onClick={handleReset}
+                    className="px-4 py-2.5 bg-forest-900 hover:bg-forest-800 text-white rounded-xl text-xs font-bold transition-colors"
+                  >
+                    Clear All Filters
+                  </button>
+                  <Link
+                    href="/#buyer-demands"
+                    className="px-4 py-2.5 bg-gold-accent hover:bg-gold-light text-forest-950 rounded-xl text-xs font-black transition-colors"
+                  >
+                    + Post Buyer Requirement Free
+                  </Link>
+                  <Link
+                    href="/post-property"
+                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-charcoal-800 rounded-xl text-xs font-bold transition-colors"
+                  >
+                    List Your Property Free
+                  </Link>
+                </div>
               </div>
             )}
 

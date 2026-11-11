@@ -47,7 +47,7 @@ export default async function HomePage() {
   try {
     const [fp, loc, art, reqLeads, stats] = await Promise.all([
       prisma.property.findMany({
-        where: { isFeatured: true },
+        where: { isFeatured: true, status: 'AVAILABLE' },
         take: 6,
         orderBy: [
           { isPromoted: 'desc' },
@@ -72,7 +72,7 @@ export default async function HomePage() {
         orderBy: { createdAt: 'desc' },
       }),
       Promise.all([
-        prisma.property.count(),
+        prisma.property.count({ where: { status: 'AVAILABLE' } }),
         prisma.organization.count(),
         prisma.lead.count(),
         prisma.user.count(),
@@ -102,7 +102,7 @@ export default async function HomePage() {
         postedLabel: 'Just Posted',
       };
     });
-    totalProperties = stats[0] || 142;
+    totalProperties = stats[0] ?? 1;
     totalOrgs = stats[1] || 28;
     totalLeads = stats[2] || 890;
     totalUsers = stats[3] || 1250;
