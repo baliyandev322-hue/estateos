@@ -11,6 +11,7 @@ export interface ContactConfig {
   tollFree: string;
   directPhone: string;
   whatsappNumber: string;
+  upiId: string;
   supportEmail: string;
   grievanceEmail: string;
   complianceEmail: string;
@@ -33,6 +34,7 @@ export const SITE_CONTACT: ContactConfig = {
   tollFree: process.env.NEXT_PUBLIC_SUPPORT_PHONE || '+91 93685 93249',
   directPhone: process.env.NEXT_PUBLIC_DIRECT_PHONE || '+91 93685 93249',
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_PHONE || '919368593249',
+  upiId: process.env.NEXT_PUBLIC_UPI_ID || '9368593249@ybl',
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@estateos.in',
   grievanceEmail: process.env.NEXT_PUBLIC_GRIEVANCE_EMAIL || 'grievance@estateos.in',
   complianceEmail: process.env.NEXT_PUBLIC_COMPLIANCE_EMAIL || 'compliance@estateos.in',
