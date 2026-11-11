@@ -15,8 +15,7 @@ export default function NavigationProgressBar() {
     if (loading) {
       setProgress(100);
       const elapsed = Date.now() - startTimeRef.current;
-      // Ensure at least 450ms visibility so user's eye sees the aesthetic transition
-      const remainingTime = Math.max(150, 450 - elapsed);
+      const remainingTime = Math.max(100, 300 - elapsed);
 
       const timer = setTimeout(() => {
         setLoading(false);
@@ -69,24 +68,11 @@ export default function NavigationProgressBar() {
       className="fixed inset-x-0 top-0 z-[99999] pointer-events-none transition-opacity duration-200"
       style={{ opacity: loading ? 1 : 0 }}
     >
-      {/* 1. Highly Visible 4px Top Gradient Bar with Bright Gold Glow */}
+      {/* Sleek 3px Top Progress Bar (No top-right floating badge) */}
       <div
-        className="h-[4px] bg-gradient-to-r from-emerald-600 via-amber-400 to-yellow-300 shadow-[0_0_16px_rgba(245,158,11,1)] transition-all ease-out duration-300"
+        className="h-[3px] bg-gradient-to-r from-emerald-600 via-amber-400 to-yellow-300 shadow-[0_0_12px_rgba(245,158,11,0.8)] transition-all ease-out duration-300"
         style={{ width: `${progress}%` }}
       />
-
-      {/* 2. Floating Aesthetic Luxury Loading Pill Badge (Top-Right) */}
-      <div className="fixed top-4 right-4 z-[99999] flex items-center gap-2.5 px-4 py-2 rounded-full bg-forest-950/95 text-gold-accent border border-gold-accent/40 shadow-2xl backdrop-blur-md transition-all transform scale-100 animate-in fade-in slide-in-from-top-2 duration-200">
-        <div className="w-3.5 h-3.5 border-2 border-gold-accent/30 border-t-gold-accent rounded-full animate-spin" />
-        <span className="text-xs font-bold text-white tracking-wide flex items-center gap-1.5">
-          <span>Loading</span>
-          <span className="inline-flex gap-0.5">
-            <span className="animate-bounce delay-100">.</span>
-            <span className="animate-bounce delay-200">.</span>
-            <span className="animate-bounce delay-300">.</span>
-          </span>
-        </span>
-      </div>
     </div>
   );
 }
