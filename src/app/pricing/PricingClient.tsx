@@ -16,12 +16,14 @@ import {
 import { formatCurrencyINR } from '@/lib/utils';
 import { loadRazorpayScript } from '@/lib/razorpay';
 import RazorpayModal from '@/components/RazorpayModal';
+import PhonePeModal from '@/components/PhonePeModal';
 
 export default function PricingClient() {
   const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
+  const [isPhonePeModalOpen, setIsPhonePeModalOpen] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null);
 
@@ -129,7 +131,7 @@ export default function PricingClient() {
     if (planId === 'FREE') {
       setIsCheckoutOpen(true);
     } else {
-      setIsRazorpayModalOpen(true);
+      setIsPhonePeModalOpen(true);
     }
   };
 
@@ -600,6 +602,20 @@ export default function PricingClient() {
           </div>
         </div>
       )}
+            {/* PhonePe Official Gateway Modal */}
+      <PhonePeModal
+        isOpen={isPhonePeModalOpen}
+        onClose={() => setIsPhonePeModalOpen(false)}
+        itemType="SUBSCRIPTION"
+        planId={selectedPlan || 'PROFESSIONAL'}
+        planName={plans.find((p) => p.id === selectedPlan)?.name || 'Professional'}
+        amount={
+          billingCycle === 'YEARLY'
+            ? plans.find((p) => p.id === selectedPlan)?.yearlyPrice || 0
+            : plans.find((p) => p.id === selectedPlan)?.monthlyPrice || 0
+        }
+        billingCycle={billingCycle}
+      />
       {/* Razorpay Interactive Modal */}
       <RazorpayModal
         isOpen={isRazorpayModalOpen}
