@@ -48,6 +48,10 @@ RAZORPAY_KEY_SECRET="your_razorpay_secret"
 CLOUDINARY_CLOUD_NAME=""
 CLOUDINARY_API_KEY=""
 CLOUDINARY_API_SECRET=""
+
+# Telegram Bot Alerts (Real-Time Push Notifications)
+TELEGRAM_BOT_TOKEN="your_telegram_bot_token_here"
+TELEGRAM_CHAT_ID="your_telegram_chat_id_here"
 ```
 
 ---

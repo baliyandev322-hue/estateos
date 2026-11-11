@@ -2,11 +2,10 @@
  * Real-Time Telegram Push Alert Gateway for EstateOS Founder
  * Dispatches instant push notifications directly to the Founder's mobile phone
  * with sound/chime via Telegram Bot API (100% Free, Unlimited & Instant).
+ *
+ * NOTE: Credentials MUST be set via environment variables.
+ * Under no circumstances should tokens or chat IDs be hardcoded in this file.
  */
-
-const TELEGRAM_BOT_TOKEN =
-  process.env.TELEGRAM_BOT_TOKEN || '9245783228:AAHft7a7bdoWmsdwe46AaDeAOWAKxO5Hu0E';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '1967853149';
 
 export interface TelegramLeadAlert {
   leadType: 'HOME_LOAN' | 'PROPERTY_INQUIRY' | 'CONTACT_FORM';
@@ -21,6 +20,14 @@ export interface TelegramLeadAlert {
 
 export async function sendTelegramAdminAlert(details: TelegramLeadAlert): Promise<{ success: boolean; error?: string }> {
   try {
+    const token = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (!token || !chatId) {
+      console.warn('[Telegram Alert] TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID environment variable not set. Alert dispatch skipped.');
+      return { success: false, error: 'Telegram credentials not set' };
+    }
+
     const cleanPhone = details.phone.replace(/\D/g, '').slice(-10);
     const typeHeading =
       details.leadType === 'HOME_LOAN'
@@ -62,17 +69,12 @@ export async function sendTelegramAdminAlert(details: TelegramLeadAlert): Promis
 
     const payloadText = lines.join('\n');
 
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-      console.warn('[Telegram Alert] TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not configured. Message ready for dispatch:\n', payloadText);
-      return { success: false, error: 'Telegram credentials not set' };
-    }
-
-    const apiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    const apiUrl = `https://api.telegram.org/bot${token}/sendMessage`;
     const res = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        chat_id: TELEGRAM_CHAT_ID,
+        chat_id: chatId,
         text: payloadText,
         parse_mode: 'Markdown',
       }),
@@ -82,12 +84,12 @@ export async function sendTelegramAdminAlert(details: TelegramLeadAlert): Promis
       console.log('[Telegram Alert] Dispatched successfully to Founder phone!');
       return { success: true };
     } else {
-      const errText = await res.text();
-      console.warn('[Telegram Alert] API error:', errText);
-      return { success: false, error: errText };
+      console.warn('[Telegram Alert] API error received from Telegram endpoint');
+      return { success: false, error: 'Telegram API responded with error' };
     }
   } catch (err: any) {
-    console.error('[Telegram Alert] Exception:', err);
-    return { success: false, error: err.message };
+    const sanitizedError = (err?.message || 'Unknown error').replace(/bot[0-9]+:[a-zA-Z0-9_-]+/g, 'bot[REDACTED]');
+    console.error('[Telegram Alert] Exception:', sanitizedError);
+    return { success: false, error: sanitizedError };
   }
 }
