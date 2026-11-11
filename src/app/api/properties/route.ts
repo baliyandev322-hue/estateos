@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '12')));
 
   try {
-    const where: any = { status: 'AVAILABLE' };
+    const where: any = {};
 
     if (search) {
       where.OR = [
@@ -102,6 +102,23 @@ export async function GET(request: Request) {
         },
       },
     });
+
+    if (!properties || properties.length === 0) {
+      const fallbackList = filterCuratedProperties({
+        search,
+        city,
+        locality,
+        propertyType,
+        listingType,
+        minPrice,
+        maxPrice,
+        bedrooms,
+        verified,
+        sort,
+      });
+      total = fallbackList.length;
+      properties = fallbackList.slice((page - 1) * limit, page * limit) as any;
+    }
 
     return NextResponse.json({
       properties,

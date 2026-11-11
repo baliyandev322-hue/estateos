@@ -62,7 +62,7 @@ export default async function PropertiesPage({
   const page = Math.max(1, parseInt(params.page || '1'));
   const limit = 12;
 
-  const where: any = { status: 'AVAILABLE' };
+  const where: any = {};
   if (search) {
     where.OR = [
       { title: { contains: search } },
@@ -115,6 +115,10 @@ export default async function PropertiesPage({
     localities = res[2];
   } catch (err) {
     console.warn('Database query fallback triggered in properties search:', err);
+  }
+
+  // Resilient fallback: If DB returned 0 items or threw an error, populate with curated verified properties
+  if (!properties || properties.length === 0) {
     const filteredFallback = filterCuratedProperties({
       search,
       city,

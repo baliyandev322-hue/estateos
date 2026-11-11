@@ -47,12 +47,9 @@ export default async function HomePage() {
   try {
     const [fp, loc, art, reqLeads, stats] = await Promise.all([
       prisma.property.findMany({
-        where: { isFeatured: true, status: 'AVAILABLE' },
+        where: { isFeatured: true },
         take: 6,
-        orderBy: [
-          { isPromoted: 'desc' },
-          { truthScore: 'desc' },
-        ],
+        orderBy: { truthScore: 'desc' },
         include: {
           organization: true,
           user: true,
@@ -72,7 +69,7 @@ export default async function HomePage() {
         orderBy: { createdAt: 'desc' },
       }),
       Promise.all([
-        prisma.property.count({ where: { status: 'AVAILABLE' } }),
+        prisma.property.count(),
         prisma.organization.count(),
         prisma.lead.count(),
         prisma.user.count(),
@@ -102,7 +99,7 @@ export default async function HomePage() {
         postedLabel: 'Just Posted',
       };
     });
-    totalProperties = stats[0] ?? 1;
+    totalProperties = stats[0] || 142;
     totalOrgs = stats[1] || 28;
     totalLeads = stats[2] || 890;
     totalUsers = stats[3] || 1250;
@@ -141,7 +138,7 @@ export default async function HomePage() {
           </h1>
 
           <p className="mt-4 text-base sm:text-lg text-forest-200 max-w-2xl mx-auto font-light leading-relaxed">
-            Eliminate deceptive listings. Search RERA &amp; 143-audited residential plots, gated townships, and luxury villas across Shamli, Meerut, Muzaffarnagar &amp; Delhi NCR.
+            Eliminate deceptive listings. Search RERA-cross-examined luxury residences, commercial IT floors, and gated townships across Mohali, Gurugram, Bangalore &amp; Mumbai.
           </p>
 
           {/* Hero Search Box Container */}
@@ -356,13 +353,13 @@ export default async function HomePage() {
         <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between mb-10 gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-widest text-gold-700">
-              100% Authentic &amp; Verified Only
+              Handpicked &amp; Audited
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-black text-forest-950 tracking-tight mt-1">
               Featured Verified Residences
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-500 mt-1">
-              Zero fake filler listings — real audited Shamli townships &amp; open verified partner slots for Meerut &amp; Muzaffarnagar.
+              Top-scoring properties across Mohali IT City, Gurugram Golf Course corridor, Bangalore &amp; Mumbai.
             </p>
           </div>
           <Link
@@ -378,140 +375,6 @@ export default async function HomePage() {
           {featuredProperties.map((prop) => (
             <PropertyCard key={prop.id} property={prop as any} />
           ))}
-
-          {featuredProperties.length < 2 && (
-            <div className="group card-luxury rounded-2xl overflow-hidden flex flex-col bg-white border border-charcoal-200/80 hover:border-gold-accent/50 transition-all duration-300">
-              <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
-                <img
-                  src="/images/properties/uday-city-shamli-layout.jpg"
-                  alt="Uday City & Abhay Green City Official Plot Layout Plan — Shamli"
-                  loading="lazy"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 ease-out"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/15" />
-                <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                  <span className="px-2.5 py-1 text-[10px] font-black uppercase tracking-wider bg-forest-900/90 text-white rounded-md backdrop-blur-sm border border-forest-700">
-                    Master Plot Map
-                  </span>
-                  <span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider bg-gold-accent text-forest-950 rounded-md shadow-sm">
-                    100–250 Gaj
-                  </span>
-                </div>
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-forest-950/85 backdrop-blur-md border border-gold-accent/40 shadow-sm">
-                    <ShieldCheck className="w-4 h-4 text-gold-accent" />
-                    <span className="text-xs font-bold text-white">143 Govt Approved</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-baseline justify-between mb-2">
-                    <span className="text-xl sm:text-2xl font-black text-forest-900 tracking-tight font-serif">
-                      ₹22,000 <span className="text-xs font-semibold text-charcoal-500 font-sans">/ Sq.Yd</span>
-                    </span>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-charcoal-500 px-2 py-0.5 bg-slate-100 rounded">
-                      TOWNSHIP MAP
-                    </span>
-                  </div>
-
-                  <Link href="/property/uday-city-abhay-green-city-residential-plots-shamli" className="block group-hover:text-forest-700 transition-colors">
-                    <h3 className="font-bold text-charcoal-900 text-sm sm:text-base line-clamp-1 leading-snug">
-                      Abhay Green City &amp; Uday City Layout — Collectorate Belt
-                    </h3>
-                  </Link>
-
-                  <p className="flex items-center gap-1.5 text-xs text-charcoal-500 mt-1.5 mb-4 line-clamp-1">
-                    <MapPin className="w-3.5 h-3.5 text-forest-600 shrink-0" />
-                    <span>Bheswal Road &amp; Collectorate, Shamli</span>
-                  </p>
-
-                  <div className="grid grid-cols-3 gap-2 py-2.5 px-3 bg-slate-50 rounded-xl border border-charcoal-100 text-charcoal-700 text-xs font-medium">
-                    <div className="text-center">
-                      <span className="block text-[10px] text-charcoal-400 font-semibold uppercase">Main Rd</span>
-                      <span className="font-bold text-forest-900">40 ft</span>
-                    </div>
-                    <div className="text-center border-x border-charcoal-200">
-                      <span className="block text-[10px] text-charcoal-400 font-semibold uppercase">Plot Sizes</span>
-                      <span className="font-bold text-forest-900">100–250 Gaj</span>
-                    </div>
-                    <div className="text-center">
-                      <span className="block text-[10px] text-charcoal-400 font-semibold uppercase">Registry</span>
-                      <span className="font-bold text-emerald-700">Turant</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-charcoal-100 flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-charcoal-600 truncate">
-                    Balaji Group • Sandeep Baliyan
-                  </span>
-                  <Link
-                    href="/property/uday-city-abhay-green-city-residential-plots-shamli"
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-forest-900 text-white text-xs font-bold hover:bg-forest-800 transition-colors shrink-0"
-                  >
-                    <span>View Layout</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {featuredProperties.length < 3 && (
-            <div className="rounded-2xl overflow-hidden flex flex-col justify-between bg-gradient-to-br from-forest-950 via-forest-900 to-forest-950 text-white border-2 border-dashed border-gold-accent/50 p-6 shadow-md">
-              <div>
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-gold-accent text-forest-950 text-[10px] font-black uppercase tracking-wider">
-                    <Sparkles className="w-3 h-3" />
-                    Verified Slot Open
-                  </span>
-                  <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">
-                    0% Listing Fee
-                  </span>
-                </div>
-
-                <h3 className="font-serif text-xl sm:text-2xl font-black text-white leading-snug">
-                  Meerut &amp; Muzaffarnagar Builders: Feature Your Colony Free
-                </h3>
-                <p className="text-xs sm:text-sm text-forest-200 mt-2.5 leading-relaxed">
-                  Hum sirf <strong className="text-white">asli site photos aur verified 143 / RERA projects</strong> hi showcase karte hain — no fake stock photos. Upload real photos of your colony or plot in 60 seconds.
-                </p>
-
-                <ul className="mt-4 space-y-2 text-xs text-forest-100">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-gold-accent shrink-0 mt-0.5" />
-                    <span>Meerut: Modipuram, NH-58, Vedvyaspuri, Ganga Nagar</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-gold-accent shrink-0 mt-0.5" />
-                    <span>Muzaffarnagar: A2Z Bypass, Dwarka City, Jansath &amp; Roorkee Rd</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-gold-accent shrink-0 mt-0.5" />
-                    <span>Direct qualified buyer inquiries &amp; Home Loan DSA support</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-forest-800 flex flex-col gap-2">
-                <Link
-                  href="/post-property"
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gold-accent hover:bg-gold-light text-forest-950 font-black text-xs uppercase tracking-wider shadow-sm transition-colors"
-                >
-                  <span>+ Upload Real Property Photos Free</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <a
-                  href="#buyer-demands"
-                  className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-forest-800/80 hover:bg-forest-800 text-forest-100 font-bold text-xs transition-colors"
-                >
-                  <span>Check Live Buyers Looking Right Now ↓</span>
-                </a>
-              </div>
-            </div>
-          )}
         </div>
       </section>
 

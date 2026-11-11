@@ -169,7 +169,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MDA-143-CORRIDOR-AUDIT',
     truthScore: 95,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     isPromoted: false,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
@@ -181,7 +181,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Lush Green Parks & Drainage',
     ]),
     images: JSON.stringify([
-      '/images/corridors/modipuram-nh58-meerut.jpg',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -237,7 +238,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Immediate Mutation & Bank Financing',
     ]),
     images: JSON.stringify([
-      '/images/corridors/ansal-vedvyaspuri-meerut.jpg',
+      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -293,7 +295,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Home Loan Ready Property Registry',
     ]),
     images: JSON.stringify([
-      '/images/corridors/ganga-nagar-meerut.jpg',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'SEMI_FURNISHED',
     organization: {
@@ -339,7 +342,7 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
     reraId: 'MZNDA-143-APPROVED',
     truthScore: 96,
     isVerified: true,
-    isFeatured: false,
+    isFeatured: true,
     status: 'AVAILABLE',
     amenities: JSON.stringify([
       'Direct Access to NH-58 Delhi-Haridwar Highway',
@@ -349,7 +352,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Clean Title & Bank Loan Eligibility',
     ]),
     images: JSON.stringify([
-      '/images/corridors/a2z-nh58-muzaffarnagar.jpg',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -405,7 +409,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Registry & Dakhil Kharij Ready',
     ]),
     images: JSON.stringify([
-      '/images/corridors/dwarka-city-muzaffarnagar.jpg',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -460,7 +465,8 @@ export const CURATED_PROPERTIES: CuratedProperty[] = [
       'Instant Mutation & Registry Support',
     ]),
     images: JSON.stringify([
-      '/images/corridors/vasundhara-jansath-muzaffarnagar.jpg',
+      'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
     ]),
     furnishing: 'UNFURNISHED',
     organization: {
@@ -2018,12 +2024,7 @@ export function filterCuratedProperties(params: {
   verified?: boolean;
   sort?: string;
 }) {
-  let list = CURATED_PROPERTIES.filter(
-    (p) =>
-      p.status === 'AVAILABLE' &&
-      !p.images.includes('unsplash.com') &&
-      !p.id.startsWith('wup-')
-  );
+  let list = [...CURATED_PROPERTIES];
 
   if (params.search) {
     const q = params.search.toLowerCase();
