@@ -4,15 +4,9 @@ import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  ShieldCheck,
   Lock,
   Mail,
   ArrowRight,
-  UserCheck,
-  Building2,
-  Sparkles,
-  Loader2,
-  CheckCircle2,
 } from 'lucide-react';
 
 function LoginForm() {
@@ -23,12 +17,10 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeDemo, setActiveDemo] = useState<string | null>(null);
   const [error, setError] = useState('');
 
-  const executeLogin = async (loginEmail: string, loginPass: string, demoLabel?: string) => {
-    if (demoLabel) setActiveDemo(demoLabel);
-    else setLoading(true);
+  const executeLogin = async (loginEmail: string, loginPass: string) => {
+    setLoading(true);
     setError('');
 
     try {
@@ -57,7 +49,6 @@ function LoginForm() {
       setError('An error occurred during authentication');
     } finally {
       setLoading(false);
-      setActiveDemo(null);
     }
   };
 
@@ -134,29 +125,13 @@ function LoginForm() {
 
             <button
               type="submit"
-              disabled={loading || !!activeDemo}
+              disabled={loading}
               className="w-full py-3 text-xs font-black uppercase tracking-wider text-white bg-forest-900 hover:bg-forest-800 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 border border-forest-700 hover:border-gold-accent disabled:opacity-50 cursor-pointer"
             >
               <span>{loading ? 'Authenticating...' : 'Sign In with Credentials'}</span>
               <ArrowRight className="w-4 h-4 text-gold-accent" />
             </button>
           </form>
-
-          {/* Quick Demo Login Option */}
-          <div className="mt-6 pt-5 border-t border-slate-100">
-            <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 text-center">
-              Quick 1-Click Demo Evaluation
-            </div>
-            <button
-              type="button"
-              onClick={() => executeLogin('agent@estateos.com', 'agent123', 'Agent Demo')}
-              disabled={loading || !!activeDemo}
-              className="w-full py-2 px-3 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer"
-            >
-              <UserCheck className="w-4 h-4 text-purple-600" />
-              <span>Sign In as Verified Agent Demo</span>
-            </button>
-          </div>
         </div>
 
         <p className="mt-6 text-center text-xs text-charcoal-500">

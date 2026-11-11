@@ -25,7 +25,6 @@ export default function PricingClient() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<{ id: string; name: string; email: string; role?: string } | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [demoLoading, setDemoLoading] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/me')
@@ -140,31 +139,6 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
     amount: number;
     planName: string;
   } | null>(null);
-
-    const handleQuickDemoLogin = async () => {
-    setDemoLoading(true);
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'agent@estateos.com', password: 'agent123' }),
-      });
-      const data = await res.json();
-      if (res.ok && data?.user) {
-        setCurrentUser(data.user);
-        setIsAuthModalOpen(false);
-        if (selectedPlan === 'FREE') {
-          setIsCheckoutOpen(true);
-        } else {
-          setIsPhonePeModalOpen(true);
-        }
-      }
-    } catch (err) {
-      console.error('Demo login error:', err);
-    } finally {
-      setDemoLoading(false);
-    }
-  };
   const handleOpenCheckout = (planId: string) => {
     setSelectedPlan(planId);
     setCheckoutSuccess(null);
@@ -354,19 +328,6 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
               </span>
             </button>
           </div>
-
-          {/* Investor / Evaluator Sandbox Demo Mode Banner */}
-          <div className="mt-6 max-w-2xl mx-auto p-3.5 rounded-2xl bg-amber-50/90 border border-amber-300 text-amber-900 text-xs flex items-center justify-between gap-3 shadow-sm text-left">
-            <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse shrink-0"></span>
-              <span className="leading-relaxed">
-                <strong>Sandbox Payment Mode Active:</strong> Test cards &amp; mock UPI are pre-configured. Select any plan to experience instant automated CRM feature activation without spending real money.
-              </span>
-            </div>
-            <span className="shrink-0 px-2.5 py-1 rounded-lg bg-amber-200/80 border border-amber-300 font-mono text-[10px] font-black uppercase text-amber-950">
-              Demo Active
-            </span>
-          </div>
         </div>
 
         {/* Pricing Cards Grid */}
@@ -534,18 +495,12 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+                <div className="pt-2">
                   <Link
                     href="/dashboard/agent"
-                    className="w-full text-center py-2.5 bg-forest-900 hover:bg-forest-800 text-white font-bold text-xs rounded-xl shadow transition-all"
+                    className="w-full block text-center py-2.5 bg-forest-900 hover:bg-forest-800 text-white font-bold text-xs rounded-xl shadow transition-all"
                   >
-                    Open Agent CRM
-                  </Link>
-                  <Link
-                    href="/login"
-                    className="w-full text-center py-2.5 bg-gold-accent hover:bg-gold-light text-forest-950 font-bold text-xs rounded-xl shadow transition-all"
-                  >
-                    1-Click Demo Login
+                    Go to Agent CRM &amp; Workspace &rarr;
                   </Link>
                 </div>
 
@@ -557,7 +512,7 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
                   }}
                   className="w-full text-center py-2 text-xs font-bold text-charcoal-500 hover:text-charcoal-800 transition-all"
                 >
-                  ← Test Another Subscription Tier
+                  ← View Other Subscription Tiers
                 </button>
               </div>
             ) : (
@@ -690,17 +645,7 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
                 <span>Create Free Broker / Buyer Account</span>
               </button>
 
-              <div className="pt-3 border-t border-slate-800">
-                <button
-                  type="button"
-                  onClick={handleQuickDemoLogin}
-                  disabled={demoLoading}
-                  className="w-full py-2.5 px-3 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 border border-purple-500/30 text-purple-300 font-bold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-purple-400" />
-                  <span>{demoLoading ? 'Logging In...' : '⚡ Quick 1-Click Agent Demo Login'}</span>
-                </button>
-              </div>
+              
             </div>
           </div>
         </div>
