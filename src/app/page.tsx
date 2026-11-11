@@ -49,7 +49,11 @@ export default async function HomePage() {
       prisma.property.findMany({
         where: { isFeatured: true },
         take: 6,
-        orderBy: { truthScore: 'desc' },
+        orderBy: [
+          { truthScore: 'desc' },
+          { isPromoted: 'desc' },
+          { createdAt: 'desc' },
+        ],
         include: {
           organization: true,
           user: true,
