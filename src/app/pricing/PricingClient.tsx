@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
   Check,
   Sparkles,
@@ -13,6 +12,8 @@ import {
   CreditCard,
   CheckCircle2,
   Smartphone,
+  ArrowRight,
+  Lock,
 } from 'lucide-react';
 import { formatCurrencyINR } from '@/lib/utils';
 import { loadRazorpayScript } from '@/lib/razorpay';
@@ -34,31 +35,7 @@ export default function PricingClient() {
       .catch(() => {});
   }, []);
 
-  const handleQuickDemoLogin = async () => {
-    setDemoLoading(true);
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'agent@estateos.com', password: 'agent123' }),
-      });
-      const data = await res.json();
-      if (res.ok && data?.user) {
-        setCurrentUser(data.user);
-        setIsAuthModalOpen(false);
-        if (selectedPlan === 'FREE') {
-          setIsCheckoutOpen(true);
-        } else {
-          setIsPhonePeModalOpen(true);
-        }
-      }
-    } catch (err) {
-      console.error('Demo login error:', err);
-    } finally {
-      setDemoLoading(false);
-    }
-  };
-  const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
+const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isRazorpayModalOpen, setIsRazorpayModalOpen] = useState(false);
@@ -163,7 +140,31 @@ export default function PricingClient() {
     planName: string;
   } | null>(null);
 
-    const handleOpenCheckout = (planId: string) => {
+    const handleQuickDemoLogin = async () => {
+    setDemoLoading(true);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'agent@estateos.com', password: 'agent123' }),
+      });
+      const data = await res.json();
+      if (res.ok && data?.user) {
+        setCurrentUser(data.user);
+        setIsAuthModalOpen(false);
+        if (selectedPlan === 'FREE') {
+          setIsCheckoutOpen(true);
+        } else {
+          setIsPhonePeModalOpen(true);
+        }
+      }
+    } catch (err) {
+      console.error('Demo login error:', err);
+    } finally {
+      setDemoLoading(false);
+    }
+  };
+  const handleOpenCheckout = (planId: string) => {
     setSelectedPlan(planId);
     setCheckoutSuccess(null);
     setReceiptData(null);
