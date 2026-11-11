@@ -3,6 +3,7 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import PropertyCard from '@/components/PropertyCard';
 import AdSenseBanner from '@/components/AdSenseBanner';
+import BuyerDemandsSection, { type BuyerDemandCard } from '@/components/BuyerDemandsSection';
 import {
   ShieldCheck,
   Sparkles,
@@ -37,13 +38,14 @@ export default async function HomePage() {
   let featuredProperties: any[] = [];
   let localities: any[] = [];
   let articles: any[] = [];
+  let liveDbDemands: BuyerDemandCard[] = [];
   let totalProperties = 142;
   let totalOrgs = 28;
   let totalLeads = 890;
   let totalUsers = 1250;
 
   try {
-    const [fp, loc, art, stats] = await Promise.all([
+    const [fp, loc, art, reqLeads, stats] = await Promise.all([
       prisma.property.findMany({
         where: { isFeatured: true },
         take: 6,
@@ -61,6 +63,11 @@ export default async function HomePage() {
         take: 3,
         orderBy: { viewsCount: 'desc' },
       }),
+      prisma.lead.findMany({
+        where: { source: 'BUYER_REQUIREMENT' },
+        take: 4,
+        orderBy: { createdAt: 'desc' },
+      }),
       Promise.all([
         prisma.property.count(),
         prisma.organization.count(),
@@ -71,6 +78,27 @@ export default async function HomePage() {
     featuredProperties = fp;
     localities = loc;
     articles = art;
+    liveDbDemands = reqLeads.map((r) => {
+      let parsed: any = {};
+      try {
+        parsed = r.notes ? JSON.parse(r.notes) : {};
+      } catch {
+        parsed = {};
+      }
+      return {
+        id: r.id,
+        title: parsed.locality
+          ? `${parsed.propertyType || 'Plot/Home'} in ${parsed.locality}`
+          : `${parsed.propertyType || 'Property'} Needed in ${parsed.city || 'Western UP'}`,
+        city: parsed.city || 'Meerut',
+        locality: parsed.locality || 'Prime Corridor',
+        budget: parsed.budgetText || 'Flexible Budget',
+        propertyType: parsed.propertyType || 'PLOT',
+        loanStatus: 'Live Website Buyer',
+        timeline: 'Posted Recently',
+        postedLabel: 'Just Posted',
+      };
+    });
     totalProperties = stats[0] || 142;
     totalOrgs = stats[1] || 28;
     totalLeads = stats[2] || 890;
@@ -349,6 +377,9 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* 3B. REVERSE MARKETPLACE: LIVE BUYER DEMANDS (INBOUND BROKER MAGNET) */}
+      <BuyerDemandsSection liveDbDemands={liveDbDemands} />
 
       {/* 4. SIGNATURE FEATURE: LOCALITY MICRO-INTELLIGENCE */}
       <section className="py-16 bg-forest-900 text-white relative overflow-hidden">
