@@ -72,12 +72,31 @@ export async function POST(request: Request) {
       counter++;
     }
 
-    // Default agent/org fallback for assignment
-    const defaultOrg = await prisma.organization.findFirst({
-      where: { slug: 'apex-heritage-realty' },
-    });
-    const defaultUser = await prisma.user.findFirst({
-      where: { role: 'AGENT' },
+    // Upsert a dedicated verified partner organization for the listed broker/owner so calls & WhatsApp route directly to them
+    const partnerName = ownerName && String(ownerName).trim().length > 0
+      ? String(ownerName).trim()
+      : `Verified Partner (${String(ownerPhone).replace(/\D/g, '').slice(-4) || 'UP'})`;
+    const phoneDigits = String(ownerPhone).replace(/\D/g, '').slice(-10) || Date.now().toString().slice(-6);
+    const partnerSlug = slugify(`${partnerName}-${phoneDigits.slice(-4)}`) || `partner-${phoneDigits}`;
+
+    const partnerOrg = await prisma.organization.upsert({
+      where: { slug: partnerSlug },
+      update: {
+        name: partnerName,
+        phone: String(ownerPhone).trim(),
+        city,
+        state: geoDefaults.state,
+        isVerified: true,
+      },
+      create: {
+        name: partnerName,
+        slug: partnerSlug,
+        type: 'AGENT_AGENCY',
+        phone: String(ownerPhone).trim(),
+        city,
+        state: geoDefaults.state,
+        isVerified: true,
+      },
     });
 
     const imagesJson = Array.isArray(images) && images.length > 0
@@ -110,8 +129,8 @@ export async function POST(request: Request) {
         status: 'AVAILABLE',
         reraId: reraId || 'SELF_DECLARED_VERIFIED',
         images: imagesJson,
-        orgId: defaultOrg?.id,
-        userId: defaultUser?.id,
+        orgId: partnerOrg.id,
+        userId: null,
       },
     });
 

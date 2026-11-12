@@ -126,6 +126,17 @@ export default function PostPropertyPage() {
                 <span>View Live Listing</span>
                 <ArrowRight className="w-4 h-4 text-gold-accent" />
               </Link>
+              <a
+                href={`https://wa.me/?text=${encodeURIComponent(
+                  `Namaste! ${title} (${localityName}, ${city}) ab EstateOS par Verified Listing ke roop me live ho gaya hai.\n\nDirect details & site visit link:\nhttps://www.estateospro.in/property/${createdSlug}\n\nApne WhatsApp Status par lagayein taaki buyers seedha aapko call karein!`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5"
+              >
+                <Phone className="w-4 h-4" />
+                <span>Share on WhatsApp</span>
+              </a>
               <button
                 type="button"
                 onClick={() => {
