@@ -21,6 +21,9 @@ export async function POST(request: Request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
+    }
 
     // 1. Check if user already exists
     let existingInDb = null;
@@ -41,7 +44,9 @@ export async function POST(request: Request) {
     const passwordHash = await bcrypt.hash(password, 10);
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0F2E1E&color=D4AF37`;
-    const assignedRole = ['BUYER', 'AGENT', 'BUILDER', 'ADMIN'].includes(role) ? role : 'BUYER';
+    // Self-registration is strictly restricted to non-privileged roles
+    const requestedRole = typeof role === 'string' ? role.toUpperCase().trim() : 'BUYER';
+    const assignedRole = ['BUYER', 'AGENT', 'BUILDER'].includes(requestedRole) ? requestedRole : 'BUYER';
 
     let orgId: string | null = null;
     let orgName: string | null = null;

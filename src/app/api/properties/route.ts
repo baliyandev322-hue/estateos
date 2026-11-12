@@ -27,20 +27,20 @@ export async function GET(request: Request) {
 
     if (search) {
       where.OR = [
-        { title: { contains: search } },
-        { description: { contains: search } },
-        { address: { contains: search } },
-        { localityName: { contains: search } },
-        { city: { contains: search } },
+        { title: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+        { address: { contains: search, mode: 'insensitive' } },
+        { localityName: { contains: search, mode: 'insensitive' } },
+        { city: { contains: search, mode: 'insensitive' } },
       ];
     }
 
     if (city && city !== 'All') {
-      where.city = { equals: city };
+      where.city = { equals: city, mode: 'insensitive' };
     }
 
     if (locality) {
-      where.localityName = { contains: locality };
+      where.localityName = { contains: locality, mode: 'insensitive' };
     }
 
     if (propertyType && propertyType !== 'ALL') {

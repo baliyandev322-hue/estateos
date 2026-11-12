@@ -27,31 +27,34 @@ export async function POST(request: Request) {
       billingCycle = 'MONTHLY',
     } = body;
 
-    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const user = await getCurrentUser().catch(() => null);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized: Please log in before verifying payment' }, { status: 401 });
+    }
 
-    // Optional cryptographic HMAC signature verification when real keys are present
-    if (
-      keySecret &&
-      keySecret !== 'your_razorpay_secret' &&
-      razorpay_signature &&
-      razorpay_order_id &&
-      razorpay_payment_id
-    ) {
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    const hasLiveSecret = Boolean(keySecret && keySecret !== 'your_razorpay_secret');
+
+    // Enforce cryptographic HMAC signature verification whenever Razorpay secret is configured or in production
+    if (hasLiveSecret) {
+      if (!razorpay_signature || !razorpay_order_id || !razorpay_payment_id) {
+        return NextResponse.json({ error: 'Missing payment verification signature fields' }, { status: 400 });
+      }
       const generatedSignature = crypto
-        .createHmac('sha256', keySecret)
+        .createHmac('sha256', keySecret!)
         .update(`${razorpay_order_id}|${razorpay_payment_id}`)
         .digest('hex');
 
-      if (generatedSignature !== razorpay_signature && process.env.NODE_ENV === 'production') {
+      if (generatedSignature !== razorpay_signature) {
         return NextResponse.json({ error: 'Invalid Razorpay payment signature' }, { status: 400 });
       }
+    } else if (process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ error: 'Razorpay verification is unavailable without gateway secret configuration' }, { status: 503 });
     }
 
     const tier = PLAN_LIMITS[plan] || PLAN_LIMITS.PROFESSIONAL;
     const amount = billingCycle === 'YEARLY' ? tier.price * 10 : tier.price;
     const invoiceNo = `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    const user = await getCurrentUser().catch(() => null);
 
     // If user is authenticated, update subscription in DB
     if (user && user.orgId) {

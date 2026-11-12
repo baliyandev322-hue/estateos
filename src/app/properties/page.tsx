@@ -65,15 +65,15 @@ export default async function PropertiesPage({
   const where: any = {};
   if (search) {
     where.OR = [
-      { title: { contains: search } },
-      { description: { contains: search } },
-      { address: { contains: search } },
-      { localityName: { contains: search } },
-      { city: { contains: search } },
+      { title: { contains: search, mode: 'insensitive' } },
+      { description: { contains: search, mode: 'insensitive' } },
+      { address: { contains: search, mode: 'insensitive' } },
+      { localityName: { contains: search, mode: 'insensitive' } },
+      { city: { contains: search, mode: 'insensitive' } },
     ];
   }
-  if (city && city !== 'All') where.city = city;
-  if (locality) where.localityName = { contains: locality };
+  if (city && city !== 'All') where.city = { equals: city, mode: 'insensitive' };
+  if (locality) where.localityName = { contains: locality, mode: 'insensitive' };
   if (propertyType && propertyType !== 'ALL') where.propertyType = propertyType;
   if (listingType && listingType !== 'ALL') where.listingType = listingType;
   if (minPrice !== undefined || maxPrice !== undefined) {

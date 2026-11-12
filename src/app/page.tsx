@@ -188,7 +188,11 @@ export default async function HomePage() {
                   className="w-full text-xs font-semibold bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2.5 text-charcoal-800 focus:outline-none focus:border-forest-700"
                 >
                   <option value="All">All Cities</option>
+                  <option value="Shamli">Shamli (UP)</option>
                   <option value="Muzaffarnagar">Muzaffarnagar (UP)</option>
+                  <option value="Meerut">Meerut (UP)</option>
+                  <option value="Noida">Noida (NCR)</option>
+                  <option value="Delhi">Delhi</option>
                   <option value="Mohali">Mohali / Chandigarh</option>
                   <option value="Gurugram">Gurugram (NCR)</option>
                   <option value="Bangalore">Bangalore</option>
@@ -208,9 +212,10 @@ export default async function HomePage() {
                   className="w-full text-xs font-semibold bg-slate-50 border border-charcoal-200 rounded-lg px-3 py-2.5 text-charcoal-800 focus:outline-none focus:border-forest-700"
                 >
                   <option value="ALL">All Types</option>
+                  <option value="PLOT">Residential Plots</option>
                   <option value="APARTMENT">Apartments</option>
-                  <option value="PENTHOUSE">Sky Penthouses</option>
                   <option value="VILLA">Luxury Villas</option>
+                  <option value="PENTHOUSE">Sky Penthouses</option>
                   <option value="COMMERCIAL">Commercial Offices</option>
                 </select>
               </div>

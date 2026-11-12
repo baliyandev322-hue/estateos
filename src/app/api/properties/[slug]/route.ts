@@ -100,9 +100,53 @@ export async function PATCH(
     }
 
     const body = await request.json();
+    const safeUpdate: Record<string, any> = {};
+    const editableFields = [
+      'title',
+      'description',
+      'propertyType',
+      'listingType',
+      'price',
+      'pricePerSqFt',
+      'maintenanceFees',
+      'bedrooms',
+      'bathrooms',
+      'balconies',
+      'carpetAreaSqFt',
+      'superBuiltUpSqFt',
+      'furnishing',
+      'parkingSpaces',
+      'floorNo',
+      'totalFloors',
+      'facing',
+      'possessionStatus',
+      'address',
+      'localityName',
+      'city',
+      'state',
+      'pinCode',
+      'reraId',
+      'status',
+      'amenities',
+      'images',
+      'videoUrl',
+    ];
+    for (const field of editableFields) {
+      if (body[field] !== undefined) {
+        safeUpdate[field] = body[field];
+      }
+    }
+    if (user.role === 'ADMIN') {
+      for (const adminField of ['isVerified', 'truthScore', 'isFeatured', 'isPromoted', 'promotedUntil']) {
+        if (body[adminField] !== undefined) {
+          safeUpdate[adminField] = body[adminField];
+        }
+      }
+    }
+
     const updated = await prisma.property.update({
       where: { id: property.id },
-      data: body,
+      data: safeUpdate,
     });
 
     return NextResponse.json({ success: true, property: updated });

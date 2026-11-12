@@ -214,77 +214,6 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
     setIsRazorpayModalOpen(true);
   };
 
-  const handleSimulatePayment = async () => {
-    if (!selectedPlan) return;
-    setCheckoutLoading(true);
-
-    const planObj = plans.find((p) => p.id === selectedPlan);
-    const amount = billingCycle === 'YEARLY' ? planObj?.yearlyPrice || 0 : planObj?.monthlyPrice || 0;
-
-    // Simulate payment gateway delay (e.g. Razorpay webhook)
-    await new Promise((r) => setTimeout(r, 900));
-
-    try {
-      const res = await fetch('/api/subscriptions/upgrade', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          plan: selectedPlan,
-          billingCycle,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      
-      const invoiceId = `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`;
-      const paymentId = `pay_rzp_test_${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-      const date = new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      setReceiptData({
-        invoiceId,
-        paymentId,
-        date,
-        amount,
-        planName: planObj?.name || selectedPlan,
-      });
-
-      setCheckoutSuccess(
-        data.message || `${planObj?.name} Plan successfully activated under your organization!`
-      );
-    } catch (err) {
-      // In guest or evaluator mode, successfully complete the test simulation
-      const invoiceId = `INV-2026-${Math.floor(100000 + Math.random() * 900000)}`;
-      const paymentId = `pay_rzp_test_${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
-      const date = new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-
-      setReceiptData({
-        invoiceId,
-        paymentId,
-        date,
-        amount,
-        planName: planObj?.name || selectedPlan,
-      });
-
-      setCheckoutSuccess(
-        `${planObj?.name} Plan successfully activated in Sandbox Test Mode!`
-      );
-    } finally {
-      setCheckoutLoading(false);
-    }
-  };
-
   return (
     <div className="bg-slate-50 min-h-screen py-14">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -546,7 +475,7 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
                 {/* Payment Method Selector */}
                 <div>
                   <label className="block text-[11px] font-bold text-charcoal-600 uppercase tracking-wider mb-2">
-                    Select Test Payment Method:
+                    Select Payment Method:
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {[
@@ -589,15 +518,6 @@ const [billingCycle, setBillingCycle] = useState<'MONTHLY' | 'YEARLY'>('MONTHLY'
                         ? 'Opening Razorpay Gateway...'
                         : 'Launch Razorpay Modal (Google Pay / PhonePe / Cards)'}
                     </span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={handleSimulatePayment}
-                    disabled={checkoutLoading}
-                    className="w-full py-2.5 text-[11px] font-bold text-charcoal-600 hover:text-forest-900 bg-slate-100 hover:bg-slate-200 border border-charcoal-200 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <span>⚡ Quick Simulator Mode (Skip Popup & Issue Instant Invoice)</span>
                   </button>
                 </div>
               </div>

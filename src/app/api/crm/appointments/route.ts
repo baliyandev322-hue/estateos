@@ -52,6 +52,32 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Appointment ID is required' }, { status: 400 });
     }
 
+    const allowedStatuses = ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'];
+    if (status && !allowedStatuses.includes(status)) {
+      return NextResponse.json({ error: 'Invalid appointment status' }, { status: 400 });
+    }
+
+    const appointment = await prisma.appointment.findUnique({
+      where: { id },
+      include: {
+        property: { select: { orgId: true, userId: true } },
+      },
+    });
+
+    if (!appointment) {
+      return NextResponse.json({ error: 'Appointment not found' }, { status: 404 });
+    }
+
+    const hasAccess =
+      user.role === 'ADMIN' ||
+      appointment.userId === user.id ||
+      appointment.property?.userId === user.id ||
+      (Boolean(user.orgId) && appointment.property?.orgId === user.orgId);
+
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const updated = await prisma.appointment.update({
       where: { id },
       data: {

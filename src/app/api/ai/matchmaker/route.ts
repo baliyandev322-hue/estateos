@@ -67,7 +67,17 @@ function parseNaturalLanguageQuery(query: string): ExtractedCriteria {
   const criteria: ExtractedCriteria = {};
 
   // 1. Detect City
-  if (text.includes('mohali') || text.includes('chandigarh') || text.includes('panchkula')) {
+  if (text.includes('shamli') || text.includes('uday city') || text.includes('bheswal')) {
+    criteria.city = 'Shamli';
+  } else if (text.includes('muzaffarnagar') || text.includes('mzn') || text.includes('gandhi colony') || text.includes('new mandi') || text.includes('roorkee road') || text.includes('jansath')) {
+    criteria.city = 'Muzaffarnagar';
+  } else if (text.includes('meerut') || text.includes('modipuram') || text.includes('ganga nagar') || text.includes('vedvyaspuri')) {
+    criteria.city = 'Meerut';
+  } else if (text.includes('noida')) {
+    criteria.city = 'Noida';
+  } else if (text.includes('delhi') || text.includes('vasant vihar')) {
+    criteria.city = 'Delhi';
+  } else if (text.includes('mohali') || text.includes('chandigarh') || text.includes('panchkula')) {
     criteria.city = 'Mohali';
   } else if (text.includes('gurgaon') || text.includes('gurugram')) {
     criteria.city = 'Gurugram';
@@ -96,13 +106,15 @@ function parseNaturalLanguageQuery(query: string): ExtractedCriteria {
   }
 
   // 4. Property Type
-  if (text.includes('villa') || text.includes('independent house')) {
+  if (text.includes('plot') || text.includes('gaj') || text.includes('land') || text.includes('township')) {
+    criteria.propertyType = 'PLOT';
+  } else if (text.includes('villa') || text.includes('independent house') || text.includes('kothi')) {
     criteria.propertyType = 'VILLA';
   } else if (text.includes('penthouse') || text.includes('sky mansion')) {
     criteria.propertyType = 'PENTHOUSE';
-  } else if (text.includes('commercial') || text.includes('office') || text.includes('retail')) {
+  } else if (text.includes('commercial') || text.includes('office') || text.includes('retail') || text.includes('shop') || text.includes('showroom')) {
     criteria.propertyType = 'COMMERCIAL';
-  } else if (text.includes('flat') || text.includes('apartment') || text.includes('condo')) {
+  } else if (text.includes('flat') || text.includes('apartment') || text.includes('condo') || text.includes('floor')) {
     criteria.propertyType = 'APARTMENT';
   }
 
@@ -263,7 +275,11 @@ Write a concise 2-sentence expert advisory recommendation tailored to the user's
 
       const safeDesc = (prop.description || 'Verified luxury residential property with RERA approved sanction plans.').slice(0, 140);
 
-      aiResponseText += `\n**${idx + 1}. [${prop.title}](/property/${prop.slug})**\n- 🏷️ **Price**: ${budgetVerdict}\n- 📐 **Carpet Area**: ${prop.carpetAreaSqFt || 1100} sq.ft (${prop.bedrooms || 2} Bed, ${prop.bathrooms || 2} Bath)\n- 🛡️ **Truth Score**: **${prop.truthScore || 92}/100** (Verified RERA & Physical Audit)\n- 💡 **Match Rationale**: ${safeDesc}...\n`;
+      const configLabel = prop.propertyType === 'PLOT'
+        ? 'Residential Plot (143/Freehold)'
+        : `${prop.bedrooms || 2} Bed, ${prop.bathrooms || 2} Bath`;
+
+      aiResponseText += `\n**${idx + 1}. [${prop.title}](/property/${prop.slug})**\n- 🏷️ **Price**: ${budgetVerdict}\n- 📐 **Carpet Area**: ${prop.carpetAreaSqFt || 1100} sq.ft (${configLabel})\n- 🛡️ **Truth Score**: **${prop.truthScore || 92}/100** (Verified RERA & Physical Audit)\n- 💡 **Match Rationale**: ${safeDesc}...\n`;
     });
 
     aiResponseText += `\nWould you like me to schedule a complimentary site visit or connect you directly with the verified consultant for one of these homes?`;

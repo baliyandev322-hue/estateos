@@ -35,7 +35,31 @@ export async function POST(request: Request) {
 
     const numPrice = parseFloat(price);
     const numArea = parseFloat(carpetAreaSqFt);
-    const pricePerSqFt = numArea > 0 ? Math.round(numPrice / numArea) : 0;
+    if (!Number.isFinite(numPrice) || numPrice <= 0 || !Number.isFinite(numArea) || numArea <= 0) {
+      return NextResponse.json(
+        { error: 'Price and Area must be valid positive numbers' },
+        { status: 400 }
+      );
+    }
+    const pricePerSqFt = Math.round(numPrice / numArea);
+
+    const CITY_GEO_DEFAULTS: Record<string, { state: string; pinCode: string }> = {
+      muzaffarnagar: { state: 'Uttar Pradesh', pinCode: '251001' },
+      shamli: { state: 'Uttar Pradesh', pinCode: '247776' },
+      meerut: { state: 'Uttar Pradesh', pinCode: '250001' },
+      noida: { state: 'Uttar Pradesh', pinCode: '201301' },
+      delhi: { state: 'Delhi', pinCode: '110001' },
+      gurugram: { state: 'Haryana', pinCode: '122001' },
+      mohali: { state: 'Punjab', pinCode: '140306' },
+      chandigarh: { state: 'Chandigarh', pinCode: '160001' },
+      bangalore: { state: 'Karnataka', pinCode: '560001' },
+      mumbai: { state: 'Maharashtra', pinCode: '400001' },
+      hyderabad: { state: 'Telangana', pinCode: '500001' },
+    };
+    const geoDefaults = CITY_GEO_DEFAULTS[String(city).toLowerCase().trim()] || {
+      state: 'India',
+      pinCode: '110001',
+    };
 
     // Base slug
     let baseSlug = slugify(`${title}-${localityName}-${city}`);
@@ -77,8 +101,8 @@ export async function POST(request: Request) {
         bathrooms: parseInt(bathrooms) || 0,
         localityName,
         city,
-        state: city === 'Muzaffarnagar' ? 'Uttar Pradesh' : 'India',
-        pinCode: city === 'Muzaffarnagar' ? '251001' : '140306',
+        state: geoDefaults.state,
+        pinCode: geoDefaults.pinCode,
         address: address || `${localityName}, ${city}`,
         truthScore: reraId ? 95 : 91,
         isVerified: true,

@@ -23,6 +23,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid subscription tier selected' }, { status: 400 });
     }
 
+    if (plan !== 'FREE' && user.role !== 'ADMIN') {
+      return NextResponse.json(
+        { error: 'Paid plan upgrades require verified PhonePe or Razorpay checkout completion' },
+        { status: 403 }
+      );
+    }
+
     const tier = PLAN_TIERS[plan];
     const calculatedAmount = billingCycle === 'YEARLY' ? tier.price * 10 : tier.price;
 

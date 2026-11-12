@@ -39,8 +39,11 @@ export async function POST(request: Request) {
     const isJpeg = buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
     const isPng = buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47;
     const isWebp = buffer.toString('ascii', 8, 12) === 'WEBP';
+    const isAvif =
+      buffer.toString('ascii', 4, 8) === 'ftyp' &&
+      ['avif', 'avis', 'mif1'].includes(buffer.toString('ascii', 8, 12));
 
-    if (!isJpeg && !isPng && !isWebp) {
+    if (!isJpeg && !isPng && !isWebp && !isAvif) {
       return NextResponse.json({ error: 'File content does not match genuine image signature' }, { status: 400 });
     }
 

@@ -46,13 +46,18 @@ export async function generateMetadata({
     : `₹${(property.price / 100000).toFixed(1)} Lakh`;
 
   const title = `${property.title} in ${property.localityName || property.city} (${priceInLakh}) | EstateOS`;
-  const description = `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${property.propertyType || 'Residential Unit'} in ${property.localityName ? property.localityName + ', ' : ''}${property.city}. Carpet Area: ${property.carpetAreaSqFt} sq.ft. Property Truth Score™: ${property.truthScore || 90}/100. RERA Reg: ${property.reraRegistrationNumber || 'Audited'}.`;
+  const description = `${property.bedrooms ? property.bedrooms + ' BHK ' : ''}${property.propertyType || 'Residential Unit'} in ${property.localityName ? property.localityName + ', ' : ''}${property.city}. Carpet Area: ${property.carpetAreaSqFt} sq.ft. Property Truth Score™: ${property.truthScore || 90}/100. RERA Reg: ${property.reraId || 'Audited'}.`;
   const canonicalUrl = `https://www.estateospro.in/property/${slug}`;
 
   let imgUrl = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
-  if (Array.isArray(property.images) && property.images.length > 0) {
-    imgUrl = property.images[0];
-  }
+  try {
+    const parsedImages = typeof property.images === 'string' ? JSON.parse(property.images) : property.images;
+    if (Array.isArray(parsedImages) && parsedImages.length > 0) {
+      imgUrl = parsedImages[0].startsWith('http')
+        ? parsedImages[0]
+        : `https://www.estateospro.in${parsedImages[0].startsWith('/') ? '' : '/'}${parsedImages[0]}`;
+    }
+  } catch {}
 
   return {
     title,

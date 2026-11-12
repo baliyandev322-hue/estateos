@@ -297,7 +297,12 @@ export default function PostPropertyPage() {
                   className="w-full text-xs sm:text-sm font-semibold bg-slate-50 border border-charcoal-200 rounded-xl px-3 py-2.5 focus:outline-none"
                 >
                   <option value="Muzaffarnagar">Muzaffarnagar (UP)</option>
+                  <option value="Shamli">Shamli (UP)</option>
+                  <option value="Meerut">Meerut (UP)</option>
+                  <option value="Noida">Noida (NCR)</option>
+                  <option value="Delhi">Delhi</option>
                   <option value="Mohali">Mohali</option>
+                  <option value="Chandigarh">Chandigarh</option>
                   <option value="Gurugram">Gurugram</option>
                   <option value="Bangalore">Bangalore</option>
                   <option value="Mumbai">Mumbai</option>

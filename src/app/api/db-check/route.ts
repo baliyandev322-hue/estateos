@@ -1,34 +1,44 @@
 import { NextResponse } from 'next/server';
 import prisma, { getEffectiveDatabaseUrl } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const effectiveUrl = getEffectiveDatabaseUrl();
-  let host = 'UNKNOWN';
-  try {
-    const parsed = new URL(effectiveUrl);
-    host = parsed.host;
-  } catch (e) {}
+  const user = await getCurrentUser().catch(() => null);
+  const isAdmin = user?.role === 'ADMIN';
 
-  let rawEnvHost = 'NOT_SET';
   try {
-    if (process.env.DATABASE_URL) {
-      rawEnvHost = new URL(process.env.DATABASE_URL).host;
+    const propertiesCount = await prisma.property.count();
+
+    if (!isAdmin) {
+      return NextResponse.json({
+        status: 'CONNECTED',
+        propertiesCount,
+      });
     }
-  } catch (e) {}
 
-  try {
-    const [propertiesCount, usersCount, orgsCount] = await Promise.all([
-      prisma.property.count(),
+    const effectiveUrl = getEffectiveDatabaseUrl();
+    let host = 'UNKNOWN';
+    try {
+      host = new URL(effectiveUrl).host;
+    } catch {}
+
+    let rawEnvHost = 'NOT_SET';
+    try {
+      if (process.env.DATABASE_URL) {
+        rawEnvHost = new URL(process.env.DATABASE_URL).host;
+      }
+    } catch {}
+
+    const [usersCount, orgsCount, properties] = await Promise.all([
       prisma.user.count(),
       prisma.organization.count(),
+      prisma.property.findMany({
+        select: { id: true, title: true, slug: true, price: true, city: true },
+        take: 6,
+      }),
     ]);
-
-    const properties = await prisma.property.findMany({
-      select: { id: true, title: true, slug: true, price: true, city: true },
-      take: 6,
-    });
 
     return NextResponse.json({
       status: 'CONNECTED',
@@ -40,12 +50,12 @@ export async function GET() {
       properties,
     });
   } catch (error: any) {
-    return NextResponse.json({
-      status: 'ERROR',
-      host,
-      rawEnvHost,
-      message: error?.message || 'Database connection error',
-      code: error?.code,
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        status: 'ERROR',
+        ...(isAdmin ? { message: error?.message || 'Database connection error', code: error?.code } : {}),
+      },
+      { status: 500 }
+    );
   }
 }
