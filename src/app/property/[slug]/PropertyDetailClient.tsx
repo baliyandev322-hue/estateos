@@ -126,6 +126,7 @@ export default function PropertyDetailClient({
   const [visitPhone, setVisitPhone] = useState('');
   const [visitNotes, setVisitNotes] = useState('');
   const [visitSuccess, setVisitSuccess] = useState('');
+  const [visitSuccessData, setVisitSuccessData] = useState<any>(null);
   const [visitSubmitting, setVisitSubmitting] = useState(false);
 
   const handleShare = () => {
@@ -193,7 +194,13 @@ export default function PropertyDetailClient({
       });
       const data = await res.json();
       if (res.ok) {
-        setVisitSuccess('Site inspection confirmed! You will receive an SMS and WhatsApp confirmation.');
+        setVisitSuccess(data.message || 'Site inspection booked successfully!');
+        setVisitSuccessData(data);
+        if (data.whatsappUrl && typeof window !== 'undefined') {
+          try {
+            window.open(data.whatsappUrl, '_blank');
+          } catch (_) {}
+        }
       } else {
         alert(data.error || 'Failed to book visit');
       }
@@ -776,13 +783,49 @@ export default function PropertyDetailClient({
             </p>
 
             {visitSuccess ? (
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold leading-relaxed">
-                {visitSuccess}
-                <button
-                  onClick={() => setIsVisitModalOpen(false)}
-                  className="mt-3 block w-full py-2 bg-emerald-700 text-white rounded-lg text-center font-bold"
+              <div className="space-y-4 animate-in fade-in">
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs">
+                  <div className="font-bold text-sm mb-1.5 text-emerald-800 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    <span>Site Inspection Request Confirmed!</span>
+                  </div>
+                  <p className="text-emerald-700 leading-relaxed">
+                    Aapki site visit booking request <strong>{visitSuccessData?.brokerName || property.organization?.name || 'Verified Builder'}</strong> ko bhej di gayi hai.
+                  </p>
+                  <p className="text-[11px] font-semibold text-emerald-800 mt-2 bg-emerald-100/60 p-2 rounded-lg">
+                    📅 {visitSuccessData?.formattedDate || visitDate} &nbsp;|&nbsp; ⏰ {visitSuccessData?.timeSlot || visitTime}
+                  </p>
+                </div>
+
+                {visitSuccessData?.whatsappUrl && (
+                  <a
+                    href={visitSuccessData.whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-center font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Open in WhatsApp &amp; Confirm</span>
+                  </a>
+                )}
+
+                <a
+                  href={`tel:${visitSuccessData?.cleanPhone || property.organization?.phone || property.user?.phone || '9368593249'}`}
+                  className="w-full py-2.5 px-4 bg-forest-900 hover:bg-forest-800 text-white rounded-xl text-center font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all border border-forest-700"
                 >
-                  Close
+                  <Phone className="w-4 h-4 text-gold-accent" />
+                  <span>Call Direct: {visitSuccessData?.brokerPhone || property.organization?.phone || '9368593249'}</span>
+                </a>
+
+                <button
+                  onClick={() => {
+                    setIsVisitModalOpen(false);
+                    setVisitSuccess('');
+                    setVisitSuccessData(null);
+                  }}
+                  className="w-full py-2 text-charcoal-500 hover:text-charcoal-800 text-xs font-semibold text-center mt-1"
+                >
+                  Close Window
                 </button>
               </div>
             ) : (
