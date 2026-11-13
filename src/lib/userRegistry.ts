@@ -41,7 +41,7 @@ const IN_MEMORY_USERS: Map<string, RegistryUser> = new Map([
       name: 'Rahul Sharma',
       role: 'AGENT',
       phone: '+91 98765 43210',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+      avatar: '/images/verified-builder-badge.svg',
       orgId: 'org_apex_mohali',
       orgName: 'Apex Heritage Realty',
       orgSlug: 'apex-heritage-realty',

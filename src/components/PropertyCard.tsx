@@ -197,9 +197,9 @@ export default function PropertyCard({ property, onCompare, isCompared = false }
         <div className="pt-4 mt-4 border-t border-charcoal-100 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
-              src={property.organization?.logo || property.user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80'}
+              src={property.organization?.logo || property.user?.avatar || '/images/verified-builder-badge.svg'}
               alt={property.organization?.name || property.user?.name || 'Agent'}
-              className="w-7 h-7 rounded-full object-cover border border-forest-200"
+              className="w-7 h-7 rounded-full object-cover border border-forest-200 bg-slate-900"
             />
             <div className="text-[11px] leading-tight">
               <p className="font-bold text-forest-900 truncate max-w-[120px]">

@@ -600,9 +600,9 @@ export default function PropertyDetailClient({
             <div className="bg-white rounded-2xl border border-charcoal-200 p-6 shadow-sm sticky top-28 space-y-6">
               <div className="flex items-center gap-3 pb-4 border-b border-charcoal-100">
                 <img
-                  src={property.organization?.logo || property.user?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80'}
+                  src={property.organization?.logo || property.user?.avatar || '/images/verified-builder-badge.svg'}
                   alt={property.organization?.name || property.user?.name}
-                  className="w-14 h-14 rounded-full object-cover border-2 border-gold-accent"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-gold-accent bg-slate-900"
                 />
                 <div>
                   <h3 className="font-bold text-sm text-forest-950">

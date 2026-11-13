@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5D061" />
+      <stop offset="50%" stop-color="#E5A93C" />
+      <stop offset="100%" stop-color="#A87922" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141E30" />
+      <stop offset="100%" stop-color="#243B55" />
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bgGrad)" stroke="url(#goldGrad)" stroke-width="4" />
+  <circle cx="100" cy="100" r="88" fill="none" stroke="url(#goldGrad)" stroke-width="1.2" stroke-dasharray="3,3" />
+
+  <!-- Villa / Towers Icon -->
+  <g fill="url(#goldGrad)">
+    <!-- Main Center Tower -->
+    <path d="M 90 60 L 110 60 L 110 120 L 90 120 Z" />
+    <polygon points="100,42 88,60 112,60" />
+    <!-- Left Wing -->
+    <path d="M 72 75 L 87 75 L 87 120 L 72 120 Z" />
+    <polygon points="79.5,62 70,75 89,75" />
+    <!-- Right Wing -->
+    <path d="M 113 75 L 128 75 L 128 120 L 113 120 Z" />
+    <polygon points="120.5,62 111,75 130,75" />
+
+    <!-- Windows cutout -->
+    <rect x="94" y="68" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="102" y="68" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="94" y="80" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="102" y="80" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="94" y="92" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="102" y="92" width="4" height="6" fill="#1b2a3f" rx="1" />
+    <rect x="76" y="84" width="4" height="5" fill="#1b2a3f" rx="1" />
+    <rect x="82" y="84" width="4" height="5" fill="#1b2a3f" rx="1" />
+    <rect x="117" y="84" width="4" height="5" fill="#1b2a3f" rx="1" />
+    <rect x="123" y="84" width="4" height="5" fill="#1b2a3f" rx="1" />
+  </g>
+
+  <!-- Foundation line -->
+  <rect x="58" y="122" width="84" height="3" fill="url(#goldGrad)" rx="1.5" />
+
+  <!-- Typography -->
+  <text x="100" y="142" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="12" font-weight="900" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="2.5">SIDDHARTHA</text>
+  <text x="100" y="156" font-family="'Montserrat', 'Arial', sans-serif" font-size="7.5" font-weight="700" fill="#E2E8F0" text-anchor="middle" letter-spacing="1.5">REAL ESTATE &amp; CONST.</text>
+  <text x="100" y="169" font-family="'Montserrat', 'Arial', sans-serif" font-size="6.5" font-weight="600" fill="#F5D061" text-anchor="middle" letter-spacing="1">MEERUT • VERIFIED</text>
+</svg>
