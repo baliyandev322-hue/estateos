@@ -359,34 +359,67 @@ export default function PropertyDetailClient({
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
                 <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
-                  <span className="text-charcoal-500 block mb-1">Carpet Area</span>
+                  <span className="text-charcoal-500 block mb-1">
+                    {property.propertyType === 'PLOT' ? 'Plot Area' : 'Carpet Area'}
+                  </span>
                   <div className="font-bold text-sm text-forest-950 flex items-center gap-1">
                     <Maximize2 className="w-4 h-4 text-forest-700" />
-                    <span>{property.carpetAreaSqFt} sq.ft</span>
+                    <span>
+                      {property.propertyType === 'PLOT' 
+                        ? `${Math.round(property.carpetAreaSqFt / 9)} Gaj (${property.carpetAreaSqFt} sq.ft)`
+                        : `${property.carpetAreaSqFt} sq.ft`}
+                    </span>
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
-                  <span className="text-charcoal-500 block mb-1">Configuration</span>
-                  <div className="font-bold text-sm text-forest-950 flex items-center gap-1">
-                    <Bed className="w-4 h-4 text-forest-700" />
-                    <span>{property.bedrooms || 0} Bed, {property.bathrooms || 0} Bath</span>
-                  </div>
-                </div>
+                {property.propertyType !== 'PLOT' ? (
+                  <>
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Configuration</span>
+                      <div className="font-bold text-sm text-forest-950 flex items-center gap-1">
+                        <Bed className="w-4 h-4 text-forest-700" />
+                        <span>{property.bedrooms || 0} Bed, {property.bathrooms || 0} Bath</span>
+                      </div>
+                    </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
-                  <span className="text-charcoal-500 block mb-1">Furnishing</span>
-                  <div className="font-bold text-sm text-forest-950 capitalize">
-                    {property.furnishing?.replace('_', ' ').toLowerCase()}
-                  </div>
-                </div>
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Furnishing</span>
+                      <div className="font-bold text-sm text-forest-950 capitalize">
+                        {property.furnishing?.replace('_', ' ').toLowerCase()}
+                      </div>
+                    </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
-                  <span className="text-charcoal-500 block mb-1">Floor</span>
-                  <div className="font-bold text-sm text-forest-950">
-                    Floor {property.floorNo} of {property.totalFloors}
-                  </div>
-                </div>
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Floor</span>
+                      <div className="font-bold text-sm text-forest-950">
+                        Floor {property.floorNo} of {property.totalFloors}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Plot Type</span>
+                      <div className="font-bold text-sm text-forest-950">
+                        Residential Gated Plot
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Boundary Wall</span>
+                      <div className="font-bold text-sm text-emerald-700">
+                        Gated Township
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                      <span className="text-charcoal-500 block mb-1">Approval</span>
+                      <div className="font-bold text-sm text-forest-950">
+                        {property.reraId?.includes('MDA') ? 'MDA Approved' : 'Authority Approved'}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
                   <span className="text-charcoal-500 block mb-1">Facing</span>
@@ -403,12 +436,14 @@ export default function PropertyDetailClient({
                   </div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
-                  <span className="text-charcoal-500 block mb-1">Parking</span>
-                  <div className="font-bold text-sm text-forest-950">
-                    {property.parkingSpaces} Covered Bays
+                {property.propertyType !== 'PLOT' && (
+                  <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
+                    <span className="text-charcoal-500 block mb-1">Parking</span>
+                    <div className="font-bold text-sm text-forest-950">
+                      {property.parkingSpaces} Covered Bays
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="p-3 rounded-xl bg-slate-50 border border-charcoal-100">
                   <span className="text-charcoal-500 block mb-1">Maintenance</span>
