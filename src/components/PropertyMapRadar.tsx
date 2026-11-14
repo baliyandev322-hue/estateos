@@ -42,17 +42,40 @@ export default function PropertyMapRadar({
   localityName,
   city,
 }: PropertyMapRadarProps) {
-  // Default coordinates fallback if not set
+  // Default coordinates fallback by city and locality
   const defaultCoords: Record<string, [number, number]> = {
+    Meerut: [28.9845, 77.7064],
+    'Ganganagar, Meerut': [29.0067, 77.7577],
+    Shamli: [29.4485, 77.3111],
+    Muzaffarnagar: [29.4727, 77.7085],
     Mohali: [30.6558, 76.7324],
     Gurugram: [28.4116, 77.0858],
+    Noida: [28.5355, 77.3910],
     Bangalore: [12.9784, 77.6408],
     Mumbai: [19.0596, 72.8295],
     Hyderabad: [17.4401, 78.3489],
+    Delhi: [28.6139, 77.2090],
   };
 
-  const centerLat = latitude || defaultCoords[city]?.[0] || 30.6558;
-  const centerLng = longitude || defaultCoords[city]?.[1] || 76.7324;
+  const getLocalityCoords = (loc?: string, c?: string): [number, number] | null => {
+    const l = (loc || '').toLowerCase();
+    const cityStr = (c || '').toLowerCase();
+
+    if (l.includes('ganga') || l.includes('sagar') || l.includes('ganganagar')) return [29.0067, 77.7577];
+    if (l.includes('alaknanda')) return [29.0100, 77.7550];
+    if (l.includes('mawana')) return [29.0125, 77.7450];
+    if (l.includes('garh') || l.includes('vasu')) return [28.9750, 77.7350];
+    if (l.includes('modipuram') || l.includes('nh-58') || l.includes('nh58') || l.includes('roorkee')) return [29.0650, 77.7120];
+    if (l.includes('rohta')) return [28.9845, 77.6712];
+    if (cityStr.includes('shamli') || l.includes('shamli') || l.includes('uday')) return [29.4485, 77.3111];
+    if (cityStr.includes('muzaffarnagar') || l.includes('muzaffarnagar')) return [29.4727, 77.7085];
+    if (cityStr.includes('meerut')) return [28.9845, 77.7064];
+    return null;
+  };
+
+  const detectedCoords = getLocalityCoords(localityName, city);
+  const centerLat = latitude || detectedCoords?.[0] || defaultCoords[city]?.[0] || 28.9845;
+  const centerLng = longitude || detectedCoords?.[1] || defaultCoords[city]?.[1] || 77.7064;
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
