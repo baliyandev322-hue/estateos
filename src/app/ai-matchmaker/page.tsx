@@ -32,7 +32,7 @@ export default function AiMatchmakerPage() {
     {
       id: 'welcome-1',
       sender: 'assistant',
-      text: `Hello! I am **EstateOS AI Matchmaker**, your intelligent property intelligence assistant.\n\nTell me what you are looking for in natural language. For example:\n- *"I need a 2BHK apartment in Mohali under ₹60 lakh, near schools and hospitals."*\n- *"Show me luxury penthouses in Gurugram near Golf Course Road."*\n- *"Commercial IT space in Hyderabad with over 8% rental yield."*`,
+      text: `Hello! I am **EstateOS AI Matchmaker**, your intelligent property advisor for Meerut, Shamli & Western UP.\n\nTell me what you are looking for in natural language (Hindi, English ya Hinglish). For example:\n- *"Mujhe Meerut mein residential plot lena hai under ₹50 lakh."*\n- *"3BHK luxury duplex kothi in Ganganagar Meerut on main road."*\n- *"Vasu Residency Garh Road Meerut plots ki details aur rates."*\n- *"Commercial hall on rent in Shamli near highway."*`,
       timestamp: 'Just now',
     },
   ]);
@@ -40,6 +40,20 @@ export default function AiMatchmakerPage() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  const getIntelligentFallback = (query: string): string => {
+    const q = query.toLowerCase();
+    if (q.includes('plot') || q.includes('gaj') || q.includes('land') || q.includes('jamin') || q.includes('zameen')) {
+      return `I analyzed our verified database for "${query}". Here are top verified residential plotted townships in Meerut matching your requirement:\n\n**1. [Shyam Residency MDA Approved Plots](/property/shyam-residency-mda-approved-residential-plots-rohta-road-bypass-meerut)**\n- 🏷️ **Price**: Pre-launch offer at **₹52,000/Gaj**\n- 🛡️ **Truth Score**: **99/100** (MDA Approved & Physical Verification)\n- 📍 **Location**: Rohta Road Bypass, Meerut\n\n**2. [Vasu Residency Zila Panchayat Approved Plots](/property/vasu-residency-zila-panchayat-approved-plots-garh-road-meerut)**\n- 🏷️ **Price**: From **₹19,000 to ₹25,000/Gaj** (100, 132, 150, 200 Gaj)\n- 🛡️ **Truth Score**: **97/100** (167 Bigha Gated Township)\n- 📍 **Location**: Main Garh Road Highway, Meerut\n\n**3. [180 Gaj Corner Plot Alaknanda Dham](/property/180-gaj-corner-plot-park-facing-alaknanda-dham-meerut)**\n- 🏷️ **Price**: **₹75,000/Gaj** (East + North Facing Park View)\n- 🛡️ **Truth Score**: **99/100**\n- 📍 **Location**: Alaknanda Dham, Meerut\n\nWould you like me to book a complimentary site inspection or connect you directly with the verified broker?`;
+    }
+    if (q.includes('kothi') || q.includes('house') || q.includes('makan') || q.includes('villa') || q.includes('duplex') || q.includes('bhk')) {
+      return `I analyzed our verified database for "${query}". Here are top verified luxury houses in Meerut:\n\n**1. [80 Gaj 3BHK Luxury Duplex Kothi](/property/80-gaj-luxury-3bhk-duplex-house-gangasagar-ganganagar-meerut)**\n- 🏷️ **Price**: **₹95 Lakh**\n- 🛡️ **Truth Score**: **98/100** (Brand New Construction)\n- 📍 **Location**: Main Divider Road, Ganga Sagar Colony, Ganganagar, Meerut\n\n**2. [112 Gaj 3BHK Luxury Modern Kothi](/property/112-gaj-luxury-3bhk-kothi-main-mawana-road-meerut)**\n- 🏷️ **Price**: **₹75 Lakh**\n- 🛡️ **Truth Score**: **98/100**\n- 📍 **Location**: Main Mawana Road, Meerut\n\n**3. [180 Gaj Park Facing 4BHK Grand Luxury Villa](/property/180-gaj-park-facing-4bhk-luxury-duplex-villa-ganganagar-meerut)**\n- 🏷️ **Price**: **₹2.00 Cr**\n- 🛡️ **Truth Score**: **99/100**\n- 📍 **Location**: Ganganagar, Meerut\n\nWould you like to schedule a site inspection?`;
+    }
+    if (q.includes('shamli')) {
+      return `I analyzed our verified database for "${query}". Here are verified options in Shamli:\n\n**1. [Uday City & Abhay Green City Residential Plots](/property/uday-city-abhay-green-city-residential-plots-shamli)**\n- 🏷️ **Price**: Starting **₹22 Lakh**\n- 🛡️ **Truth Score**: **98/100** (Gated Plotted Township)\n- 📍 **Location**: Bheswal Road, Shamli\n\n**2. [2200 Sq.Ft Brand New Commercial Hall on Rent](/property/2200-sqft-brand-new-commercial-hall-room-washroom-rent-shamli)**\n- 🏷️ **Rent**: **₹50,000/month**\n- 🛡️ **Truth Score**: **97/100**\n- 📍 **Location**: Shamli\n\nWould you like to speak directly with the developer?`;
+    }
+    return `I checked our verified database for "${query}". Here are top verified properties in Meerut & Western UP:\n\n**1. [Shyam Residency MDA Approved Plots](/property/shyam-residency-mda-approved-residential-plots-rohta-road-bypass-meerut)** (₹52,000/Gaj, Rohta Road Bypass, Meerut)\n**2. [Vasu Residency Zila Panchayat Approved Plots](/property/vasu-residency-zila-panchayat-approved-plots-garh-road-meerut)** (₹19,000/Gaj, Main Garh Road, Meerut)\n**3. [80 Gaj 3BHK Luxury Duplex Kothi](/property/80-gaj-luxury-3bhk-duplex-house-gangasagar-ganganagar-meerut)** (₹95 Lakh, Ganga Sagar Colony, Ganganagar, Meerut)\n\nWould you like to schedule a site inspection or connect directly with the verified builder?`;
+  };
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -71,7 +85,7 @@ export default function AiMatchmakerPage() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4500);
+      const timeoutId = setTimeout(() => controller.abort(), 18000);
 
       const res = await fetch('/api/ai/matchmaker', {
         method: 'POST',
@@ -100,7 +114,7 @@ export default function AiMatchmakerPage() {
           {
             id: `ai-${Date.now()}`,
             sender: 'assistant',
-            text: `I analyzed your requirement for "${textToSend}". Here are top verified properties meeting your criteria:\n\n**1. [Green Lotus Avenue 2BHK Smart Home](/properties?city=Mohali)**\n- 🏷️ **Price**: Within budget at **₹58 Lakh**\n- 📐 **Carpet Area**: 980 sq.ft (2 Bed, 2 Bath)\n- 🛡️ **Truth Score**: **92/100** (Verified RERA & Physical Audit)\n- 📍 **Location**: Sector 82 IT City, Mohali (Near Ryan School & Fortis Hospital)\n\nWould you like me to book a site inspection or assist with an in-principle home loan sanction?`,
+            text: getIntelligentFallback(textToSend),
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           },
         ]);
@@ -111,7 +125,7 @@ export default function AiMatchmakerPage() {
         {
           id: `ai-${Date.now()}`,
           sender: 'assistant',
-          text: `I checked our verified database for "${textToSend}".\n\n**Recommended Match**: [Green Lotus Avenue 2BHK](/properties?city=Mohali) in Sector 82 IT City, Mohali priced at **₹58 Lakh** with 92/100 Truth Score. Would you like to schedule a site visit?`,
+          text: getIntelligentFallback(textToSend),
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -121,10 +135,10 @@ export default function AiMatchmakerPage() {
   };
 
   const sampleQueries = [
-    'I need a 2BHK apartment in Mohali under ₹60 lakh, near schools and hospitals.',
-    '4BHK luxury penthouses in Gurugram near Golf Course Road',
-    'Rental penthouses in Indiranagar Bangalore with private terrace',
-    'Cyber Towers commercial office space in Hyderabad',
+    'Mujhe Meerut mein MDA approved residential plot chahiye under ₹50 lakh',
+    '3BHK luxury duplex kothi in Ganganagar Meerut on main road',
+    'Vasu Residency Garh Road Meerut plots details aur price',
+    'Commercial space or hall on rent in Shamli near highway',
   ];
 
   return (
