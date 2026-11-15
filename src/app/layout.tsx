@@ -1,12 +1,27 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import Script from 'next/script';
+import { Inter, Playfair_Display } from 'next/font/google';
 import { SITE_CONTACT } from '@/config/siteContact';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import CookieConsentBanner from '@/components/CookieConsentBanner';
 import NavigationProgressBar from '@/components/NavigationProgressBar';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
+  weight: ['600', '700', '900'],
+});
 
 export const metadata: Metadata = {
   title: 'EstateOS — Verified Real Estate, RERA Plots & PropTech AI',
@@ -70,16 +85,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <head>
         <meta name="google-site-verification" content="google1eb03a8e9cf486b5" />
         <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,900;1,600&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
