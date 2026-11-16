@@ -6,17 +6,19 @@ interface PropertyJsonLdProps {
   property: {
     title: string;
     description: string;
-    price: number;
-    carpetAreaSqFt: number;
-    address: string;
-    city: string;
-    state: string;
-    pinCode: string;
+    price: number | string;
+    carpetAreaSqFt?: number | string | null;
+    address?: string | null;
+    city?: string | null;
+    state?: string | null;
+    pinCode?: string | null;
+    localityName?: string | null;
     images?: string | null | string[];
     slug: string;
     reraRegistrationNumber?: string | null;
-    bedrooms?: number | null;
-    bathrooms?: number | null;
+    reraId?: string | null;
+    bedrooms?: number | string | null;
+    bathrooms?: number | string | null;
   };
 }
 
@@ -28,35 +30,62 @@ export function PropertyJsonLd({ property }: PropertyJsonLdProps) {
     imageList = [];
   }
 
+  // Ensure every image URL is a valid, absolute HTTP(S) URL
+  const absoluteImages = (Array.isArray(imageList) && imageList.length > 0 ? imageList : [`${SITE_URL}/og-default.jpg`]).map((img) => {
+    if (typeof img === 'string' && img.trim().length > 0) {
+      if (img.startsWith('http://') || img.startsWith('https://')) return img.trim();
+      return `${SITE_URL}${img.startsWith('/') ? '' : '/'}${img.trim()}`;
+    }
+    return `${SITE_URL}/og-default.jpg`;
+  });
+
+  const rawSlug = String(property.slug || '').trim();
+  const cleanSlug = encodeURIComponent(rawSlug.replace(/\s+/g, '-'));
+  const propertyUrl = `${SITE_URL}/property/${cleanSlug}`;
+
+  const numPrice = Number(property.price) || 0;
+  const numCarpetArea = Number(property.carpetAreaSqFt) || 0;
+  const numBedrooms = property.bedrooms !== null && property.bedrooms !== undefined && Number(property.bedrooms) > 0
+    ? Number(property.bedrooms)
+    : undefined;
+  const numBathrooms = property.bathrooms !== null && property.bathrooms !== undefined && Number(property.bathrooms) > 0
+    ? Number(property.bathrooms)
+    : undefined;
+
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'RealEstateListing',
+    '@type': 'Accommodation',
     name: property.title,
     description: property.description,
-    url: `${SITE_URL}/property/${property.slug}`,
-    image: imageList.length > 0 ? imageList : [`${SITE_URL}/og-default.jpg`],
+    url: propertyUrl,
+    image: absoluteImages,
     offers: {
       '@type': 'Offer',
-      price: property.price,
+      price: numPrice,
       priceCurrency: 'INR',
       availability: 'https://schema.org/InStock',
       validFrom: '2026-01-01',
+      priceValidUntil: '2027-12-31',
     },
     address: {
       '@type': 'PostalAddress',
-      streetAddress: property.address,
-      addressLocality: property.city,
-      addressRegion: property.state,
-      postalCode: property.pinCode,
+      streetAddress: property.address || property.localityName || property.city || 'India',
+      addressLocality: property.city || 'Meerut',
+      addressRegion: property.state || 'Uttar Pradesh',
+      postalCode: property.pinCode || '250001',
       addressCountry: 'IN',
     },
-    floorSize: {
-      '@type': 'QuantitativeValue',
-      value: property.carpetAreaSqFt,
-      unitCode: 'FTK',
-    },
-    numberOfRooms: property.bedrooms || undefined,
-    numberOfBathroomsTotal: property.bathrooms || undefined,
+    ...(numCarpetArea > 0
+      ? {
+          floorSize: {
+            '@type': 'QuantitativeValue',
+            value: numCarpetArea,
+            unitCode: 'FTK',
+          },
+        }
+      : {}),
+    ...(numBedrooms !== undefined ? { numberOfRooms: numBedrooms } : {}),
+    ...(numBathrooms !== undefined ? { numberOfBathroomsTotal: numBathrooms } : {}),
   };
 
   return (
@@ -73,7 +102,7 @@ export function ArticleJsonLd({ article }: { article: any }) {
     '@type': 'Article',
     headline: article.title,
     description: article.excerpt,
-    image: [article.coverImage || `${SITE_URL}/og-default.jpg`],
+    image: [article.coverImage?.startsWith('http') ? article.coverImage : `${SITE_URL}${article.coverImage?.startsWith('/') ? '' : '/'}${article.coverImage || 'og-default.jpg'}`],
     datePublished: article.publishedAt || new Date().toISOString(),
     dateModified: article.updatedAt || new Date().toISOString(),
     mainEntityOfPage: `${SITE_URL}/guide/${article.slug}`,
@@ -87,7 +116,7 @@ export function ArticleJsonLd({ article }: { article: any }) {
       url: SITE_URL,
       logo: {
         '@type': 'ImageObject',
-        url: `${SITE_URL}/logo.png`,
+        url: `${SITE_URL}/icon.svg`,
       },
     },
   };
@@ -104,12 +133,17 @@ export function BreadcrumbJsonLd({ items }: { items: { name: string; url: string
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: item.url.startsWith('http') ? item.url : `${SITE_URL}${item.url}`,
-    })),
+    itemListElement: items.map((item, index) => {
+      const itemUrl = item.url.startsWith('http')
+        ? item.url
+        : `${SITE_URL}${item.url.startsWith('/') ? '' : '/'}${item.url}`;
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: itemUrl,
+      };
+    }),
   };
 
   return (

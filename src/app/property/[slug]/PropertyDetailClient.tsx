@@ -31,7 +31,6 @@ import {
 import { formatCurrencyINR, formatNumberINR } from '@/lib/utils';
 import PropertyCard from '@/components/PropertyCard';
 import AdSenseBanner from '@/components/AdSenseBanner';
-import { PropertyJsonLd } from '@/components/StructuredData';
 import PropertyMapRadar from '@/components/PropertyMapRadar';
 import HomeLoanApplyModal from '@/components/HomeLoanApplyModal';
 import TruthScoreReportDownloadModal from '@/components/TruthScoreReportDownloadModal';
@@ -215,7 +214,6 @@ export default function PropertyDetailClient({
 
   return (
     <div className="bg-slate-50 min-h-screen py-8 pb-24 sm:pb-8">
-      <PropertyJsonLd property={property} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center gap-2 text-xs font-semibold text-charcoal-500 mb-4 overflow-x-auto whitespace-nowrap">

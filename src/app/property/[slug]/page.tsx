@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import PropertyDetailClient from './PropertyDetailClient';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
@@ -25,6 +26,10 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const { slug } = params;
+  if (slug && (slug.includes(' ') || slug.includes('%20'))) {
+    const cleanSlug = slug.trim().replace(/[\s%20]+/g, '-');
+    redirect(`/property/${cleanSlug}`);
+  }
   let property = CURATED_PROPERTY_REGISTRY[slug];
   if (!property) {
     try {
@@ -87,6 +92,10 @@ export default async function PropertyDetailPage({
   params: { slug: string };
 }) {
   const { slug } = params;
+  if (slug && (slug.includes(' ') || slug.includes('%20'))) {
+    const cleanSlug = slug.trim().replace(/[\s%20]+/g, '-');
+    redirect(`/property/${cleanSlug}`);
+  }
 
   let property: any = null;
   let similarProperties: any[] = [];
