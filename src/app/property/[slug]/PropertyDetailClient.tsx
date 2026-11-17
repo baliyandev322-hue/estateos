@@ -512,19 +512,6 @@ export default function PropertyDetailClient({
               <div className="text-xs sm:text-sm text-charcoal-700 leading-relaxed space-y-3 whitespace-pre-line transition-all">
                 {displayedDescription}
               </div>
-
-              {/* Specification Preservation Footnote */}
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-charcoal-400">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                  {descLang === 'en'
-                    ? 'English translation calibrated for verified Indian real estate specs (Gaj, Vastu, Registry).'
-                    : 'मूल प्रामाणिक विवरण (गज, पूर्व मुखी, रजिस्ट्री व बैंक लोन विवरण सहित)।'}
-                </span>
-                <span className="font-mono text-[10px] text-charcoal-300 uppercase">
-                  {descLang === 'en' ? 'EN-IN' : 'HI-IN'}
-                </span>
-              </div>
             </div>
 
             {/* Amenities Grid */}
