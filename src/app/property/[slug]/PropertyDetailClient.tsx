@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Bed,
@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { formatCurrencyINR, formatNumberINR } from '@/lib/utils';
 import PropertyCard from '@/components/PropertyCard';
+import { translatePropertyDescription, isDevanagari } from '@/lib/propertyTranslator';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import PropertyMapRadar from '@/components/PropertyMapRadar';
 import HomeLoanApplyModal from '@/components/HomeLoanApplyModal';
@@ -66,6 +67,12 @@ export default function PropertyDetailClient({
   }
 
   const [activeImage, setActiveImage] = useState(images[0]);
+  const isInitialHindi = isDevanagari(property.description || '');
+  const [descLang, setDescLang] = useState<'hi' | 'en'>(isInitialHindi ? 'hi' : 'en');
+
+  const displayedDescription = useMemo(() => {
+    return translatePropertyDescription(property.description || '', descLang);
+  }, [property.description, descLang]);
   const [copied, setCopied] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -459,13 +466,64 @@ export default function PropertyDetailClient({
               </div>
             </div>
 
-            {/* Description */}
+            {/* Description Card with Domain-Calibrated Translator */}
             <div className="bg-white rounded-2xl border border-charcoal-200 p-6 shadow-sm">
-              <h2 className="font-serif font-bold text-lg text-forest-950 mb-3 pb-2 border-b border-charcoal-100">
-                Detailed Property Description
-              </h2>
-              <div className="text-xs sm:text-sm text-charcoal-700 leading-relaxed space-y-3 whitespace-pre-line">
-                {property.description}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-charcoal-100 gap-3">
+                <div className="flex items-center gap-2">
+                  <h2 className="font-serif font-bold text-lg text-forest-950">
+                    Detailed Property Description
+                  </h2>
+                  <span className="hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider text-charcoal-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-charcoal-200/50">
+                    Verified
+                  </span>
+                </div>
+
+                {/* 1-Click Language Switcher Pill */}
+                <div className="inline-flex items-center p-1 bg-slate-100/90 rounded-xl border border-charcoal-200 self-start sm:self-auto shadow-inner">
+                  <button
+                    type="button"
+                    onClick={() => setDescLang('hi')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      descLang === 'hi'
+                        ? 'bg-white text-forest-950 shadow-sm border border-charcoal-200/80 font-black'
+                        : 'text-charcoal-500 hover:text-forest-900'
+                    }`}
+                    title="हिन्दी में पढ़ें"
+                  >
+                    <span>🇮🇳</span>
+                    <span>हिन्दी</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDescLang('en')}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      descLang === 'en'
+                        ? 'bg-forest-900 text-white shadow-sm font-black'
+                        : 'text-charcoal-500 hover:text-forest-900'
+                    }`}
+                    title="Read in Professional English"
+                  >
+                    <span>🇬🇧</span>
+                    <span>English</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="text-xs sm:text-sm text-charcoal-700 leading-relaxed space-y-3 whitespace-pre-line transition-all">
+                {displayedDescription}
+              </div>
+
+              {/* Specification Preservation Footnote */}
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-charcoal-400">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  {descLang === 'en'
+                    ? 'English translation calibrated for verified Indian real estate specs (Gaj, Vastu, Registry).'
+                    : 'मूल प्रामाणिक विवरण (गज, पूर्व मुखी, रजिस्ट्री व बैंक लोन विवरण सहित)।'}
+                </span>
+                <span className="font-mono text-[10px] text-charcoal-300 uppercase">
+                  {descLang === 'en' ? 'EN-IN' : 'HI-IN'}
+                </span>
               </div>
             </div>
 
