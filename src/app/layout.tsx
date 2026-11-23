@@ -96,21 +96,126 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'RealEstateAgent',
-              name: 'EstateOS Technologies',
-              url: 'https://www.estateospro.in',
-              logo: 'https://www.estateospro.in/icon.svg',
-              description: 'India Sovereign RERA-Audited PropTech Marketplace with Property Truth Score™',
-              address: {
-                '@type': 'PostalAddress',
-                streetAddress: `${SITE_CONTACT.address.line1}, ${SITE_CONTACT.address.line2}`,
-                addressLocality: SITE_CONTACT.address.city,
-                addressRegion: SITE_CONTACT.address.state,
-                postalCode: SITE_CONTACT.address.pincode,
-                addressCountry: 'IN',
-              },
-              telephone: SITE_CONTACT.tollFree,
-              priceRange: '₹₹₹₹',
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://www.estateospro.in/#organization',
+                  name: 'EstateOS Technologies',
+                  alternateName: ['EstateOS', 'EstateOSPro', 'EstateOS PropTech'],
+                  url: 'https://www.estateospro.in',
+                  logo: {
+                    '@type': 'ImageObject',
+                    '@id': 'https://www.estateospro.in/#logo',
+                    url: 'https://www.estateospro.in/icon.svg',
+                    caption: 'EstateOS PropTech Intelligence',
+                  },
+                  description:
+                    'India Sovereign RERA-Audited PropTech Marketplace, algorithmic Property Truth Score™ valuation platform, and broker-builder CRM.',
+                  sameAs: [
+                    'https://www.wikidata.org/entity/Q1159',
+                    'https://www.wikidata.org/entity/Q7279768',
+                  ],
+                  knowsAbout: [
+                    'Real Estate (Regulation and Development) Act, 2016 (RERA)',
+                    'Indian Real Estate Valuation & Circle Rates',
+                    'Uttar Pradesh Real Estate Regulatory Authority (UP-RERA)',
+                    'Haryana Real Estate Regulatory Authority (HRERA)',
+                    'Delhi Real Estate Regulatory Authority',
+                    'Stamp Duty & Mutation (Dakhil Kharij) Legal Verification',
+                    'Property Truth Score™ Algorithmic Audits',
+                  ],
+                  areaServed: [
+                    {
+                      '@type': 'Country',
+                      name: 'India',
+                      sameAs: 'https://www.wikidata.org/entity/Q668',
+                    },
+                    {
+                      '@type': 'AdministrativeArea',
+                      name: 'Uttar Pradesh',
+                      sameAs: 'https://www.wikidata.org/entity/Q1498',
+                    },
+                    {
+                      '@type': 'City',
+                      name: 'Meerut',
+                      sameAs: 'https://www.wikidata.org/entity/Q200720',
+                    },
+                    {
+                      '@type': 'City',
+                      name: 'Muzaffarnagar',
+                      sameAs: 'https://www.wikidata.org/entity/Q1981384',
+                    },
+                    {
+                      '@type': 'AdministrativeArea',
+                      name: 'Delhi National Capital Region (NCR)',
+                      sameAs: 'https://www.wikidata.org/entity/Q1192770',
+                    },
+                  ],
+                  address: {
+                    '@type': 'PostalAddress',
+                    streetAddress: `${SITE_CONTACT.address.line1}, ${SITE_CONTACT.address.line2}`,
+                    addressLocality: SITE_CONTACT.address.city,
+                    addressRegion: SITE_CONTACT.address.state,
+                    postalCode: SITE_CONTACT.address.pincode,
+                    addressCountry: 'IN',
+                  },
+                  telephone: SITE_CONTACT.tollFree,
+                  email: SITE_CONTACT.supportEmail,
+                  contactPoint: {
+                    '@type': 'ContactPoint',
+                    telephone: SITE_CONTACT.tollFree,
+                    contactType: 'customer support',
+                    areaServed: 'IN',
+                    availableLanguage: ['en', 'hi'],
+                  },
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://www.estateospro.in/#website',
+                  url: 'https://www.estateospro.in',
+                  name: 'EstateOS',
+                  publisher: { '@id': 'https://www.estateospro.in/#organization' },
+                  inLanguage: ['en-IN', 'hi-IN'],
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: {
+                      '@type': 'EntryPoint',
+                      urlTemplate: 'https://www.estateospro.in/properties?query={search_term_string}',
+                    },
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+                {
+                  '@type': 'DefinedTermSet',
+                  '@id': 'https://www.estateospro.in/#indian-proptech-glossary',
+                  name: 'EstateOS Indian Real Estate Lexicon & Valuation Standards',
+                  hasDefinedTerm: [
+                    {
+                      '@type': 'DefinedTerm',
+                      name: 'Gaj (गज)',
+                      termCode: 'GAJ-IN',
+                      description:
+                        'A foundational Indian unit of land measurement extensively used in Uttar Pradesh, Delhi NCR, Haryana, and Punjab. Exactly 1 Gaj equals 1 Square Yard (9 Square Feet or 0.8361 Square Meters).',
+                      sameAs: 'https://en.wikipedia.org/wiki/Guz',
+                    },
+                    {
+                      '@type': 'DefinedTerm',
+                      name: 'Dakhil Kharij (दाखिल खारिज)',
+                      termCode: 'MUTATION-IN',
+                      description:
+                        'The legal land mutation process in North India whereby property ownership title is officially transferred in the municipal or revenue records (Khatoni/Jamabandi) post-registry.',
+                      sameAs: 'https://en.wikipedia.org/wiki/Mutation_(land_records)',
+                    },
+                    {
+                      '@type': 'DefinedTerm',
+                      name: 'Property Truth Score™',
+                      termCode: 'PTS-100',
+                      description:
+                        "EstateOS's 0-100 algorithmic proptech rating evaluating property legitimacy across RERA approvals, circle rate parity, bank loan eligibility, and title deed encumbrance status.",
+                    },
+                  ],
+                },
+              ],
             }),
           }}
         />

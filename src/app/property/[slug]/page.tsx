@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import PropertyDetailClient from './PropertyDetailClient';
 import { CURATED_PROPERTIES } from '@/lib/curatedProperties';
-import { PropertyJsonLd, BreadcrumbJsonLd } from '@/components/StructuredData';
+import { PropertyJsonLd, BreadcrumbJsonLd, PropertyFaqJsonLd } from '@/components/StructuredData';
 
 export const revalidate = 120;
 
@@ -147,6 +147,7 @@ export default async function PropertyDetailPage({
   return (
     <>
       <PropertyJsonLd property={property} />
+      <PropertyFaqJsonLd property={property} />
       <BreadcrumbJsonLd
         items={[
           { name: 'Home', url: '/' },

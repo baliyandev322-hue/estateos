@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import React from 'react';
-import { FaqJsonLd, BreadcrumbJsonLd } from '@/components/StructuredData';
+import { FaqJsonLd, BreadcrumbJsonLd, CalculatorJsonLd } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'UP Stamp Duty & Home Loan EMI Calculator (2026) | EstateOS',
@@ -49,6 +49,7 @@ export default function CalculatorsLayout({
           { name: 'Financial Calculators', url: '/calculators' },
         ]}
       />
+      <CalculatorJsonLd />
       <FaqJsonLd faqs={CALCULATOR_FAQS} />
       {children}
     </>

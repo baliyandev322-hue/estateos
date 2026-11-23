@@ -4,6 +4,7 @@ import prisma from '@/lib/prisma';
 import PropertyCard from '@/components/PropertyCard';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import BuyerDemandsSection, { type BuyerDemandCard } from '@/components/BuyerDemandsSection';
+import { FaqJsonLd } from '@/components/StructuredData';
 import {
   ShieldCheck,
   Sparkles,
@@ -33,6 +34,29 @@ export const metadata: Metadata = {
 };
 
 export const revalidate = 60;
+
+const HOMEPAGE_AEO_FAQS = [
+  {
+    question: 'What is the exact conversion of Gaj to Square Feet in Uttar Pradesh real estate?',
+    answer:
+      'In Uttar Pradesh, Haryana, and North Indian land records, 1 Gaj (Square Yard) is precisely equal to 9 Square Feet (0.8361 Square Meters). For instance, an 80 Gaj residential plot equals 720 Sq. Ft., a 125 Gaj luxury house equals 1,125 Sq. Ft., and a 180 Gaj plot equals 1,620 Sq. Ft.',
+  },
+  {
+    question: 'How is stamp duty calculated for property registration in Uttar Pradesh (2026)?',
+    answer:
+      'Under Uttar Pradesh Revenue Department norms, male buyers pay 7.0% stamp duty plus a 1.0% registration fee (total 8.0%). Female buyers receive a 1% state concession, paying 6.0% stamp duty plus 1.0% registration (total 7.0%) on valuations up to ₹10 Lakhs. Charges are assessed on the higher of the DM circle rate or the sale deed value.',
+  },
+  {
+    question: 'How does EstateOS verify property listings with the Property Truth Score™?',
+    answer:
+      'The EstateOS Property Truth Score™ is a proprietary 0 to 100 verification index. It audits RERA statutory registration status, verified physical road frontage (e.g. 30-ft pucca roads), title mutation certainty (Registry & Dakhil Kharij), and mortgage clearance across premier banks including SBI, HDFC, and ICICI.',
+  },
+  {
+    question: 'How can buyers check RERA registration for residential plots and projects in Meerut?',
+    answer:
+      'Buyers can verify project credentials through the official UP-RERA portal (up-rera.in) using the developer RERA registration number, or check verified RERA audit badges directly on EstateOS property showcase pages.',
+  },
+];
 
 export default async function HomePage() {
   let featuredProperties: any[] = [];
@@ -113,6 +137,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
+      <FaqJsonLd faqs={HOMEPAGE_AEO_FAQS} />
       {/* 1. HERO SECTION */}
       <section className="relative min-h-[640px] flex items-center justify-center bg-forest-950 text-white overflow-hidden py-16 lg:py-24">
         {/* Background photo with deep luxury gradient overlay */}

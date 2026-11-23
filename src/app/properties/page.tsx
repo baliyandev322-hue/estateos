@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import PropertySearchClient from './PropertySearchClient';
 import prisma from '@/lib/prisma';
 import { CURATED_PROPERTIES, filterCuratedProperties } from '@/lib/curatedProperties';
+import { ItemListJsonLd } from '@/components/StructuredData';
 
 export const revalidate = 60;
 
@@ -145,14 +146,27 @@ export default async function PropertiesPage({
     ];
   }
 
+  const listItems = (properties || []).slice(0, 10).map((p: any) => ({
+    name: p.title,
+    url: `/property/${p.slug}`,
+    price: p.price,
+  }));
+
   return (
-    <PropertySearchClient
-      initialProperties={properties as any}
-      totalCount={total}
-      currentPage={page}
-      limit={limit}
-      initialParams={params}
-      localities={localities}
-    />
+    <>
+      <ItemListJsonLd
+        name={city ? `Verified Properties in ${city}` : 'Verified Properties Across India'}
+        description={`Explore verified residential and commercial properties with Property Truth Score™ on EstateOS.`}
+        items={listItems}
+      />
+      <PropertySearchClient
+        initialProperties={properties as any}
+        totalCount={total}
+        currentPage={page}
+        limit={limit}
+        initialParams={params}
+        localities={localities}
+      />
+    </>
   );
 }
