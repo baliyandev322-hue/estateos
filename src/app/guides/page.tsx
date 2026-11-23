@@ -4,6 +4,7 @@ import Link from 'next/link';
 import prisma from '@/lib/prisma';
 import AdSenseBanner from '@/components/AdSenseBanner';
 import { BookOpen, Clock, ChevronRight, User } from 'lucide-react';
+import { CURATED_GUIDES } from '@/lib/curatedGuides';
 
 export const revalidate = 120;
 
@@ -118,12 +119,19 @@ export default async function GuidesPage({
     console.warn('Database offline or article fetch failed, serving fallback articles:', err);
   }
 
-  // If database returned no articles or errored, use high-value curated fallback articles
-  if (!articles || articles.length === 0) {
-    articles = selectedCategory === 'All'
-      ? FALLBACK_ARTICLES
-      : FALLBACK_ARTICLES.filter((a) => a.category === selectedCategory);
-    if (articles.length === 0) articles = FALLBACK_ARTICLES;
+  // Merge curated high-impact AEO guides with database articles
+  const curatedFiltered = selectedCategory === 'All'
+    ? CURATED_GUIDES
+    : CURATED_GUIDES.filter((g) => g.category === selectedCategory || selectedCategory === 'RERA & Legal');
+
+  // Avoid duplicates if DB already contains matching slugs
+  const dbSlugs = new Set((articles || []).map((a) => a.slug));
+  const uniqueCurated = curatedFiltered.filter((g) => !dbSlugs.has(g.slug));
+
+  articles = [...uniqueCurated, ...(articles || [])];
+
+  if (articles.length === 0) {
+    articles = FALLBACK_ARTICLES;
   }
 
   const categories = ['All', 'RERA & Legal', 'Investment', 'Home Loans', 'Buying Guides', 'City Guides'];

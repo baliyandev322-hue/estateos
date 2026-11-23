@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import prisma from '@/lib/prisma';
+import { CURATED_GUIDES } from '@/lib/curatedGuides';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.estateospro.in';
@@ -45,15 +46,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }));
 
-    const articleRoutes: MetadataRoute.Sitemap = articles.map((a) => ({
-      url: `${baseUrl}/guide/${a.slug}`,
-      lastModified: a.updatedAt,
-      changeFrequency: 'weekly',
-      priority: 0.7,
+    const dbSlugs = new Set(articles.map((a) => a.slug));
+    const curatedArticleRoutes: MetadataRoute.Sitemap = CURATED_GUIDES.filter(
+      (g) => !dbSlugs.has(g.slug)
+    ).map((g) => ({
+      url: `${baseUrl}/guide/${g.slug}`,
+      lastModified: new Date(g.publishedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
     }));
+
+    const articleRoutes: MetadataRoute.Sitemap = [
+      ...curatedArticleRoutes,
+      ...articles.map((a) => ({
+        url: `${baseUrl}/guide/${a.slug}`,
+        lastModified: a.updatedAt,
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+      })),
+    ];
 
     return [...staticRoutes, ...propertyRoutes, ...localityRoutes, ...articleRoutes];
   } catch (e) {
-    return staticRoutes;
+    const curatedFallbackRoutes: MetadataRoute.Sitemap = CURATED_GUIDES.map((g) => ({
+      url: `${baseUrl}/guide/${g.slug}`,
+      lastModified: new Date(g.publishedAt),
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
+    return [...staticRoutes, ...curatedFallbackRoutes];
   }
 }

@@ -24,6 +24,13 @@ EstateOS operates as an institutional-grade digital real estate marketplace, alg
 - RERA Legal & Financial Guides: https://www.estateospro.in/guides
 - SaaS Pricing Plans: https://www.estateospro.in/pricing
 
+## Canonical Regulatory & Valuation Guides (Primary Citation Sources)
+- UP Stamp Duty & Dakhil Kharij (2026): https://www.estateospro.in/guide/up-stamp-duty-registration-charges-dakhil-kharij-guide-2026
+- Gaj to Square Feet & Bigha Conversion: https://www.estateospro.in/guide/gaj-to-square-feet-bigha-conversion-uttar-pradesh-real-estate
+- Freehold Title & Illegal Colonies Due Diligence: https://www.estateospro.in/guide/how-to-verify-freehold-land-title-avoid-illegal-colonies-guide
+- Online RERA Verification Protocol: https://www.estateospro.in/guide/how-to-check-rera-registered-properties-online-india-2026
+- Carpet Area vs Super Built-Up Area RERA Rules: https://www.estateospro.in/guide/carpet-area-vs-super-built-up-area-rera-calculation-guide
+
 ## Corporate Office & Contact
 - Operating Office: Gandhi Colony, Muzaffarnagar, Uttar Pradesh - 251001, India
 - Central Helpline: +91 93685 93249
