@@ -155,6 +155,12 @@ export function PropertyJsonLd({ property }: PropertyJsonLdProps) {
       value: 'Approved for Bank Home Loans',
       description: 'Pre-screened for SBI, HDFC Bank, ICICI Bank, Punjab National Bank.',
     },
+    {
+      '@type': 'PropertyValue',
+      name: 'Property Truth Score™',
+      value: `${truthScore}/100`,
+      description: 'EstateOS proprietary verification index evaluating RERA status, road frontage, registry title clarity, and loan eligibility.',
+    },
   ];
 
   const sellerName = property.organization?.name || property.user?.name || 'EstateOS Certified Partner';
@@ -234,26 +240,6 @@ export function PropertyJsonLd({ property }: PropertyJsonLdProps) {
             sameAs: [wikidataCityUrl],
           },
           additionalProperty: additionalProps,
-        },
-      },
-      {
-        '@type': 'Review',
-        '@id': `${propertyUrl}#audit`,
-        itemReviewed: {
-          '@id': `${propertyUrl}#residence`,
-        },
-        reviewRating: {
-          '@type': 'Rating',
-          ratingValue: truthScore,
-          bestRating: 100,
-          worstRating: 0,
-          ratingExplanation: `EstateOS Property Truth Score™: ${truthScore}/100. Verified on RERA statutory compliance, physical road connectivity, Registry and Dakhil Kharij title certainty, and bank home loan eligibility.`,
-        },
-        author: {
-          '@type': 'Organization',
-          '@id': `${SITE_URL}/#organization`,
-          name: 'EstateOS PropTech Intelligence Audits',
-          url: `${SITE_URL}/truth-score`,
         },
       },
     ],
